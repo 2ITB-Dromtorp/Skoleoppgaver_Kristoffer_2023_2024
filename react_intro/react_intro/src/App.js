@@ -1,29 +1,40 @@
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { useState } from 'react';
 import './App.css';
 
-const products = [
-  { title: 'Cabbage', isFruit: false, id: 1 },
-  { title: 'Garlic', isFruit: false, id: 2 },
-  { title: 'Apple', isFruit: true, id: 3 },
-];
+function Square() {
+  const [value, setValue] = useState(null);
+
+  function handleClick() {
+    setValue('X')
+  }
+
+  return <button className="square" onClick={handleClick}>{value}</button>;
+
+}
 
 function App() {
-
-  const listItems = products.map(product =>
-    <li
-      key={product.id}
-      style={{
-        color: product.isFruit ? 'magenta' : 'darkgreen'
-      }}
-    >
-      {product.title}
-    </li>
-  );
 
   return (
     <div className="App">
       <header className='App-header'>
 
-        <ul>{listItems}</ul>
+        <div className="board-row">
+          <Square />
+          <Square />
+          <Square />
+        </div>
+        <div className="board-row">
+          <Square />
+          <Square />
+          <Square />
+        </div>
+        <div className="board-row">
+          <Square />
+          <Square />
+          <Square />
+        </div>
 
       </header>
     </div>
