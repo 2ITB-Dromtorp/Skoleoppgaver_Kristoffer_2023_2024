@@ -38,8 +38,20 @@
   }
 }
 
+.Tiktaktok {
+  background-color: #000000;
+  border: solid black 2px;
+}
+
+.board-row {
+  display: flex;
+
+}
+
 .square {
-  padding: 30px;
+  border: solid black 2px;
   text-align: center;
-  font-size: x-large;
+  font-size: 30px;
+  height: 60px;
+  width: 60px;
 }

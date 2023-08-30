@@ -1,8 +1,6 @@
-//import { StrictMode } from 'react';
-//import { createRoot } from 'react-dom/client';
+
 import { useState } from 'react';
 import './App.css';
-
 
 function Square({ value, onSquareClick }) {
 
@@ -29,10 +27,22 @@ function App() {
     setXIsNext(!xIsNext);
   }
 
+  const winner = calculateWinner(squares);
+  let status;
+  if (winner) {
+    status = 'Winner: ' + winner;
+  } else {
+    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+  }
+
   return (
     <div className="App">
       <header className='App-header'>
-        <>
+
+        <h1>{status}</h1>
+
+        <div className='Tiktaktok'>
+
           <div className="board-row">
             <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
             <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -48,7 +58,7 @@ function App() {
             <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
             <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
           </div>
-        </>
+        </div>
 
 
       </header>
