@@ -3,6 +3,7 @@ import Oppgave2 from './oppgave2.js';
 import './App.css';
 import Oppgave3 from './oppgave3.js';
 import Oppgave4 from './oppgave4.js';
+import Oppgave5 from './oppgave5.js';
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
         <Oppgave3 />
 
         <Oppgave4 />
+
+        <Oppgave5 />
 
       </header>
     </div>
