@@ -34,6 +34,8 @@ export default function Oppgave5() {
         <>
             <h1> Oppgave 5 </h1>
 
+            <label>skriv en nummer 1 til 50 og la datamaskinen gjette det </label>
+
             <input type="text" id="numberInput" onChange={e => setUserNumberInput(e.target.value)}></input>
 
             <input type="button" onClick={() => numberGuess()} value="Submit" ></input>
