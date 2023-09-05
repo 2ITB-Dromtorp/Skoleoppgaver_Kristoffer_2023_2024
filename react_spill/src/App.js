@@ -1,23 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
+import GridBoard from './components/GridBoard';
+import NextBlock from './components/NextBlock';
+import ScoreBoard from './components/ScoreBoard';
+
+import React from 'react';
+import { createStore } from 'redux'
+import reducers from './reducers'
+
+const store = createStore(reducers)
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1 className="App-title">Gaming</h1>
       </header>
+      <GridBoard props="1" />
+      <NextBlock />
+      <ScoreBoard />
     </div>
   );
 }
