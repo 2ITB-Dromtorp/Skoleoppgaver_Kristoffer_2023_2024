@@ -1,5 +1,24 @@
+/* App */
 .App {
-  text-align: center;
+  --col-side: calc(var(--tile-size) * 4);
+  --col-center: calc(var(--tile-size) * 10);
+  --grid-height: calc(var(--tile-size) * 18);
+
+  width: calc(var(--tile-size) * (4 + 1 + 10 + 1 + 4));
+  margin: auto;
+  display: grid;
+
+  grid-gap: var(--tile-size) var(--tile-size);
+  /* Defines three columns of `--col-side`, `--col-center`, and `--col-side` widths. */
+  grid-template-columns: var(--col-side) var(--col-center) var(--col-side);
+  /* Defines three rows of `100px`, `--grid-height`, and 100px. */
+  grid-template-rows: 100px var(--grid-height) 100px;
+
+  /* This defines the areas on the grid with names: 'h', 'l', 'c', 'r',
+and 'b'. The '.' represents an empty cell on the grid. */
+  grid-template-areas: "h h h"
+    "l c r"
+    ". b .";
 }
 
 .App-logo {
@@ -15,7 +34,9 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 10vh;
+  grid-area: h;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,7 +53,117 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+:root {
+  --bg-color: rgba(150, 150, 150, 1);
+
+  /* Border Colors are all transparent colors. These will tint or shade the background color of the square. */
+  --border-left-color: rgba(255, 255, 255, 0.20);
+  --border-top-color: rgba(255, 255, 255, 0.33);
+  --border-right-color: rgba(0, 0, 0, 0.15);
+  --border-bottom-color: rgba(0, 0, 0, 0.5);
+
+  /* Square Colors:  background colors for the squares.*/
+  --color-0: #eaeaea;
+  --color-1: #ff6600;
+  --color-2: #eec900;
+  --color-3: #0000ff;
+  --color-4: #cc00ff;
+  --color-5: #00ff00;
+  --color-6: #66ccff;
+  --color-7: #ff0000;
+
+  /* Button Colors */
+  --button-color-t: rgba(200, 200, 200, 1);
+  --button-color-r: rgba(150, 150, 150, 1);
+  --button-color-b: rgba(120, 120, 120, 1);
+  --button-color-l: rgba(222, 222, 222, 1);
+
+  /* Numbers define values that will be used throughout the CSS.
+  --tile-size: 20px for example will set size of the grid squares. */
+  --cols: 10;
+  --rows: 18;
+  --tile-size: 20px;
+  --border-width: 5px;
+}
+
+/* Colors */
+.color-0 {
+  background-color: var(--color-0);
+}
+
+.color-1 {
+  background-color: var(--color-1);
+}
+
+.color-2 {
+  background-color: var(--color-2);
+}
+
+.color-3 {
+  background-color: var(--color-3);
+}
+
+.color-4 {
+  background-color: var(--color-4);
+}
+
+.color-5 {
+  background-color: var(--color-5);
+}
+
+.color-6 {
+  background-color: var(--color-6);
+}
+
+.color-7 {
+  background-color: var(--color-7);
+}
+
+/* Grid Square */
+.grid-square {
+  border-style: solid;
+  width: var(--tile-size);
+  height: var(--tile-size);
+  border-width: var(--border-width);
+  border-left-color: var(--border-left-color);
+  border-top-color: var(--border-top-color);
+  border-right-color: var(--border-right-color);
+  border-bottom-color: var(--border-bottom-color);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.grid-board {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--tile-size));
+  grid-gap: 0;
+  align-self: flex-start;
+}
+
+.next-block {
+  display: grid;
+  grid-template-columns: repeat(4, var(--tile-size));
+  align-self: flex-start;
+  grid-area: l;
+  /* Grid area l left column */
+
+}
+
+/* Score Board */
+.score-board-button {
+  display: block;
+  padding: 1em;
+  border-width: 5px;
+  border-top-color: var(--button-color-t);
+  border-left-color: var(--button-color-l);
+  border-right-color: var(--button-color-r);
+  border-bottom-color: var(--button-color-b);
 }
