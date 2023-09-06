@@ -1,14 +1,21 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export function DigitalClock() {
 
 
     const [currentTime, setTime] = useState("")
 
-    setInterval(() => {
-        let clock = new Date()
-        setTime(clock.getHours() + ":" + clock.getMinutes() + ":" + clock.getSeconds())
-    }, 1000);
+    useEffect(() => {
+        const clockUpdate = setInterval(() => {
+            let clock = new Date()
+            setTime(clock.getHours() + ":" + clock.getMinutes() + ":" + clock.getSeconds())
+        }, 500);
+
+        return () => clearInterval(clockUpdate)
+    })
+
+
+
 
     return (
         <>
