@@ -7,10 +7,7 @@ export function DigitalClock() {
 
     setInterval(() => {
         let clock = new Date()
-        let hh = clock.getHours();
-        let mm = clock.getMinutes();
-        let ss = clock.getSeconds();
-        setTime(hh + ":" + mm + ":" + ss)
+        setTime(clock.getHours() + ":" + clock.getMinutes() + ":" + clock.getSeconds())
     }, 1000);
 
     return (
