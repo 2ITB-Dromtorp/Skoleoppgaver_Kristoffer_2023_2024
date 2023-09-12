@@ -10,7 +10,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div id="Counterbox">
-          <button onClick={() => setCount(count + 1)}>Increase</button>
+          <button onClick={() => setCount(count + 1)}></button>
           <h1>{count}</h1>
           <button onClick={() => setCount(count - 1)}>Decrease</button>
 
