@@ -1,3 +1,7 @@
 export function Page1() {
-    return (<p>Blud</p>)
+    return (
+        <>
+            <h1>Fnaf er ekte</h1>
+        </>
+    )
 }

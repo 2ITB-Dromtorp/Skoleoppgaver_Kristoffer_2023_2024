@@ -5,7 +5,6 @@ import { Page2 } from './Page2';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './Layout';
 
-
 function App() {
   return (
     <div className="App">
