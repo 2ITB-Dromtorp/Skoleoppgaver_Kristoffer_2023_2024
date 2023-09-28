@@ -64,7 +64,6 @@ export function GridBoard() {
             newSnake.pop();
         }
 
-
         switch (direction) {
             case "right":
                 newSnake.push({ x: snake[0].x, y: (snake[0].y + 1) % width })
@@ -81,6 +80,7 @@ export function GridBoard() {
         if (snake.length !== 1) {
             snake.forEach(cell => {
                 newSnake.push(cell)
+
             })
         }
 
@@ -104,7 +104,6 @@ export function GridBoard() {
     function useInterval(callback, delay) { const savedCallback = useRef(); useEffect(() => { savedCallback.current = callback; }, [callback]); useEffect(() => { function tick() { savedCallback.current(); } if (delay !== null) { let id = setInterval(tick, delay); return () => clearInterval(id); } }, [delay]); }
 
     useInterval(moveSnake, 250);
-
 
     return (
         <div>

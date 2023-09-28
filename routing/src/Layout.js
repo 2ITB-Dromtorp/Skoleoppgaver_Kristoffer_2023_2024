@@ -5,12 +5,11 @@ const Layout = () => {
         <>
             <nav>
                 <ul>
-
                     <li>
-                        <Link to="/Page1">Page1</Link>
+                        <Link to="/Page1">JokeAPI</Link>
                     </li>
                     <li>
-                        <Link to="/Page2">Page2</Link>
+                        <Link to="/Page2">CordinateAPI</Link>
                     </li>
                 </ul>
             </nav>
