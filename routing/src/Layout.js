@@ -3,16 +3,11 @@ import { Outlet, Link } from "react-router-dom";
 const Layout = () => {
     return (
         <>
-            <nav>
-                <ul>
-                    <li>
-                        <Link to="/Page1">JokeAPI</Link>
-                    </li>
-                    <li>
-                        <Link to="/Page2">CordinateAPI</Link>
-                    </li>
-                </ul>
-            </nav>
+            <div className="Box">
+
+                <Link to="/Page1">JokeAPI</Link>
+                <Link to="/Page2">CordinateAPI</Link>
+            </div>
 
             <Outlet />
         </>

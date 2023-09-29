@@ -38,12 +38,14 @@
   }
 }
 
-.Box {
+#todoList {
   display: flex;
   flex-direction: column;
-  background-color: #000000;
 }
 
-.container {
-  background-color: #f10000;
+.Todo {
+  display: flex;
+  flex-direction: row;
+  background-color: blue;
+  gap: 30px;
 }
