@@ -1,8 +1,72 @@
-{
-    "Elever": [
-        {
-            "Fornavn": "Kristoffer",
-            "Etternavn": "Bekkevold"
-        }
-    ]
-}
+[
+    {
+        "Fornavn": "Kristoffer",
+        "Etternavn": "Bekkevold",
+        "Email": "kristofbek@viken.no"
+    },
+    {
+        "Fornavn": "Axel",
+        "Etternavn": "Sequeida Sandbakken",
+        "Email": "axelsan@viken.no"
+    },
+    {
+        "Fornavn": "Matheo",
+        "Etternavn": "Kant Pangopoulos",
+        "Email": "matheop@viken.no"
+    },
+    {
+        "Fornavn": "Elias",
+        "Etternavn": "Høgrann Godager",
+        "Email": "eliasgod@viken.no"
+    },
+    {
+        "Fornavn": "Vetle",
+        "Etternavn": "Fongen",
+        "Email": "vetlefon@viken.no"
+    },
+    {
+        "Fornavn": "Gabriel",
+        "Etternavn": "Karisari Ueland",
+        "Email": "gabrielu@viken.no"
+    },
+    {
+        "Fornavn": "Philip",
+        "Etternavn": "Beyer",
+        "Email": "philipbey@viken.no"
+    },
+    {
+        "Fornavn": "Mattis",
+        "Etternavn": "Eintveit Møller",
+        "Email": "mattismol@viken.no"
+    },
+    {
+        "Fornavn": "Andreas",
+        "Etternavn": "Hurlen Kristiansen",
+        "Email": "andreashkr@viken.no"
+    },
+    {
+        "Fornavn": "Theodor",
+        "Etternavn": "Julien-Løvås",
+        "Email": "theodorju@viken.no"
+    },
+    {
+        "Fornavn": "Ahmad",
+        "Etternavn": "Murtaza Zahid",
+        "Email": "ahmadza@viken.no"
+    },
+    {
+        "Fornavn": "Silas",
+        "Etternavn": "Surland-Fjær",
+        "Email": "silass@viken.no"
+    },
+    {
+        "Fornavn": "Alva",
+        "Etternavn": "Cecilia Øvrom",
+        "Email": "alvaov@viken.no"
+    },
+    {
+        "Fornavn": "Johannes",
+        "Etternavn": "Herman Rebård Evensen",
+        "Email": "johanneeve@viken.no"
+    }
+]
