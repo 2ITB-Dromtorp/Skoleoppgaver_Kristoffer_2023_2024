@@ -1,5 +1,45 @@
 import './App.css';
 import Elev from './Elev';
+import { useState } from 'react';
+const elever = require('./elever.json');
+
+export function RenderClassList() {
+
+    const [searchInput, setSearchInput] = useState(''); // State for the search input
+
+    // Function to handle changes in the search input
+    const handleSearchChange = (event) => {
+        setSearchInput(event.target.value);
+    };
+
+    let eleverListe = JSON.parse(JSON.stringify(elever))
+
+    const filteredElev = eleverListe.filter((data) => {
+        const fullName = `${data.Fornavn}`.toLowerCase();
+        return fullName.includes(searchInput.toLowerCase());
+    });
+
+    return (
+        <>
+
+            <input
+                type="text"
+                id="blud"
+                placeholder="Search..."
+                value={searchInput}
+                onChange={handleSearchChange}
+            />
+
+            {filteredElev.map(function (data) {
+                return (
+                    <div>
+                        <Elev name={data.Fornavn} />
+                    </div>
+                )
+            })}
+        </>
+    )
+}
 
 export default function Home() {
 
@@ -7,54 +47,12 @@ export default function Home() {
 
         <div className="container">
 
-            <div className='leftside'>
+            <select name="Sort" id="sort">
+                <option value="Name">By name</option>
+                <option value="Last">Last name</option>
+            </select>
 
-                <div className='box'>
-
-                    <div className='sitteplasser'>
-                        <Elev name="Andreas" />
-                        <Elev name="Ahmad" />
-                    </div>
-
-                    <div className='sitteplasser'>
-                        <Elev name="Philip" />
-                    </div>
-
-                    <div className='sitteplasser'>
-                        <Elev name="Gabriel" />
-                        <Elev name="Theodor" />
-                    </div>
-
-                </div>
-            </div>
-
-
-            <div className='rightside'>
-
-                <div className='box'>
-
-                    <div className='sitteplasser'>
-                        <Elev name="Mattis" />
-                        <Elev name="Alva" />
-                        <Elev name="Silas" />
-                    </div>
-
-                    <div className='sitteplasser'>
-                        <Elev name="Axel" />
-                        <Elev name="Vetle" />
-                        <Elev name="Kristoffer" />
-                    </div>
-
-                    <div className='sitteplasser'>
-                        <Elev name="Johannes" />
-                        <Elev name="Elias" />
-                        <Elev name="Matheo" />
-                    </div>
-
-                </div>
-
-            </div>
-
+            <RenderClassList />
 
         </div>
     )

@@ -47,7 +47,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2em;
+  padding: 1em;
   width: 2em;
   margin-top: 2em;
   border: solid white 2px;
@@ -56,6 +56,7 @@
 
 .container {
   display: flex;
+  flex-direction: column;
   height: 100vh;
 }
 
