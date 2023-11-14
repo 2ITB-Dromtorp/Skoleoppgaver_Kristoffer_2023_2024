@@ -19,7 +19,6 @@ con.connect(function (err) {
 
 app.get('/', (req, res) => {
 
-
     var sql = "SELECT * FROM datamaskin"
     con.query(sql, function (err, result) {
         if (err) throw err;
