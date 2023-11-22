@@ -7,9 +7,10 @@ type pameldingPopupBuild = {
     time: string,
     shortDescription: string,
     mainDescription: string,
+    pameldt: number,
 }
 
-export default function CustomPopup({ title, time, shortDescription, mainDescription }: pameldingPopupBuild) {
+export default function Kurs({ title, time, shortDescription, mainDescription }: pameldingPopupBuild) {
 
     const [isOpen, setIsOpen] = useState(false);
 

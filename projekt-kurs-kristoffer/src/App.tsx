@@ -1,7 +1,15 @@
+
+import { useEffect, useState } from "react";
 import "./index.css"
-import CustomPopup from "./Popup"
+import Kurs from "./Popup";
+
 
 function App() {
+
+  fetch("http://localhost:3000/getKurs")
+    .then(res => res.json())
+    .then(res => console.log(res));
+
   return (
     <div className="Container flex flex-col h-screen overflow-hidden">
 
@@ -19,18 +27,10 @@ function App() {
       <div className="Main flex h-screen items-center justify-center flex-row-reverse gap-16 m-10">
 
         <div className="Tilgjenlig-Kurs bg-gray-300 grow h-full grid grid-cols-3">
-
-          <CustomPopup title="sussy" time="20 dec 2023" shortDescription="der man gjør sussy ting" mainDescription="jeg vet hvor du bor" />
-
-          <CustomPopup title="sussy" time="20 dec 2023" shortDescription="der man gjør sussy ting" mainDescription="jeg vet hvor du bor" />
-          <CustomPopup title="sussy" time="20 dec 2023" shortDescription="der man gjør sussy ting" mainDescription="jeg vet hvor du bor" />
-          <CustomPopup title="sussy" time="20 dec 2023" shortDescription="der man gjør sussy ting" mainDescription="jeg vet hvor du bor" />
+          <Kurs title={"test"} />
         </div>
 
         <div className="Påmeldt-Kurs bg-gray-300 h-full grid grid-rows-4 w-64 row-span-3">
-          <CustomPopup title="sussy" time="20 dec 2023" shortDescription="der man gjør sussy ting" mainDescription="jeg vet hvor du bor" />
-          <CustomPopup title="sussy" time="20 dec 2023" shortDescription="der man gjør sussy ting" mainDescription="jeg vet hvor du bor" />
-
 
         </div>
 
