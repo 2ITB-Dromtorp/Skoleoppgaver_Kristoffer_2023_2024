@@ -5,17 +5,21 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Page from "./Page";
 
 async function LoginUser(username: string, password: string) {
-  return fetch('http://localhost:3000/login', {
+  fetch('http://localhost:3000/login', {
     method: 'post',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ username: username, password: password })
   })
+    .then((response) => response.json())
+    .then((response) => {
+      return response
+    })
 }
 
 async function registerUser(username: string, password: string) {
-  return fetch('http://localhost:3000/register', {
+  fetch('http://localhost:3000/register', {
     method: 'post',
     headers: {
       'Content-Type': 'application/json'
@@ -25,6 +29,7 @@ async function registerUser(username: string, password: string) {
 }
 
 export function Login() {
+  const [loggedIn, setLoggedIn] = useState(false)
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
@@ -79,8 +84,8 @@ function App() {
 
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Page />}></Route>
-        <Route path="/login" element={<Login />}></Route>
+        <Route path="/" element={<Login />}></Route>
+        <Route path="/page" element={<Page />}></Route>
         <Route path="/register" element={<Register />}></Route>
       </Routes>
     </BrowserRouter>
