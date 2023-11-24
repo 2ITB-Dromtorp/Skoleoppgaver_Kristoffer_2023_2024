@@ -1,9 +1,12 @@
 const express = require('express')
 var cors = require("cors");
+const bcrypt = require("bcrypt")
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database("./database.db");
 const app = express()
 const port = 3000
+
+app.use(express.json())
 
 app.use(cors());
 
@@ -42,68 +45,58 @@ app.post('/getBrukere', (req, res) => {
 
 })
 
-/*const bcrypt = require("bcrypt")
 
 app.post("/register", async (req, res) => {
     const userCopy = req.body
 
-    db.all("SELECT * FROM Bruker", [], (err, row) => {
+    db.all("SELECT * FROM Bruker", [], async (err, row) => {
+
         if (err) {
             throw err;
         }
-        const credentials = JSON.parse(row)
-    });
+        const credentials = row
 
-
-
-    for (let i in credentials) {
-        if (!(userCopy.username === credentials[i].username)) continue
-        res.status(403).json({ "status": "User already exists" })
-    }
-
-    userCopy.password = await bcrypt.hash(req.body.password, 10)
-
-    userCopy.availableLists = [];
-
-    credentials.push(userCopy)
-
-    fs.writeFile("./credentials.json", JSON.stringify(credentials), function (err) {
-        if (err) {
-            console.error(err)
-            res.status(500).json({ "status": "Internal server error" })
-        } else {
-            console.log("User added")
-            res.status(200).json({ "status": "User added" })
+        for (let i in credentials) {
+            if (!(userCopy.username === credentials[i].username)) continue
+            res.status(403).json({ "status": "User already exists" })
         }
+
+        userCopy.password = await bcrypt.hash(req.body.password, 10)
+        let sql = ("INSERT INTO Bruker (username, password, Kurs) VALUES ('" + userCopy.username + "','" + userCopy.password + "'," + "''" + ")")
+        db.run(sql)
     })
+
 })
 
 app.post("/login", (req, res) => {
-    const credentials = JSON.parse(fs.readFileSync("./credentials.json"))
 
-    let userIndex;
+    db.all("SELECT * FROM Bruker", [], async (err, row) => {
 
-    req.body.username
+        const credentials = row
 
-    for (let i in credentials) {
-        if (credentials[i].username.toLowerCase() == req.body.username.toLowerCase()) {
-            userIndex = i;
-        }
-    }
+        let userIndex
 
-    if (userIndex != undefined) {
-        bcrypt.compare(req.body.password, credentials[userIndex].password, (err, result) => {
-            if (result) {
-                res.status(200).json({ "result": result, "error": "Login successful", "username": credentials[userIndex].username })
-            } else if (!result) {
-                res.status(401).json({ "result": result, "error": "Wrong password or username" })
+        for (let i in credentials) {
+            if (credentials[i].username.toLowerCase() == req.body.username.toLowerCase()) {
+                userIndex = i;
             }
-        })
-    } else {
-        res.status(400).json({ "result": "Username not found", "error": "Username not found" })
-    }
-})*/
+        }
 
+        if (userIndex != undefined) {
+            bcrypt.compare(req.body.password, credentials[userIndex].password, (err, result) => {
+                if (result) {
+                    res.send(req.body.username)
+                } else if (!result) {
+                    res.status(401).json({ "result": result, "error": "Wrong password or username" })
+                }
+            })
+        } else {
+            res.status(400).json({ "result": "Username not found", "error": "Username not found" })
+        }
+
+    })
+
+})
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
