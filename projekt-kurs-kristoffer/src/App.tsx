@@ -1,10 +1,11 @@
 
 import { useEffect, useState } from "react";
 import "./index.css"
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Page from "./Page";
 
-async function LoginUser(username: string, password: string) {
+
+export async function LoginUser(username: string, password: string) {
   fetch('http://localhost:3000/login', {
     method: 'post',
     headers: {
@@ -12,9 +13,9 @@ async function LoginUser(username: string, password: string) {
     },
     body: JSON.stringify({ username: username, password: password })
   })
-    .then((response) => response.json())
+    .then((response) => response.text())
     .then((response) => {
-      return response
+      navigate('/page', { state: { username: response.toString() } });
     })
 }
 
@@ -29,9 +30,9 @@ async function registerUser(username: string, password: string) {
 }
 
 export function Login() {
-  const [loggedIn, setLoggedIn] = useState(false)
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+
 
   return (
     <div className="login">

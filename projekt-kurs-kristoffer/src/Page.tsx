@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import { useLocation } from 'react-router-dom';
+
 import Kurs from "./Popup";
 
 export default function Page() {
 
+    //const { username } = useLocation()
     const [courseList, setCourceList] = useState<any[]>([])
     const [courseUserList, setUserCourseList] = useState<any[]>([])
-    const [user, setUser] = useState("Kristoffer Bekkevold")
 
     useEffect(() => {
         async function getKursData() {
@@ -33,7 +35,7 @@ export default function Page() {
 
                 <div className="Profile flex flex-row-reverse items-center gap-5">
                     <img src="blank-profile.webp" className="w-12"></img>
-                    <p>{user}</p>
+                    //<p>{username}</p>
                 </div>
 
             </div>
