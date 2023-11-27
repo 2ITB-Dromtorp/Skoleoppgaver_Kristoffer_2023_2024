@@ -14,16 +14,23 @@ type pameldingPopupBuild = {
     username: string
 }
 
-async function attendCourse(isAttended: boolean, oldCourse: string, course: string) {
+async function attendCourse(isAttended: boolean, oldCourse: string, course: string, username: string) {
 
     if (isAttended) {
         fetch(encodeURI("http://localhost:3000/getBrukere?kurs=" + oldCourse.replace(course, " ")), {
-            method: "POST",
-
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: username })
         })
     } else {
         fetch(encodeURI("http://localhost:3000/getBrukere?kurs=" + (oldCourse + " " + course)), {
-            method: "POST",
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: username })
         })
 
     }
@@ -31,7 +38,7 @@ async function attendCourse(isAttended: boolean, oldCourse: string, course: stri
     window.location.reload();
 }
 
-export default function Kurs({ title, time, shortDescription, mainDescription, location, isAttended, oldCourseList }: pameldingPopupBuild) {
+export default function Kurs({ title, time, shortDescription, mainDescription, location, isAttended, oldCourseList, username }: pameldingPopupBuild) {
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -49,7 +56,7 @@ export default function Kurs({ title, time, shortDescription, mainDescription, l
                 <h1 className=''>{title}</h1>
                 <p className=''>{mainDescription}</p>
                 <h2 className=''>{time} {location}</h2>
-                {isAttended ? <button onClick={() => attendCourse(isAttended, oldCourseList, title)}> Avmeld </button> : <button onClick={() => attendCourse(isAttended, oldCourseList, title)}> Påmeld </button>}
+                {isAttended ? <button onClick={() => attendCourse(isAttended, oldCourseList, title, username)}> Avmeld </button> : <button onClick={() => attendCourse(isAttended, oldCourseList, title, username)}> Påmeld </button>}
 
             </div>
 

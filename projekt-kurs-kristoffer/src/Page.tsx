@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 import Kurs from "./Popup";
 
 export default function Page() {
 
-    //const { username } = useLocation()
+    const location = useLocation()
+    const username = location.state;
+
     const [courseList, setCourceList] = useState<any[]>([])
-    const [courseUserList, setUserCourseList] = useState<any[]>([])
+    const [UserList, setUserList] = useState<any[]>([])
 
     useEffect(() => {
         async function getKursData() {
@@ -15,16 +17,26 @@ export default function Page() {
                 .then(response => response.json())
                 .then(data => setCourceList(data));
         }
-        async function getUserKursData() {
+        async function getUserData() {
             fetch("http://localhost:3000/getBrukere")
                 .then(response => response.json())
                 .then(data => {
-                    setUserCourseList(data)
+                    setUserList(data)
                 });
         }
         getKursData()
-        getUserKursData()
+        getUserData()
     }, [])
+
+    let userIndex: string
+
+    if (UserList.length > 0) {
+        for (let i in UserList) {
+            if (UserList[i].username.toLowerCase() == username.toLowerCase()) {
+                userIndex = i;
+            }
+        }
+    }
 
     return (
         <div className="Container flex flex-col h-screen">
@@ -35,7 +47,7 @@ export default function Page() {
 
                 <div className="Profile flex flex-row-reverse items-center gap-5">
                     <img src="blank-profile.webp" className="w-12"></img>
-                    //<p>{username}</p>
+                    <p>{username}</p>
                 </div>
 
             </div>
@@ -46,13 +58,10 @@ export default function Page() {
 
                     {courseList.length > 0 && courseList.map((data: any) => {
 
-                        if (courseUserList.length > 0) {
+                        if (UserList.length > 0) {
 
-                            for (let i: number = 0; i < courseUserList.length; i++) {
-                                console.log(courseUserList[i].Kurs)
-                                if (!courseUserList[i].Kurs.includes(data.Navn) && courseUserList[i].username == user) {
-                                    return <Kurs key={data.Navn} title={data.Navn} time={data.Tid} shortDescription={data.KortBeskrivelse} mainDescription={data.LangBeskrivelse} attented={data.Påmeldt} location={data.Sted} isAttended={false} oldCourseList={courseUserList[i].Kurs} />
-                                }
+                            if (!UserList[Number(userIndex)].Kurs.includes(data.Navn) && UserList[Number(userIndex)].username == username) {
+                                return <Kurs key={data.Navn} title={data.Navn} time={data.Tid} shortDescription={data.KortBeskrivelse} mainDescription={data.LangBeskrivelse} attented={data.Påmeldt} location={data.Sted} isAttended={false} oldCourseList={UserList[Number(userIndex)].Kurs} username={username} />
                             }
 
                         } else {
@@ -66,11 +75,11 @@ export default function Page() {
 
                     {courseList.length > 0 && courseList.map((data: any) => {
 
-                        if (courseUserList.length > 0) {
+                        if (UserList.length > 0) {
 
-                            for (let i: number = 0; i < courseUserList.length; i++) {
-                                if (courseUserList[i].Kurs.includes(data.Navn) && courseUserList[i].username == user) {
-                                    return <Kurs key={data.Navn} title={data.Navn} time={data.Tid} shortDescription={data.KortBeskrivelse} mainDescription={data.LangBeskrivelse} attented={data.Påmeldt} location={data.Sted} isAttended={true} oldCourseList={courseUserList[i].Kurs} />
+                            for (let i: number = 0; i < UserList.length; i++) {
+                                if (UserList[i].Kurs.includes(data.Navn) && UserList[i].username == username) {
+                                    return <Kurs key={data.Navn} title={data.Navn} time={data.Tid} shortDescription={data.KortBeskrivelse} mainDescription={data.LangBeskrivelse} attented={data.Påmeldt} location={data.Sted} isAttended={true} oldCourseList={UserList[Number(userIndex)].Kurs} username={username} />
                                 }
                             }
 

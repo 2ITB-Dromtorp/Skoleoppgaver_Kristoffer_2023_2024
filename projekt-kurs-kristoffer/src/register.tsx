@@ -1,7 +1,6 @@
 import { useState } from "react";
-
 async function registerUser(username: string, password: string) {
-    return fetch('http://localhost:3000/register', {
+    fetch('http://localhost:3000/register', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json'
@@ -10,7 +9,7 @@ async function registerUser(username: string, password: string) {
     })
 }
 
-export default function Register() {
+export function Register() {
     const [username, setUserName] = useState("");
     const [password, setPassword] = useState("");
 

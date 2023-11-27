@@ -34,7 +34,8 @@ app.get('/getBrukere', (req, res) => {
 
 app.post('/getBrukere', (req, res) => {
 
-    db.run("UPDATE Bruker SET Kurs = \"" + req.query.kurs + "\" WHERE username = 'Kristoffer Bekkevold'")
+    let sql = ("UPDATE Bruker SET Kurs = " + "'" + req.query.kurs + "'" + " WHERE username =" + "'" + req.body.username + "'")
+    db.run(sql)
 
     db.all("SELECT * FROM Bruker", [], (err, row) => {
         if (err) {
@@ -85,7 +86,7 @@ app.post("/login", (req, res) => {
         if (userIndex != undefined) {
             bcrypt.compare(req.body.password, credentials[userIndex].password, (err, result) => {
                 if (result) {
-                    res.send(req.body.username)
+                    res.send("success")
                 } else if (!result) {
                     res.status(401).json({ "result": result, "error": "Wrong password or username" })
                 }
