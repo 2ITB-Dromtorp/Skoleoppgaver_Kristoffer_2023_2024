@@ -5,6 +5,7 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database("./database.db");
 const app = express()
 const port = 3000
+const crypto = require("crypto")
 
 app.use(express.json())
 
@@ -71,22 +72,15 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", (req, res) => {
 
-    db.all("SELECT * FROM Bruker", [], async (err, row) => {
+    db.all("SELECT * FROM Bruker WHERE username=?", [req.body.username], async (err, row) => {
 
         const credentials = row
 
-        let userIndex
-
-        for (let i in credentials) {
-            if (credentials[i].username.toLowerCase() == req.body.username.toLowerCase()) {
-                userIndex = i;
-            }
-        }
-
-        if (userIndex != undefined) {
-            bcrypt.compare(req.body.password, credentials[userIndex].password, (err, result) => {
+        if (credentials != undefined) {
+            bcrypt.compare(req.body.password, credentials[0].password, (err, result) => {
                 if (result) {
                     res.send("success")
+
                 } else if (!result) {
                     res.status(401).json({ "result": result, "error": "Wrong password or username" })
                 }
