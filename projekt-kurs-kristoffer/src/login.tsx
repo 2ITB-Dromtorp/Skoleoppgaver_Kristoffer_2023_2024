@@ -29,36 +29,27 @@ export function Login() {
     const navigate = useNavigate();
 
     const handleLogin = async () => {
-        console.log('Before login');
         await LoginUser(username, password, navigate);
-        console.log('After login');
     };
 
-    useEffect(() => {
-        //document.cookie = ""
-    })
-
     return (
-        <div className="Container flex flex-col h-screen">
-            <div className="Header w-full bg-gray-200 flex justify-between p-5 items-center">
+        <div className="flex justify-center items-center h-screen bg-gray-100">
 
-                <img src="Viken_våpen.svg.png" className="w-12" alt="Logo"></img>
-
-
-            </div>
-
-
-            <div className="login text-center h-screen items-center justify-center flex flex-col">
+            <div className="login max-w-md w-full bg-white rounded p-6 space-y-4">
+                <div className="mb-4">
+                    <img src="Viken_våpen.svg.png" className="w-12" alt="Logo"></img>
+                    <p className="text-gray-600">Logg inn</p>
+                </div>
                 <label>
                     <p>Username</p>
-                    <input type="text" onChange={e => setUserName(e.target.value)} />
+                    <input type="text" className="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600" onChange={e => setUserName(e.target.value)} />
                 </label>
                 <label>
                     <p>Password</p>
-                    <input type="password" onChange={e => setPassword(e.target.value)} />
+                    <input type="password" className="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600" onChange={e => setPassword(e.target.value)} />
                 </label>
                 <div>
-                    <button type="submit" onClick={handleLogin}>Submit</button>
+                    <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded text-sm font-bold text-gray-50 transition duration-200" onClick={handleLogin}>Login</button>
                 </div>
                 <Link to="/register">Har ikke konto?</Link>
             </div>

@@ -51,21 +51,23 @@ app.post('/getBrukere', (req, res) => {
 app.post("/register", async (req, res) => {
     const userCopy = req.body
 
-    db.all("SELECT * FROM Bruker", [], async (err, row) => {
+    db.all("SELECT * FROM Bruker WHERE username=?", [req.body.username], async (err, row) => {
 
         if (err) {
             throw err;
         }
         const credentials = row
 
-        for (let i in credentials) {
-            if (!(userCopy.username === credentials[i].username)) continue
+        if ((userCopy.username === credentials[0].username)) {
             res.status(403).json({ "status": "User already exists" })
+            res.send("User already exists")
+            return
         }
 
         userCopy.password = await bcrypt.hash(req.body.password, 10)
         let sql = ("INSERT INTO Bruker (username, password, Kurs) VALUES ('" + userCopy.username + "','" + userCopy.password + "'," + "''" + ")")
         db.run(sql)
+        res.send("success")
     })
 
 })
