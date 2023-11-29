@@ -12,6 +12,8 @@ async function registerUser(username: string, password: string, navigate: Functi
         .then((response) => {
             if (response === "success") {
                 navigate("/")
+            } else {
+                console.log("fail")
             }
         })
 }
@@ -19,9 +21,15 @@ async function registerUser(username: string, password: string, navigate: Functi
 export function Register() {
     const [username, setUserName] = useState("");
     const [password, setPassword] = useState("");
+    const [secondpassword, setsecondPassword] = useState("");
+
+    const navigate = useNavigate()
 
     const handleSignup = async () => {
-        await registerUser(username, password, useNavigate());
+        if (secondpassword == password) {
+            await registerUser(username, password, navigate);
+        }
+
     };
 
     return (
@@ -33,21 +41,21 @@ export function Register() {
                     <p className="text-gray-600">Lag ny Konto</p>
                 </div>
                 <label>
-                    <p>Username</p>
+                    <p>Brukernavn</p>
                     <input type="text" className="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600" onChange={e => setUserName(e.target.value)} />
                 </label>
                 <label>
-                    <p>Password</p>
+                    <p>Passord</p>
                     <input type="password" className="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600" onChange={e => setPassword(e.target.value)} />
                 </label>
                 <label>
-                    <p>Confirm Password</p>
-                    <input type="password" className="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600" onChange={e => setPassword(e.target.value)} />
+                    <p>Bekreft Passord</p>
+                    <input type="password" className="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600" onChange={e => setsecondPassword(e.target.value)} />
                 </label>
                 <div>
                     <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded text-sm font-bold text-gray-50 transition duration-200" onClick={handleSignup}>Signup</button>
                 </div>
-                <Link to="/">Alrede har konto?</Link>
+                <Link to="/">Allerede har konto?</Link>
             </div>
 
         </div>

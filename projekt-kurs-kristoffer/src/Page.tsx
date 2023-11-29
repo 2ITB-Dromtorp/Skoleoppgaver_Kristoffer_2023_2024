@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Navigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import Kurs from "./Popup";
+import Profile from "./profile";
 
 export default function Page() {
 
@@ -39,24 +40,23 @@ export default function Page() {
     }
 
     return (
-        <div className="Container flex flex-col h-screen ">
+        <div className="Container flex flex-col h-screen bg-gradient-to-r from-cyan-500 to-blue-500">
 
-            <div className="Header w-full bg-gray-100 flex justify-between p-5 items-center shadow-md transition-all duration-150 ease-linear ">
+            <div className="Header w-full bg-white flex justify-between p-5 items-center shadow-2xl transition-all duration-150 ease-linear ">
 
-                <img src="Viken_våpen.svg.png" className="w-12" alt="Logo"></img>
+                <a href="/page">
+                    <img src="Viken_våpen.svg.png" className="w-12" alt="Logo"></img>
+                </a>
 
-                <div className="Profile flex flex-row-reverse items-center gap-5 bg-gray-300 p-2">
-                    <img src="blank-profile.webp" className="w-12"></img>
-                    <p className="p-2">{username}</p>
-                </div>
+                <Profile username={username} />
 
             </div>
 
-            <div className="Main flex h-screen  justify-center flex-row-reverse gap-16 m-10 ">
+            <div className="Main  flex h-screen  justify-center flex-row-reverse gap-16 m-10 ">
 
                 <div className="flex flex-col  w-[80%] gap-3 items-center">
-                    <h1 className="text-center bg-gray-300 p-3 w-[30%] rounded-3xl">Tilgjenlig Kurs</h1>
-                    <div className="shadow-md Tilgjenlig-Kurs bg-gray-300  rounded-3xl grid grid-cols-2">
+                    <h1 className="text-center shadow-inner font-bold  bg-gray-100 p-3 w-[30%] rounded-3xl">Tilgjenlig Kurs</h1>
+                    <div className="shadow-2xl Tilgjenlig-Kurs bg-gray-100 min-h-[90%] min-w-full rounded-3xl grid grid-cols-4">
                         {courseList.length > 0 && courseList.map((data: any) => {
 
                             if (UserList.length > 0) {
@@ -73,9 +73,9 @@ export default function Page() {
                     </div>
                 </div>
 
-                <div className="flex flex-col flex-grow gap-3 items-center w-[20%]">
-                    <h1 className="text-center bg-gray-300 p-3 w-[50%] rounded-3xl">Påmeldt Kurs</h1>
-                    <div className="shadow-md Påmeldt-Kurs h-full bg-gray-300  rounded-3xl overflow-auto ">
+                <div className="flex flex-col w-[35%] flex-grow gap-3 items-center min-h-full">
+                    <h1 className="text-center bg-gray-100 shadow-inner  font-bold p-3 w-[80%] rounded-3xl">Påmeldt Kurs</h1>
+                    <div className="shadow-md Påmeldt-Kurs min-h-[90%]  min-w-full bg-gray-100  rounded-3xl overflow-auto ">
 
                         {courseList.length > 0 && courseList.map((data: any) => {
 

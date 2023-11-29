@@ -41,11 +41,11 @@ export function Login() {
                     <p className="text-gray-600">Logg inn</p>
                 </div>
                 <label>
-                    <p>Username</p>
+                    <p>Brukernavn</p>
                     <input type="text" className="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600" onChange={e => setUserName(e.target.value)} />
                 </label>
                 <label>
-                    <p>Password</p>
+                    <p>Passord</p>
                     <input type="password" className="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600" onChange={e => setPassword(e.target.value)} />
                 </label>
                 <div>

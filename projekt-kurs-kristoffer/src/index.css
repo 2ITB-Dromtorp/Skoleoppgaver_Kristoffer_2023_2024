@@ -3,3 +3,9 @@
 @tailwind components;
 
 @tailwind utilities;
+
+.popup-content {
+
+    width: 0%;
+
+}

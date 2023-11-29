@@ -45,14 +45,15 @@ export default function Kurs({ title, time, shortDescription, mainDescription, l
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <Popup trigger={<div className={isAttended ? "bg-blue-300 shadow-md w-64 rounded-3xl m-5 flex flex-col gap-5" : 'bg-blue-300 shadow-md rounded-3xl  m-5 flex flex-col gap-5'}>
-            <div>
-                <h1 className='bg-blue-400 text-center rounded-t-3xl p-3s'>{title}</h1>
-                <h2 className='text-center'>{time}</h2>
-                <p className='text-center p-3'>{shortDescription}</p>
-            </div>
+        <Popup trigger={
+            <div className={isAttended ? "bg-blue-300 shadow-xl rounded-lg m-5 gap-5" : 'bg-blue-300 shadow-xl h-max  rounded-3xl m-3 '}>
+                <div className={isAttended ? 'flex flex-row' : 'flex flex-col gap-2'}>
+                    <h1 className={isAttended ? "bg-gradient-to-r from-sky-500 to-blue-300 text-center rounded-l-lg p-2 w-full mr-2" : 'bg-gradient-to-b from-sky-500 to-blue-300 text-center  rounded-t-3xl p-4'}  >{title}</h1>
+                    <h2 className={isAttended ? "text-center" : 'text-center p-1'}>{time}</h2>
+                    <p className={isAttended ? "hidden" : 'text-center p-1'}>{shortDescription}</p>
+                </div>
 
-        </ div>}
+            </ div>}
             open={isOpen}
             onOpen={() => setIsOpen(!isOpen)}
             modal>
@@ -68,7 +69,6 @@ export default function Kurs({ title, time, shortDescription, mainDescription, l
                         <h1 className='font-bold'>{title}</h1>
                         <p className=''>{mainDescription}</p>
                         <div className='mt-5'>
-                            <p>Sted:</p>
                             <p >{time} {location}</p>
                         </div>
 
