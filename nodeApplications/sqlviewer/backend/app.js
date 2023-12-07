@@ -1,0 +1,44 @@
+const express = require('express')
+const app = express()
+const port = 3500
+var mysql = require('mysql');
+var cors = require("cors");
+
+app.use(express.json())
+
+app.use(cors());
+
+var sql = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "root",
+    database: "2itb"
+});
+
+sql.connect(function (err) {
+    if (err) throw err;
+    console.log("Connected!");
+});
+
+app.post("/sendSql", (req, res) => {
+
+    sql.query(req.body, function (err, result) {
+        if (err) throw err;
+        res.send(result)
+    });
+})
+
+app.get('/sql', (req, res) => {
+
+    var sqlstring = "SELECT * FROM datamaskin"
+    sql.query(sqlstring, function (err, result) {
+        if (err) throw err;
+        res.send(result)
+    });
+
+})
+
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+})
