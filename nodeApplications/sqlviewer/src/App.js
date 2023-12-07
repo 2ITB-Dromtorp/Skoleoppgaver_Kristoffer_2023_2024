@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
+import axios from "axios";
 
 
 
@@ -8,7 +9,6 @@ function App() {
 
   const [sqlCommand, setSqlCommand] = useState("")
   const [sqlData, setSqlData] = useState([])
-  const [content, setContent] = useState()
 
   useEffect(() => {
     /*async function getData() {
@@ -19,29 +19,24 @@ function App() {
     getData()*/
   }, [])
 
-  async function runSQLCommand(sqlstring) {
-    fetch('http://localhost:3500/sendSql', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ command: sqlstring })
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        console.log(response)
-        setSqlData(response)
+  async function runSQLCommands(sqlstring) {
+    axios
+      .post("http://localhost:3500/sendSql", { command: sqlstring }, { headers: { 'Content-Type': 'application/json' } })
+      .then(response => {
+        setSqlData(response.data)
       })
+      .catch(error => console.log(error));
   }
 
 
+
   const select = async () => {
-    await runSQLCommand("SELECT * FROM datamaskin")
+    await runSQLCommands("SELECT * FROM elev")
     console.log(sqlData)
   };
 
   const runSQL = async () => {
-    await runSQLCommand(sqlCommand)
+    await runSQLCommands(sqlCommand)
     console.log(sqlData)
   };
 
@@ -59,17 +54,39 @@ function App() {
       <button onClick={runSQL}>submit</button>
 
       <div className="Content flex h-screen flex-col m-10 bg-gray-200">
-        {sqlData.length > 0 && sqlData.map((data, index) => {
-          return <div key={index}>
-            {data.DatamaskinID}
-            {data.Model}
-            {data.GBram}
-          </div>
-        })}
+        <table className='w-full text-center'>
+          <thead>
+            <tr>
+              <th>ElevID</th>
+              <th>Fornavn</th>
+              <th>Etternavn</th>
+              <th>DatamaskinID</th>
+              <th>Hobby</th>
+              <th>Klasse</th>
+              <th>Kjønn</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sqlData.map((data, index) => {
+              return <tr key={index}>
+                <td>{data.ElevID}</td>
+                <td>{data.Fornavn}</td>
+                <td>{data.Etternavn}</td>
+                <td>{data.DatamaskinID}</td>
+                <td>{data.Hobby}</td>
+                <td>{data.Klasse}</td>
+                <td>{data.Kjonn}</td>
+
+
+              </tr>
+            })}
+          </tbody>
+        </table>
+
       </div>
 
-    </div>
-  );
+    </div >
+  )
 }
 
 export default App;
