@@ -23,10 +23,13 @@ sql.connect(function (err) {
 
 app.post("/sendSql", (req, res) => {
 
-    sql.query(req.body, function (err, result) {
+    var sqlstring = req.body.command
+
+    sql.query(sqlstring, function (err, result) {
         if (err) throw err;
         res.send(result)
     });
+
 })
 
 app.get('/sql', (req, res) => {
