@@ -8,7 +8,7 @@ export default function TicketBox(props) {
     let Date = props.Date
     let Status = props.Status
     let Priority = props.Priority
-    let path = props.Title.toLowerCase();
+    let path = props.Title
 
     const navigate = useNavigate();
 
@@ -36,9 +36,10 @@ export default function TicketBox(props) {
                 </div>
 
                 <div className='flex flex-row'>
-                    {Number}
-                    {User}
-                    {Date}
+                    <p>{Number}</p>
+                    <p>{User}</p>
+                    <p>{Date}</p>
+                    
                 </div>
 
             </div>
