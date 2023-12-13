@@ -14,61 +14,82 @@ export default function Home() {
 
     useEffect(() => {
 
-        const updatedFilteredTickets  = tickets.filter((ticket) => {
-            if (!searchQuery || !filterType) {
-                return true; // If no search query or filter type is set, show all tickets
-            }
-    
-            // Implement specific filtering logic based on filterType
-            switch (filterType) {
-                case 'Number':
-                    return ticket.Number;
-                case 'Title':
-                    return ticket.Title.toLowerCase().includes(searchQuery.toLowerCase());
-                case 'Status':
-                    return ticket.Status.toLowerCase().includes(searchQuery.toLowerCase());
-                default:
-                    return true; // Show all tickets if filter type is not recognized
-            }
-        });
+        const updatedFilteredTickets = tickets
+            .filter((ticket) => {
+                if (!searchQuery) {
+                    return true; // If no search query or filter type is set, show all tickets
+                }
+
+                // Implement specific filtering logic based on filterType
+                switch (filterType) {
+                    case 'Number':
+                        return ticket.Number.toString().includes(searchQuery);
+                    case 'Title':
+                        return ticket.Title.toLowerCase().includes(searchQuery.toLowerCase());
+                    case 'Status':
+                        return ticket.Status.toLowerCase().includes(searchQuery.toLowerCase());
+                    case 'Priority':
+                        return ticket.Priority.toLowerCase().includes(searchQuery.toLowerCase());
+                    default:
+                        return true; // Show all tickets if filter type is not recognized
+                }
+            })
+            .sort((a, b) => {
+                // Sort based on Title and Number
+                if (filterType === 'Title') {
+                    return a.Title.localeCompare(b.Title);
+                } else if (filterType === 'Number') {
+                    return parseInt(a.Number) - parseInt(b.Number);
+                } else if (filterType === 'Priority') {
+                    const priorityOrder = { 'Kritisk': 1, 'Stort': 2, 'Liten': 3, 'Kosmetisk': 4 };
+                    return priorityOrder[a.Priority] - priorityOrder[b.Priority];
+                }
+                return 0;
+            });
         setFilteredTickets(updatedFilteredTickets);
-    }, [searchQuery, filterType, tickets])
+    }, [searchQuery, filterType])
 
 
     return (
         <div className="Container flex flex-col h-screen bg-gray-100">
 
-            <div className='Header w-full bg-white flex justify-between p-5 items-center shadow-2xl transition-all duration-150 ease-linear'>
-                <p>home</p>
-                <button onClick={() => navigate("/create")}>Create</button>
+            <div className='Header w-full bg-white flex justify-between p-5 items-center transition-all duration-150 ease-linear'>
+                <img src="https://its-norway.no/wp-content/uploads/2018/04/logo-viken.png" className="w-52"></img>
+                <button className="h-full w-1/12 rounded font-bold text-white text-xl bg-green-400 p-2" onClick={() => navigate("/create")}>Create</button>
             </div>
 
-            <div className='Content flex justify-center items-center h-screen bg-gray-100 gap-3 '>
+            <div className='Content flex flex-col  justify-center items-center h-screen bg-gray-100 gap-3 '>
+                <div className="flex flex-row h-max" >
+                    <input type="text" className="w-full" value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}></input>
+                    <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+                        <option value="Number">Filter</option>
+                        <option value="Number">By Number</option>
+                        <option value="Title">By Title</option>
+                        <option value="Priority">By Priority</option>
+                        <option value="Status">By Status</option>
+                    </select>
+                </div>
+                <div className='Ticket w-6/12 h-5/6 overflow-auto bg-white gap-3 rounded p-6 space-y-4  shadow-xl'>
 
-                <div className='Ticket w-6/12 h-5/6 bg-white gap-3 rounded p-6 space-y-4'>
-                    <div>
-                        <input type="text" value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}></input>
-                        <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-                        <option>Filter</option>
-                                <option value="Number">By Number</option>
-                                <option value="Title">By Title</option>
-                                <option value="satus">By Status</option>
-                        </select>
-                    </div>
-                    <div className="flex flex-col gap-2">
 
-                        {filteredTickets.length > 0 && filteredTickets.map((data, index) => {
-                            return <TicketBox Number={index} Title={data.Title} User={data.Name} Date={data.date} Priority={data.Priority} Status={data.Status} />
+
+                    <div className="flex flex-col gap-2 h-full ">
+
+                        {filteredTickets.length > 0 && filteredTickets.map((data) => {
+                            return <TicketBox Number={data.Number} Title={data.Title} User={data.Name} Date={data.date} Priority={data.Priority} Status={data.Status} />
                         })}
-                        
+
 
                     </div>
                 </div>
             </div>
 
             <footer className='Footer bottom-0 w-full bg-white flex justify-between p-5 items-center shadow-2xl transition-all duration-150 ease-linear'>
-                <p>Contact</p>
+                <h2>Kontaktinformasjon</h2>
+                <p>Adresse: Gateveien 123, 1234 Stedet</p>
+                <p>Telefon: +47 123 45 678</p>
+                <p>E-post: post@example.com</p>
             </footer>
         </div>
     )
