@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import logo from './logogo.png'
 
 function changeStatus(params, newStatus) {
     let tickets = JSON.parse(localStorage.getItem('tickets')) || [];
@@ -38,41 +39,45 @@ export default function TicketList() {
     return (
         <div className="Container flex flex-col h-screen bg-gray-100">
 
-            <div className='Header w-full bg-white flex justify-between p-5 items-center shadow-2xl transition-all duration-150 ease-linear'>
-                <p>home</p>
-                <button onClick={() => navigate("/create")}>Create</button>
+<div className='Header w-full bg-white flex justify-between p-5 items-center transition-all duration-150 ease-linear'>
+                <a href="/">
+                <img src={logo} className="w-44"></img>
+                </a>
+                
+                <button className="h-4/6 w-1/12 rounded font-bold text-white text-xl bg-green-400 p-2" onClick={() => navigate("/create")}>Rapporter</button>
             </div>
 
+            
             <div className='Content flex flex-col p-5 justify-center items-center h-screen bg-gray-100 gap-3 '>
-                <h1 className='text-4xl font-bold'>{profileParams.ticket} - #{data.Number} </h1>
+                <h1 className='text-4xl font-bold'>{data.Title} - #{data.Number} </h1>
+                <h2>Skrevet av {data.Name}</h2>
 
-                <div className='flex flex-row justify-between bg-white w-7/12 h-4/6 p-5'>
+                <div className='flex flex-row rounded-lg justify-between bg-white w-7/12 h-4/6 p-5'>
 
-                    <div className='bg-slate-200 w-8/12'>
-                        <h1>Beskrivelse:</h1>
+                    <div className='bg-slate-200 w-8/12 rounded-lg p-5'>
                         {data.Description}
 
                     </div>
 
-                    <div className='bg-slate-200 flex flex-col gap-4 w-3/12'>
+                    <div className='bg-slate-200 rounded-lg p-3 flex flex-col items-center text-center gap-4 w-3/12'>
 
                         <div>
-                            <h1>Dato</h1>
+                            <h1 className='font-semibold'>Dato</h1>
                             {data.date}
                         </div>
 
                         <div>
-                            <h1>Status</h1>
-                            <select id="StatusChange" onChange={() => { changeStatus(profileParams, document.getElementById("StatusChange").value) }}>
+                            <h1 className='font-semibold'>Status</h1>
+                            <select id="StatusChange" defaultValue={data.Status} onChange={() => { changeStatus(profileParams, document.getElementById("StatusChange").value) }}>
                                 <option>Ikke Fullført</option>
-                                <option>Jobber med dette</option>
+                                <option>Er på saken</option>
                                 <option>Fullført</option>
                             </select>
-                            {data.Status}
+                            
                         </div>
 
                         <div>
-                            <h1>Email</h1>
+                            <h1 className='font-semibold'>Email</h1>
                             {data.Email}
                         </div>
 
@@ -81,10 +86,8 @@ export default function TicketList() {
                 </div>
 
 
-                <button onClick={() => navigate(-1)}> Tilbake til hovedmeny </button>
+                <button className='rounded font-bold text-white text-xl bg-gray-400 p-2' onClick={() => navigate(-1)}> Tilbake til hovedmeny </button>
             </div>
-
-
 
             <footer className='Footer bottom-0 w-full bg-white flex justify-between p-5 items-center shadow-2xl transition-all duration-150 ease-linear'>
                 <h2>Kontaktinformasjon</h2>

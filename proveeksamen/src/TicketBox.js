@@ -51,12 +51,12 @@ export default function TicketBox(props) {
     return (
 
 
-        <div className='TicketBox flex flex-row items-center rounded p-2 gap-6 justify-between bg-slate-200' onClick={() => navigate(path)}>
+        <div className='TicketBox hover:bg-slate-300 cursor-pointer flex flex-row items-center rounded p-2 gap-6 justify-between bg-slate-200' onClick={() => navigate(path)}>
 
             <RenderPriority Priority={Priority} />
 
             <div className='flex flex-col w-full'>
-                <div className='font-bold text-lg'>
+                <div className='font-bold text-lg hover:text-underline'>
                     {Title}
                 </div>
 
@@ -75,12 +75,10 @@ export default function TicketBox(props) {
 
             </div>
 
-            <div className='bg-gray-400 m-3 p-3 w-48 text-center rounded'>
-                {Status}
+            <div className='bg-slate-300 m-3 p-3 w-64 text-center rounded'>
+                <img src=''></img>
+                <p>{Status}</p>
             </div>
-
-
-
 
         </div>
 
