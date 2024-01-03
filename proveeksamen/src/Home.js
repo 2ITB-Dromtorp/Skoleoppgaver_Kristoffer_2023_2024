@@ -56,9 +56,9 @@ export default function Home() {
 
             <div className='Header w-full bg-white flex justify-between p-5 items-center transition-all duration-150 ease-linear'>
                 <a href="/">
-                <img src={logo} className="w-44"></img>
+                    <img src={logo} className="w-44"></img>
                 </a>
-                
+
                 <button className="h-4/6 w-1/12 rounded font-bold text-white text-xl bg-green-400 p-2" onClick={() => navigate("/create")}>Rapporter</button>
             </div>
 

@@ -26,7 +26,9 @@ app.post("/sendSql", (req, res) => {
     var sqlstring = req.body.command
 
     sql.query(sqlstring, function (err, result) {
-        if (err) throw err;
+        if (err) {
+            res.send("SQL command wrong")
+        };
         res.send(result)
     });
 
