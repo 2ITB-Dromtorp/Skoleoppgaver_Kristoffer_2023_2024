@@ -6,13 +6,12 @@ export function Select() {
     const [data, setData] = useState([])
 
     useEffect(() => {
+        runSQLCommands();
+    }, [data])
 
-        runSQLCommands("SELECT * FROM elev");
-    }, [])
-
-    const runSQLCommands = (sqlstring) => {
+    const runSQLCommands = () => {
         axios
-            .post("http://localhost:3500/sendSql", { command: sqlstring }, { headers: { 'Content-Type': 'application/json' } })
+            .get("http://localhost:3500/sql", { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 setData(response.data)
             })

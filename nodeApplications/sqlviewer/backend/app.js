@@ -21,7 +21,7 @@ sql.connect(function (err) {
     console.log("Connected!");
 });
 
-app.post("/sendSql", (req, res) => {
+/*app.post("/sendSql", (req, res) => {
 
     var sqlstring = req.body.command
 
@@ -32,9 +32,9 @@ app.post("/sendSql", (req, res) => {
         res.send(result)
     });
 
-})
+})*/
 
-app.post("/updateSql/", (req, res) => {
+app.post("/updateSql", (req, res) => {
 
     var sqlstring = req.body.command
 
@@ -42,14 +42,14 @@ app.post("/updateSql/", (req, res) => {
         if (err) {
             res.send("SQL command wrong")
         };
+        console.log(result)
         res.send(result)
     });
 
 })
 
 app.get('/sql', (req, res) => {
-
-    var sqlstring = "SELECT * FROM datamaskin"
+    var sqlstring = "SELECT * FROM elev"
     sql.query(sqlstring, function (err, result) {
         if (err) throw err;
         res.send(result)

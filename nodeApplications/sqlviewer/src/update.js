@@ -4,31 +4,35 @@ import axios from "axios";
 export function Update() {
     const [data, setData] = useState([])
 
-    const [inputValues, setInputValues] = useState(data.map(({ ElevID, Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn }) => ({
-        ElevID,
-        Fornavn: Fornavn || '',
-        Etternavn: Etternavn || '',
-        DatamaskinID: DatamaskinID || '',
-        Hobby: Hobby || '',
-        Klasse: Klasse || '',
-        Kjonn: Kjonn || '',
-    })));
-
-
+    const [inputValues, setInputValues] = useState(() =>
+        data.map(({ ElevID, Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn }) => ({
+            ElevID,
+            Fornavn: Fornavn || '',
+            Etternavn: Etternavn || '',
+            DatamaskinID: DatamaskinID || '',
+            Hobby: Hobby || '',
+            Klasse: Klasse || '',
+            Kjonn: Kjonn || '',
+        }))
+    );
     const handleInputChange = (index, fieldName, value) => {
-        const newInputValues = [...inputValues];
-
-        if (newInputValues[index]) {
-            newInputValues[index][fieldName] = value;
-            setInputValues(newInputValues);
-        }
+        console.log(value)
+        setInputValues((prevInputValues) => {
+            console.log(prevInputValues)
+            const newInputValues = [...prevInputValues];
+            if (newInputValues[index]) {
+                newInputValues[index][fieldName] = value;
+                console.log(newInputValues)
+            }
+            return newInputValues;
+        });
     };
 
     useEffect(() => {
         setInputValues(
             data.map(({ ElevID, Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn }) => ({
                 ElevID,
-                Fornavn,
+                Fornavn: Fornavn || '',
                 Etternavn: Etternavn || '',
                 DatamaskinID: DatamaskinID || '',
                 Hobby: Hobby || '',
@@ -36,12 +40,12 @@ export function Update() {
                 Kjonn: Kjonn || '',
             }))
         );
-        runSQLCommands("SELECT * FROM elev");
+        runSQLCommands();
     }, [data])
 
-    const runSQLCommands = (sqlstring) => {
+    const runSQLCommands = () => {
         axios
-            .post("http://localhost:3500/sendSql", { command: sqlstring }, { headers: { 'Content-Type': 'application/json' } })
+            .get("http://localhost:3500/sql", { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 setData(response.data)
             })
@@ -50,24 +54,24 @@ export function Update() {
 
     const updateSQL = (sqlstring) => {
         axios
-            .post("http://localhost:3500/updateSql/", { command: sqlstring }, { headers: { 'Content-Type': 'application/json' } })
+            .post("http://localhost:3500/updateSql", { command: sqlstring }, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
-                window.location.reload()
+                //window.location.reload()
             })
             .catch(error => console.log(error));
     }
 
     const updateTable = async () => {
-        for (let i = 0; i < inputValues.length; i++) {
-            const currentData = inputValues[i];
+        const updatePromises = inputValues.map(async (currentData) => {
             if (currentData) {
                 const { ElevID, Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn } = currentData;
                 const sqlstring = `UPDATE elev SET Fornavn = '${Fornavn}', Etternavn = '${Etternavn}', DatamaskinID = '${DatamaskinID}', Hobby = '${Hobby}', Klasse = '${Klasse}', Kjonn = '${Kjonn}' WHERE ElevID = ${ElevID}`;
-                // Assuming your updateSQL function is defined somewhere to execute the SQL statement
-                // updateSQL(sqlstring);
-                updateSQL(sqlstring)
+                console.log(sqlstring);
+                await updateSQL(sqlstring);
             }
-        }
+        });
+
+        await Promise.all(updatePromises);
     };
 
     return (
@@ -85,15 +89,15 @@ export function Update() {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((data, index) => {
+                    {data.length > 0 && data.map((data, index) => {
                         return <tr key={index}>
                             <td>{data.ElevID}</td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Fornavn', e.target.value)} defaultValue={data.Fornavn}></input></td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Etternavn', e.target.value)} defaultValue={data.Etternavn}></input></td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'DatamaskinID', e.target.value)} defaultValue={data.DatamaskinID}></input></td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Hobby', e.target.value)} defaultValue={data.Hobby}></input></td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Klasse', e.target.value)} defaultValue={data.Klasse}></input></td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Kjonn', e.target.value)} defaultValue={data.Kjonn}></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Fornavn', e.target.value)} value={inputValues[index].Fornavn} ></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Etternavn', e.target.value)} value={data.Etternavn}></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'DatamaskinID', e.target.value)} value={data.DatamaskinID}></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Hobby', e.target.value)} value={data.Hobby}></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Klasse', e.target.value)} value={data.Klasse}></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Kjonn', e.target.value)} value={data.Kjonn}></input></td>
                         </tr>
                     })}
                 </tbody>
