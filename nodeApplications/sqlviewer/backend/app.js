@@ -34,6 +34,19 @@ app.post("/sendSql", (req, res) => {
 
 })
 
+app.post("/updateSql/", (req, res) => {
+
+    var sqlstring = req.body.command
+
+    sql.query(sqlstring, function (err, result) {
+        if (err) {
+            res.send("SQL command wrong")
+        };
+        res.send(result)
+    });
+
+})
+
 app.get('/sql', (req, res) => {
 
     var sqlstring = "SELECT * FROM datamaskin"
