@@ -36,9 +36,7 @@ sql.connect(function (err) {
 
 app.post("/updateSql", (req, res) => {
 
-    var sqlstring = req.body.command
-
-    sql.query(sqlstring, function (err, result) {
+    sql.query(`UPDATE elev SET Fornavn = '${req.body.Fornavn}', Etternavn = '${req.body.Etternavn}', DatamaskinID = '${req.body.DatamaskinID}', Hobby = '${req.body.Hobby}', Klasse = '${req.body.Klasse}', Kjonn = '${req.body.Kjonn}' WHERE ElevID = ${req.body.ElevID}`, function (err, result) {
         if (err) {
             res.send("SQL command wrong")
         };
@@ -55,6 +53,14 @@ app.get('/sql', (req, res) => {
         res.send(result)
     });
 
+})
+
+app.post('/insertsql', (req, res) => {
+
+    sql.query("", function (err, result) {
+        if (err) throw err;
+        res.send(result)
+    })
 })
 
 app.listen(port, () => {

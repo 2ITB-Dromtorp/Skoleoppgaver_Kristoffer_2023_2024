@@ -16,7 +16,6 @@ export function Update() {
         }))
     );
     const handleInputChange = (index, fieldName, value) => {
-        console.log(value)
         setInputValues((prevInputValues) => {
             console.log(prevInputValues)
             const newInputValues = [...prevInputValues];
@@ -29,8 +28,8 @@ export function Update() {
     };
 
     useEffect(() => {
-        setInputValues(
-            data.map(({ ElevID, Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn }) => ({
+        setInputValues((prevInputValues) => {
+            const newInputValues = data.map(({ ElevID, Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn }) => ({
                 ElevID,
                 Fornavn: Fornavn || '',
                 Etternavn: Etternavn || '',
@@ -38,9 +37,11 @@ export function Update() {
                 Hobby: Hobby || '',
                 Klasse: Klasse || '',
                 Kjonn: Kjonn || '',
-            }))
-        );
-        runSQLCommands();
+            }));
+
+            return newInputValues;
+        });
+
     }, [data])
 
     const runSQLCommands = () => {
@@ -52,26 +53,27 @@ export function Update() {
             .catch(error => console.log(error));
     }
 
-    const updateSQL = (sqlstring) => {
+    const updateSQL = (Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn, ElevID) => {
         axios
-            .post("http://localhost:3500/updateSql", { command: sqlstring }, { headers: { 'Content-Type': 'application/json' } })
+            .post("http://localhost:3500/updateSql", { Fornavn: Fornavn, Etternavn: Etternavn, DatamaskinID: DatamaskinID, Hobby: Hobby, Klasse: Klasse, Kjonn: Kjonn, ElevID: ElevID }, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
-                //window.location.reload()
+                window.location.reload()
             })
             .catch(error => console.log(error));
     }
 
     const updateTable = async () => {
+
         const updatePromises = inputValues.map(async (currentData) => {
             if (currentData) {
                 const { ElevID, Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn } = currentData;
-                const sqlstring = `UPDATE elev SET Fornavn = '${Fornavn}', Etternavn = '${Etternavn}', DatamaskinID = '${DatamaskinID}', Hobby = '${Hobby}', Klasse = '${Klasse}', Kjonn = '${Kjonn}' WHERE ElevID = ${ElevID}`;
-                console.log(sqlstring);
-                await updateSQL(sqlstring);
+                await updateSQL(Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn, ElevID);
             }
         });
 
         await Promise.all(updatePromises);
+
+
     };
 
     return (
@@ -92,18 +94,20 @@ export function Update() {
                     {data.length > 0 && data.map((data, index) => {
                         return <tr key={index}>
                             <td>{data.ElevID}</td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Fornavn', e.target.value)} value={inputValues[index].Fornavn} ></input></td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Etternavn', e.target.value)} value={data.Etternavn}></input></td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'DatamaskinID', e.target.value)} value={data.DatamaskinID}></input></td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Hobby', e.target.value)} value={data.Hobby}></input></td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Klasse', e.target.value)} value={data.Klasse}></input></td>
-                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Kjonn', e.target.value)} value={data.Kjonn}></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Fornavn', e.target.value)} defaultValue={data.Fornavn} ></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Etternavn', e.target.value)} defaultValue={data.Etternavn}></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'DatamaskinID', e.target.value)} defaultValue={data.DatamaskinID}></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Hobby', e.target.value)} defaultValue={data.Hobby}></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Klasse', e.target.value)} defaultValue={data.Klasse}></input></td>
+                            <td><input type="text" onChange={(e) => handleInputChange(index, 'Kjonn', e.target.value)} defaultValue={data.Kjonn}></input></td>
                         </tr>
                     })}
                 </tbody>
             </table>
 
             <button onClick={updateTable}>Update Table</button>
+
+            <button onClick={() => runSQLCommands()}> show Table </button>
 
         </div>
     )

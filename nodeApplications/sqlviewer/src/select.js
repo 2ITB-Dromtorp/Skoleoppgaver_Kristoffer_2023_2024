@@ -18,6 +18,8 @@ export function Select() {
             .catch(error => console.log(error));
     }
 
+
+
     return (
         <div className="Content flex h-screen flex-col m-10 bg-gray-200">
             <table className='w-full text-center'>
