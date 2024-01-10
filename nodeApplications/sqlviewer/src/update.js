@@ -15,6 +15,7 @@ export function Update() {
             Kjonn: Kjonn || '',
         }))
     );
+
     const handleInputChange = (index, fieldName, value) => {
         setInputValues((prevInputValues) => {
             console.log(prevInputValues)
@@ -67,12 +68,11 @@ export function Update() {
         const updatePromises = inputValues.map(async (currentData) => {
             if (currentData) {
                 const { ElevID, Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn } = currentData;
-                await updateSQL(Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn, ElevID);
+                updateSQL(Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn, ElevID);
             }
         });
 
         await Promise.all(updatePromises);
-
 
     };
 

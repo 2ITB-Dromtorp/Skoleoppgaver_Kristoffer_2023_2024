@@ -21,9 +21,9 @@ export function Insert() {
         console.log(InputValues)
     };
 
-    const InsertSQL = (Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn, ElevID) => {
+    const InsertSQL = () => {
         axios
-            .post("http://localhost:3500/InsertSQL", { Fornavn: Fornavn, Etternavn: Etternavn, DatamaskinID: DatamaskinID, Hobby: Hobby, Klasse: Klasse, Kjonn: Kjonn, ElevID: ElevID }, { headers: { 'Content-Type': 'application/json' } })
+            .post("http://localhost:3500/InsertSQL", { Fornavn: InputValues.Fornavn, Etternavn: InputValues.Etternavn, DatamaskinID: InputValues.DatamaskinID, Hobby: InputValues.Hobby, Klasse: InputValues.Klasse, Kjonn: InputValues.Kjonn }, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 window.location.reload()
             })
@@ -67,7 +67,7 @@ export function Insert() {
 
             </div>
 
-            <button>Submit</button>
+            <button onClick={InsertSQL}>Submit</button>
 
         </div>
     )

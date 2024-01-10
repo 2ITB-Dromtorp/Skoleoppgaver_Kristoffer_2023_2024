@@ -37,10 +37,7 @@ sql.connect(function (err) {
 app.post("/updateSql", (req, res) => {
 
     sql.query(`UPDATE elev SET Fornavn = '${req.body.Fornavn}', Etternavn = '${req.body.Etternavn}', DatamaskinID = '${req.body.DatamaskinID}', Hobby = '${req.body.Hobby}', Klasse = '${req.body.Klasse}', Kjonn = '${req.body.Kjonn}' WHERE ElevID = ${req.body.ElevID}`, function (err, result) {
-        if (err) {
-            res.send("SQL command wrong")
-        };
-        console.log(result)
+        if (err) throw err;
         res.send(result)
     });
 
@@ -57,9 +54,17 @@ app.get('/sql', (req, res) => {
 
 app.post('/insertsql', (req, res) => {
 
-    sql.query("", function (err, result) {
+    sql.query(`INSERT INTO elev (ElevID, Fornavn, Etternavn, Klasse, Hobby, Kjonn, DatamaskinID) VALUES (null,'${req.body.Fornavn}','${req.body.Etternavn}','${req.body.Klasse}','${req.body.Hobby}','${req.body.Kjonn}','${req.body.DatamaskinID}')`, function (err, result) {
         if (err) throw err;
-        res.send(result)
+        res.send()
+    })
+})
+
+app.post('/deletesql', (req, res) => {
+
+    sql.query(`DELETE FROM elev WHERE ElevID = ${req.body.ElevID}`, function (err, result) {
+        if (err) throw err;
+        res.send()
     })
 })
 

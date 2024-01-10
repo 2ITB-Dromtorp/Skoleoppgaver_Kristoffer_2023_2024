@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Select } from "./select";
 import { Update } from "./update";
 import { Insert } from "./insert";
+import { Delete } from "./delete";
 import './App.css';
 
 function App() {
@@ -20,10 +21,10 @@ function App() {
   function insertPush() {
     setContent(<Insert />);
   }
-  /*
-    function updateDelete() {
-      setContent(<Delete />);
-    }*/
+
+  function deletePush() {
+    setContent(<Delete />);
+  }
 
   return (
     <div className="Container flex flex-col h-screen bg-gradient-to-r from-cyan-500 to-blue-500">
@@ -32,6 +33,7 @@ function App() {
         <button className="navbar-item" onClick={selectPush}>SELECT</button>
         <button className="navbar-item" onClick={updatePush}>UPDATE</button>
         <button className="navbar-item" onClick={insertPush}>INSERT</button>
+        <button className="navbar-item" onClick={deletePush}>DELETE</button>
       </div>
 
       {content}
