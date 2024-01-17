@@ -18,18 +18,16 @@ export function Update() {
 
     const handleInputChange = (index, fieldName, value) => {
         setInputValues((prevInputValues) => {
-            console.log(prevInputValues)
             const newInputValues = [...prevInputValues];
             if (newInputValues[index]) {
                 newInputValues[index][fieldName] = value;
-                console.log(newInputValues)
             }
             return newInputValues;
         });
     };
 
     useEffect(() => {
-        setInputValues((prevInputValues) => {
+        setInputValues(() => {
             const newInputValues = data.map(({ ElevID, Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn }) => ({
                 ElevID,
                 Fornavn: Fornavn || '',
