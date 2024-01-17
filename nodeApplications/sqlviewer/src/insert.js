@@ -29,43 +29,44 @@ export function Insert() {
     }
 
     return (
-        <div className="Content flex h-screen flex-col m-10 bg-gray-200">
-            <h1>Insert new data</h1>
+        <div className="Content flex h-screen flex-col justify-center place-content-center">
 
-            <div className="flex flex-row m-1 gap-2">
+            <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex m-4 flex-col gap-8 w-5/12">
                 <div>
-                    <p>Fornavn</p>
-                    <input onChange={(e) => handleInputChange('Fornavn', e.target.value)} type="text"></input>
+                    <p className="block text-grey-darker text-sm font-bold mb-2">Fornavn</p>
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" onChange={(e) => handleInputChange('Fornavn', e.target.value)} type="text"></input>
                 </div>
 
                 <div>
-                    <p>Etternavn</p>
-                    <input onChange={(e) => handleInputChange('Etternavn', e.target.value)} type="text"></input>
+                    <p className="block text-grey-darker text-sm font-bold mb-2">Etternavn</p>
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" onChange={(e) => handleInputChange('Etternavn', e.target.value)} type="text"></input>
                 </div>
 
                 <div>
-                    <p>Klasse</p>
-                    <input onChange={(e) => handleInputChange('Klasse', e.target.value)} type="text"></input>
+                    <p className="block text-grey-darker text-sm font-bold mb-2">Klasse</p>
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" onChange={(e) => handleInputChange('Klasse', e.target.value)} type="text"></input>
                 </div>
 
                 <div>
-                    <p>Hobby</p>
-                    <input onChange={(e) => handleInputChange('Hobby', e.target.value)} type="text"></input>
+                    <p className="block text-grey-darker text-sm font-bold mb-2">Hobby</p>
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" onChange={(e) => handleInputChange('Hobby', e.target.value)} type="text"></input>
                 </div>
 
                 <div>
-                    <p>Kjønn</p>
-                    <input onChange={(e) => handleInputChange('Kjonn', e.target.value)} type="text"></input>
+                    <p className="block text-grey-darker text-sm font-bold mb-2">Kjønn</p>
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" onChange={(e) => handleInputChange('Kjonn', e.target.value)} type="text"></input>
                 </div>
 
                 <div>
-                    <p>DatamaskinID</p>
-                    <input onChange={(e) => handleInputChange('DatamaskinID', e.target.value)} type="text"></input>
+                    <p className="block text-grey-darker text-sm font-bold mb-2">DatamaskinID</p>
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker" onChange={(e) => handleInputChange('DatamaskinID', e.target.value)} type="text"></input>
                 </div>
+
+                <button className="middle none center rounded-lg bg-pink-500 py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" onClick={InsertSQL}>Submit</button>
+
 
             </div>
 
-            <button onClick={InsertSQL}>Submit</button>
 
         </div>
     )

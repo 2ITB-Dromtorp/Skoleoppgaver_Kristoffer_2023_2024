@@ -19,35 +19,38 @@ export function Select() {
     }
 
     return (
-        <div className="Content flex h-screen flex-col m-10 bg-gray-200">
-            <table className='w-full text-center'>
-                <thead>
-                    <tr>
-                        <th>ElevID</th>
-                        <th>Fornavn</th>
-                        <th>Etternavn</th>
-                        <th>DatamaskinID</th>
-                        <th>Hobby</th>
-                        <th>Klasse</th>
-                        <th>Kjønn</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((data, index) => {
-                        return <tr key={index}>
-                            <td>{data.ElevID}</td>
-                            <td>{data.Fornavn}</td>
-                            <td>{data.Etternavn}</td>
-                            <td>{data.DatamaskinID}</td>
-                            <td>{data.Hobby}</td>
-                            <td>{data.Klasse}</td>
-                            <td>{data.Kjonn}</td>
-
-
+        <div className="Content flex h-screen flex-col overflow-x-auto sm:mx-0.5 lg:mx-0.5 m-10">
+            <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8 ">
+                <table className='min-w-full '>
+                    <thead className="bg-gray-200 border-b ">
+                        <tr className="">
+                            <th className="text-sm font-medium text-gray-900 px-6 py-4 text-left">ElevID</th>
+                            <th className="text-sm font-medium text-gray-900 px-6 py-4 text-left">Fornavn</th>
+                            <th className="text-sm font-medium text-gray-900 px-6 py-4 text-left">Etternavn</th>
+                            <th className="text-sm font-medium text-gray-900 px-6 py-4 text-left">DatamaskinID</th>
+                            <th className="text-sm font-medium text-gray-900 px-6 py-4 text-left">Hobby</th>
+                            <th className="text-sm font-medium text-gray-900 px-6 py-4 text-left">Klasse</th>
+                            <th className="text-sm font-medium text-gray-900 px-6 py-4 text-left">Kjønn</th>
                         </tr>
-                    })}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {data.map((data, index) => {
+                            return <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100" key={index}>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{data.ElevID}</td>
+                                <td className="text-sm text-gray-900 px-6 py-4 whitespace-nowrap">{data.Fornavn}</td>
+                                <td className="text-sm text-gray-900 px-6 py-4 whitespace-nowrap">{data.Etternavn}</td>
+                                <td className="text-sm text-gray-900 px-6 py-4 whitespace-nowrap">{data.DatamaskinID}</td>
+                                <td className="text-sm text-gray-900 px-6 py-4 whitespace-nowrap">{data.Hobby}</td>
+                                <td className="text-sm text-gray-900 px-6 py-4 whitespace-nowrap">{data.Klasse}</td>
+                                <td className="text-sm text-gray-900 px-6 py-4 whitespace-nowrap">{data.Kjonn}</td>
+
+
+                            </tr>
+                        })}
+                    </tbody>
+                </table>
+
+            </div>
 
         </div>
     )
