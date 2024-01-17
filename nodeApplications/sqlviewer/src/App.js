@@ -4,10 +4,10 @@ import { Select } from "./select";
 import { Update } from "./update";
 import { Insert } from "./insert";
 import { Delete } from "./delete";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css';
 
-function App() {
-
+export function Navbar() {
   const [content, setContent] = useState(<Select />)
 
   function selectPush() {
@@ -26,20 +26,29 @@ function App() {
     setContent(<Delete />);
   }
 
+  return (<div className="Container flex flex-col h-screen bg-gradient-to-r from-cyan-500 to-blue-500">
+
+    <div className="Navbar w-full bg-white flex justify-between p-5 items-center shadow-2xl">
+      <button className="navbar-item" onClick={selectPush}>SELECT</button>
+      <button className="navbar-item" onClick={updatePush}>UPDATE</button>
+      <button className="navbar-item" onClick={insertPush}>INSERT</button>
+      <button className="navbar-item" onClick={deletePush}>DELETE</button>
+    </div>
+
+    {content}
+
+
+  </div >)
+}
+
+function App() {
+
   return (
-    <div className="Container flex flex-col h-screen bg-gradient-to-r from-cyan-500 to-blue-500">
-
-      <div className="Navbar w-full bg-white flex justify-between p-5 items-center shadow-2xl">
-        <button className="navbar-item" onClick={selectPush}>SELECT</button>
-        <button className="navbar-item" onClick={updatePush}>UPDATE</button>
-        <button className="navbar-item" onClick={insertPush}>INSERT</button>
-        <button className="navbar-item" onClick={deletePush}>DELETE</button>
-      </div>
-
-      {content}
-
-
-    </div >
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navbar />}>  </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 

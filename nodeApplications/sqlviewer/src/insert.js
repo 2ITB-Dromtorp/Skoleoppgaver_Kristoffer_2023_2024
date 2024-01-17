@@ -3,6 +3,7 @@ import axios from "axios";
 
 export function Insert() {
 
+
     const [InputValues, setInputValues] = useState({
         Fornavn: "",
         Etternavn: "",
@@ -20,10 +21,9 @@ export function Insert() {
         });
         console.log(InputValues)
     };
-
     const InsertSQL = () => {
         axios
-            .post("http://localhost:3500/InsertSQL", { Fornavn: InputValues.Fornavn, Etternavn: InputValues.Etternavn, DatamaskinID: InputValues.DatamaskinID, Hobby: InputValues.Hobby, Klasse: InputValues.Klasse, Kjonn: InputValues.Kjonn }, { headers: { 'Content-Type': 'application/json' } })
+            .post("http://localhost:3500/insertsql", { Fornavn: InputValues.Fornavn, Etternavn: InputValues.Etternavn, DatamaskinID: InputValues.DatamaskinID, Hobby: InputValues.Hobby, Klasse: InputValues.Klasse, Kjonn: InputValues.Kjonn }, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
                 window.location.reload()
             })

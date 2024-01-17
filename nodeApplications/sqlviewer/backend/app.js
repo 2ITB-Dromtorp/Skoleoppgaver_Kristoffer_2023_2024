@@ -34,16 +34,22 @@ sql.connect(function (err) {
 
 })*/
 
-app.post("/updateSql", (req, res) => {
+app.post("/updateSql", async (req, res) => {
+    try {
+        const { Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn, ElevID } = await req.body
 
-    sql.query(`UPDATE elev SET Fornavn = '${req.body.Fornavn}', Etternavn = '${req.body.Etternavn}', DatamaskinID = '${req.body.DatamaskinID}', Hobby = '${req.body.Hobby}', Klasse = '${req.body.Klasse}', Kjonn = '${req.body.Kjonn}' WHERE ElevID = ${req.body.ElevID}`, function (err, result) {
-        if (err) throw err;
-        res.send(result)
-    });
+        sql.query(`UPDATE elev SET Fornavn = '${Fornavn}', Etternavn = '${Etternavn}', DatamaskinID = '${DatamaskinID}', Hobby = '${Hobby}', Klasse = '${Klasse}', Kjonn = '${Kjonn}' WHERE ElevID = ${ElevID}`, function (err, result) {
+            if (err) throw err;
+            res.send(result)
+        });
+
+    } catch (error) {
+        return console.log(error)
+    }
 
 })
 
-app.get('/sql', (req, res) => {
+app.get('/sql', async (req, res) => {
     var sqlstring = "SELECT * FROM elev"
     sql.query(sqlstring, function (err, result) {
         if (err) throw err;
@@ -52,20 +58,30 @@ app.get('/sql', (req, res) => {
 
 })
 
-app.post('/insertsql', (req, res) => {
+app.post('/insertsql', async (req, res) => {
+    try {
+        const { Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn } = await req.body
 
-    sql.query(`INSERT INTO elev (ElevID, Fornavn, Etternavn, Klasse, Hobby, Kjonn, DatamaskinID) VALUES (null,'${req.body.Fornavn}','${req.body.Etternavn}','${req.body.Klasse}','${req.body.Hobby}','${req.body.Kjonn}','${req.body.DatamaskinID}')`, function (err, result) {
-        if (err) throw err;
-        res.send()
-    })
+        sql.query(`INSERT INTO elev (ElevID, Fornavn, Etternavn, Klasse, Hobby, Kjonn, DatamaskinID) VALUES (null,'${Fornavn}','${Etternavn}','${Klasse}','${Hobby}','${Kjonn}','${DatamaskinID}')`, function (err, result) {
+            if (err) throw err;
+            res.send()
+        })
+    } catch (error) {
+        console.log(error)
+    }
 })
 
-app.post('/deletesql', (req, res) => {
+app.post('/deletesql', async (req, res) => {
+    try {
+        const ElevID = await req.body.ElevID
 
-    sql.query(`DELETE FROM elev WHERE ElevID = ${req.body.ElevID}`, function (err, result) {
-        if (err) throw err;
-        res.send()
-    })
+        sql.query(`DELETE FROM elev WHERE ElevID = ${ElevID}`, function (err, result) {
+            if (err) throw err;
+            res.send()
+        })
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 app.listen(port, () => {
