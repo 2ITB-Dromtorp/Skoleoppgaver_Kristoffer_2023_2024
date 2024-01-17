@@ -57,9 +57,7 @@ export function Update() {
     const updateSQL = (Fornavn, Etternavn, DatamaskinID, Hobby, Klasse, Kjonn, ElevID) => {
         axios
             .post("http://localhost:3500/updateSql", { Fornavn: Fornavn, Etternavn: Etternavn, DatamaskinID: DatamaskinID, Hobby: Hobby, Klasse: Klasse, Kjonn: Kjonn, ElevID: ElevID }, { headers: { 'Content-Type': 'application/json' } })
-            .then(response => {
-                window.location.reload()
-            })
+            .then(window.location.reload())
             .catch(error => console.log(error));
     }
 

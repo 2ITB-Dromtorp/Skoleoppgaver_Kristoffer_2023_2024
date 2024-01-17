@@ -9,7 +9,7 @@ export function Select() {
         runSQLCommands();
     }, [data])
 
-    const runSQLCommands = () => {
+    const runSQLCommands = async () => {
         axios
             .get("http://localhost:3500/sql", { headers: { 'Content-Type': 'application/json' } })
             .then(response => {

@@ -24,9 +24,7 @@ export function Insert() {
     const InsertSQL = () => {
         axios
             .post("http://localhost:3500/insertsql", { Fornavn: InputValues.Fornavn, Etternavn: InputValues.Etternavn, DatamaskinID: InputValues.DatamaskinID, Hobby: InputValues.Hobby, Klasse: InputValues.Klasse, Kjonn: InputValues.Kjonn }, { headers: { 'Content-Type': 'application/json' } })
-            .then(response => {
-                window.location.reload()
-            })
+            .then(window.location.reload())
             .catch(error => console.log(error));
     }
 
