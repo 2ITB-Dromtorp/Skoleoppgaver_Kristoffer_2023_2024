@@ -4,11 +4,13 @@ const bcrypt = require("bcrypt")
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database("./database.db");
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 app.use(express.json())
 
 app.use(cors());
+
+app.use(express.static("dist"))
 
 app.get('/getKurs', (req, res) => {
 
