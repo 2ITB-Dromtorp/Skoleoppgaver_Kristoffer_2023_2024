@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 async function registerUser(username: string, password: string, navigate: Function) {
-    fetch('http://localhost:3000/register', {
+    fetch('/register', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json'

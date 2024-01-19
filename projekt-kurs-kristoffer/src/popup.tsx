@@ -18,7 +18,7 @@ type pameldingPopupBuild = {
 async function attendCourse(isAttended: boolean, oldCourse: string, course: string, username: string) {
 
     if (isAttended) {
-        fetch(encodeURI("http://localhost:3000/getBrukere?kurs=" + oldCourse.replace(course, " ")), {
+        fetch(encodeURI("/getBrukere?kurs=" + oldCourse.replace(course, " ")), {
             method: "post",
             headers: {
                 'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ async function attendCourse(isAttended: boolean, oldCourse: string, course: stri
             body: JSON.stringify({ username: username })
         })
     } else {
-        fetch(encodeURI("http://localhost:3000/getBrukere?kurs=" + (oldCourse + " " + course)), {
+        fetch(encodeURI("/getBrukere?kurs=" + (oldCourse + " " + course)), {
             method: "post",
             headers: {
                 'Content-Type': 'application/json'

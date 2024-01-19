@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 export async function LoginUser(username: string, password: string, navigate: Function) {
-    fetch('http://localhost:3000/login', {
+    fetch('/login', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json'

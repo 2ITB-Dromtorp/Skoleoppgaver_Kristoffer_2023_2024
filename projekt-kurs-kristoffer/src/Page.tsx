@@ -14,12 +14,12 @@ export default function Page() {
 
     useEffect(() => {
         async function getKursData() {
-            fetch("http://localhost:3000/getKurs")
+            fetch("/getKurs")
                 .then(response => response.json())
                 .then(data => setCourceList(data));
         }
         async function getUserData() {
-            fetch("http://localhost:3000/getBrukere")
+            fetch("/getBrukere")
                 .then(response => response.json())
                 .then(data => {
                     setUserList(data)
