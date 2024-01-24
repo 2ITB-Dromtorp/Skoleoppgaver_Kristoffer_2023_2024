@@ -1,14 +1,24 @@
-import logo from './logo.svg';
+
 import './App.css';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
 function App() {
+
+
+
   return (
-    <div className='Container'>
-      <h1>Username</h1>
-      <input type='text'></input>
-      <h1>Password</h1>
-      <input type='text'></input>
-    </div>
+    <Router>
+      <div>
+        <section>
+          <Routes>                                                                        <Route path="/" element={<Home />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </section>
+      </div>
+    </Router>
   );
 }
 
