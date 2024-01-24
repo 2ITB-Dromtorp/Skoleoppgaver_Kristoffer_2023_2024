@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 
-import Kurs from "./Popup";
+import Kurs from "./popup";
 import Profile from "./profile";
 
 export default function Page() {

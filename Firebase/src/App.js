@@ -1,8 +1,8 @@
 
 import './App.css';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+
+import { Home } from './home';
+import { Login } from './login';
 
 function App() {
 
@@ -12,7 +12,8 @@ function App() {
     <Router>
       <div>
         <section>
-          <Routes>                                                                        <Route path="/" element={<Home />} />
+          <Routes>
+            <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
           </Routes>
