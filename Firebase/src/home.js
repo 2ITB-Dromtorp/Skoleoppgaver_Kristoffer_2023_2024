@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from '../firebase';
+import { auth } from './firebase';
+import { Link } from 'react-router-dom';
 
-const Home = () => {
+export function Home() {
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -12,6 +13,7 @@ const Home = () => {
                 const uid = user.uid;
                 // ...
                 console.log("uid", uid)
+                console.log("user is logged in")
             } else {
                 // User is signed out
                 // ...
@@ -24,15 +26,11 @@ const Home = () => {
     return (
         <>
             <nav>
-                <p>
+                <p className="text-3xl font-bold underline">
                     Welcome Home
                 </p>
 
-                <div>
-                    <button onClick={handleLogout}>
-                        Logout
-                    </button>
-                </div>
+                <Link to="/login"></Link>
             </nav>
         </>
     )
