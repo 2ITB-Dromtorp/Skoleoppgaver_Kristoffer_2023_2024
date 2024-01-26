@@ -20,5 +20,9 @@ app.listen(port, () => {
 
     })
 
+    app.get("*", (req, res) => {
+        res.sendFile("build")
+    })
+
 })
 
