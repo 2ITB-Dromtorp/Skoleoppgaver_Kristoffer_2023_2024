@@ -14,12 +14,12 @@ export default function Page() {
 
     useEffect(() => {
         async function getKursData() {
-            fetch("/getKurs")
+            fetch("/getKurs", { method: "get" })
                 .then(response => response.json())
                 .then(data => setCourceList(data));
         }
         async function getUserData() {
-            fetch("/getBrukere")
+            fetch("/getBrukere", { method: "get" })
                 .then(response => response.json())
                 .then(data => {
                     setUserList(data)

@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from './firebase';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { signOut } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
 
 export function Home() {
+
+    const [user, setUser] = useState()
+    const navigate = useNavigate();
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -11,6 +16,7 @@ export function Home() {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 const uid = user.uid;
+                setUser(user)
                 // ...
                 console.log("uid", uid)
                 console.log("user is logged in")
@@ -23,15 +29,27 @@ export function Home() {
 
     }, [])
 
+    const handleLogout = () => {
+        signOut(auth).then(() => {
+            // Sign-out successful.
+            navigate("/");
+            console.log("Signed out successfully")
+        }).catch((error) => {
+            // An error happened.
+        });
+    }
+
     return (
         <>
-            <nav>
-                <p className="text-3xl font-bold underline">
-                    Welcome Home
-                </p>
+            <p className="text-3xl font-bold underline">
+                Welcome Home {user}
+            </p>
 
-                <Link to="/login"></Link>
-            </nav>
+            <div>
+                <button onClick={handleLogout}>
+                    Logout
+                </button>
+            </div>
         </>
     )
 }
