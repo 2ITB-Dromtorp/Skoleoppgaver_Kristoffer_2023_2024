@@ -3,20 +3,8 @@ import CreateTicket from './CreateTicket';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css';
 import Ticket from './Ticket';
-import { useEffect } from 'react';
 
 function App() {
-
-  async function mekking() {
-    fetch("/get").then(async (res) => {
-      console.log(res.json())
-    }).then((data) => {
-      console.log(data.message)
-    })
-  }
-
-  mekking()
-
   return (
     <BrowserRouter>
       <Routes>
