@@ -16,7 +16,7 @@ app.listen(port, () => {
 
     app.get('/ingenbrukloljegbrukerikkebackendsorryassbror', (req, res) => {
 
-        res.status(200)
+        res.status("h")
 
     })
 
