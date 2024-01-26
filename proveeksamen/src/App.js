@@ -5,6 +5,9 @@ import './App.css';
 import Ticket from './Ticket';
 
 function App() {
+
+  fetch("/ingenbrukloljegbrukerikkebackendsorryassbror")
+
   return (
     <BrowserRouter>
       <Routes>
