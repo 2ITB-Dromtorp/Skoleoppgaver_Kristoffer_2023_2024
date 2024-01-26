@@ -5,14 +5,6 @@ import logo from './logogo.png'
 
 export default function Home() {
 
-    async function mekking() {
-        fetch("/get").then(async (res) => {
-            console.log(res.json())
-        }).then((data) => {
-            console.log(data.message)
-        })
-    }
-
     const navigate = useNavigate();
 
     let tickets = JSON.parse(localStorage.getItem('tickets')) || [];
