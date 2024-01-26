@@ -8,14 +8,11 @@ import { useEffect } from 'react';
 function App() {
 
   useEffect(() => {
-    fetch("/ingenbrukloljegbrukerikkebackendsorryassbror", {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+    fetch("/get").then((res) => {
+      console.log(res.json())
+    }).then((data) => {
+      console.log(data.message)
     })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((error) => console.error("Error sending data:", error))
   });
 
 

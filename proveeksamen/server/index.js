@@ -14,12 +14,9 @@ app.use(express.static("build"))
 
 app.listen(port, () => {
 
-    app.get('/ingenbrukloljegbrukerikkebackendsorryassbror', (req, res) => {
-
-        res.status("h")
-
+    app.get("/get", (req, res) => {
+        res.status(200).json({ "message": "👌" })
     })
-
     app.get("*", (req, res) => {
         res.sendFile("build")
     })
