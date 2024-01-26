@@ -7,16 +7,6 @@ import { useEffect } from 'react';
 
 function App() {
 
-  useEffect(() => {
-    fetch("/get").then((res) => {
-      console.log(res.json())
-    }).then((data) => {
-      console.log(data.message)
-    })
-  });
-
-
-
   return (
     <BrowserRouter>
       <Routes>
