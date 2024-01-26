@@ -15,6 +15,8 @@ function App() {
     })
   }
 
+  mekking()
+
   return (
     <BrowserRouter>
       <Routes>
