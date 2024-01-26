@@ -3,7 +3,6 @@ import CreateTicket from './CreateTicket';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css';
 import Ticket from './Ticket';
-import { useEffect } from 'react';
 
 function App() {
 
