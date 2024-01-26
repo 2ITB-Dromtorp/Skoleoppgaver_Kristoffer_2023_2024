@@ -7,18 +7,6 @@ import { useEffect } from 'react';
 
 function App() {
 
-  useEffect(() => {
-    async function mekking() {
-      fetch("/get").then(async (res) => {
-        console.log(res.json())
-      }).then((data) => {
-        console.log(data.message)
-      })
-    }
-    mekking()
-  }, [])
-
-
   return (
     <BrowserRouter>
       <Routes>

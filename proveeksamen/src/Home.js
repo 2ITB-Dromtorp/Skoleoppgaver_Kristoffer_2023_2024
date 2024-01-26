@@ -91,7 +91,6 @@ export default function Home() {
                 <p>Adresse: Gateveien 123, 1234 Stedet</p>
                 <p>Telefon: +47 123 45 678</p>
                 <p>E-post: post@example.com</p>
-                <button onClick={mekking}>ez</button>
             </footer>
         </div>
     )
