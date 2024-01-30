@@ -1,0 +1,11 @@
+{
+  "name": "skoleoppgaver_kristoffer_2023_2024",
+  "version": "2.4.2",
+  "description": "Dette er hvor jeg gjør sakene mine. sykt mekking as, thugger hele livet ut av meg.\r mekking",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
