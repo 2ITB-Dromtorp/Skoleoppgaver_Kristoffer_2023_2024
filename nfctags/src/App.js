@@ -1,7 +1,17 @@
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
 
 function App() {
+
+  const FetchStuff = async () => {
+
+    axios
+      .get("/get")
+      .catch(error => console.log(error));
+
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -17,6 +27,7 @@ function App() {
         >
           Learn React
         </a>
+        <button onClick={FetchStuff}></button>
       </header>
     </div>
   );

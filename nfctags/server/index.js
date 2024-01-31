@@ -8,12 +8,14 @@ app.use(express.static("build"))
 
 const port = process.env.PORT || 8080
 
-app.listen(port, () => {
-    app.get("/get", (req, res) => {
-        res.status(200).json({ "message": "👌" })
-    })
+app.get("/get", (req, res) => {
+    res.status(200).json({ "message": "👌" })
+})
 
-    app.get("*", (req, res) => {
-        res.sendFile("build")
-    })
+app.get("*", (req, res) => {
+    res.sendFile("build")
+})
+
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
 })
