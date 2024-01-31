@@ -8,8 +8,8 @@ app.use(express.static("build"))
 
 const port = process.env.PORT || 8080
 
-app.get("/get", (req, res) => {
-    res.status(200).json({ "message": "👌" })
+app.get("/getInput/:input", (req, res) => {
+    res.status(200).json({ "message": req.params.input })
 })
 
 app.get("*", (req, res) => {
