@@ -2,7 +2,7 @@
 import './App.css';
 
 async function jokeAPI() {
-  const response = await fetch("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,sexist,explicit&contains=black");
+  const response = await fetch("https://v2.jokeapi.dev/joke/Any?type=twopart");
   const movies = await response.json();
   document.getElementById("Setup").innerHTML = JSON.stringify(movies.setup)
   document.getElementById("Delivery").innerHTML = JSON.stringify(movies.delivery)
