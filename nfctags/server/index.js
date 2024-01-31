@@ -9,7 +9,12 @@ app.use(express.static("build"))
 const port = process.env.PORT || 8080
 
 app.get("/getInput/:input", (req, res) => {
-    res.status(200).json({ "message": req.params.input })
+
+    let input = req.params.input
+
+    if (input == "b") {
+        res.status(200).json({ "message": req.params.input })
+    }
 })
 
 app.get("*", (req, res) => {
