@@ -12,14 +12,14 @@ const Quiz = () => {
 
     useEffect(() => {
 
-        axios.get("/getQuiz/").then((response) => {
+        axios.get("/getQuiz/" + Tema + "/" + Page).then((response) => {
             setQuiz({ spørsmål: response.spørsmål, svaralternativer: response.svaralternativer });
         });
 
-    }, [Quiz])
+    }, [])
 
     return (
-        <>{Quiz}</>
+        <>{Quiz}<p>{Tema}{Page}</p></>
     );
 };
 

@@ -1,5 +1,5 @@
 {
-    "Programmeringsspråk": [
+    "programmeringsspråk": [
         {
             "spørsmål": "Hvilket programmeringsspråk som Javascript eller mange programmeringsspråk fikk sine syntaxer inspirert av",
             "svaralternativer": [
@@ -40,7 +40,7 @@
             "riktigSvar": ""
         }
     ],
-    "Servere": [
+    "servere": [
         {
             "spørsmål": "",
             "svaralternativer": [],

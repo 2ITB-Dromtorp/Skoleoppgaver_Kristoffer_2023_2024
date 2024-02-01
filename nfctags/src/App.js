@@ -1,6 +1,7 @@
 import './App.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Quiz from './Quiz';
+import Home from './Home';
 
 function App() {
 
