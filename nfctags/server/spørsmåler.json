@@ -1,0 +1,70 @@
+{
+    "Programmeringsspråk": [
+        {
+            "spørsmål": "Hvilket programmeringsspråk som Javascript eller mange programmeringsspråk fikk sine syntaxer inspirert av",
+            "svaralternativer": [
+                "C/C++",
+                "Assembly",
+                "Lua",
+                "PHP",
+                "Ruby"
+            ],
+            "riktigSvar": "C/C++"
+        },
+        {
+            "spørsmål": "Hvilket programmeringsspråk starter med tallet 1 på Arrays",
+            "svaralternativer": [
+                "Fortran",
+                "Lua",
+                "R",
+                "Java",
+                "Assembly"
+            ],
+            "riktigSvar": "Lua"
+        },
+        {
+            "spørsmål": "Hvordan er koden kjørt på datamaskin",
+            "svaralternativer": [
+                ""
+            ],
+            "riktigSvar": ""
+        },
+        {
+            "spørsmål": "",
+            "svaralternativer": [],
+            "riktigSvar": ""
+        },
+        {
+            "spørsmål": "",
+            "svaralternativer": [],
+            "riktigSvar": ""
+        }
+    ],
+    "Servere": [
+        {
+            "spørsmål": "",
+            "svaralternativer": [],
+            "riktigSvar": ""
+        },
+        {
+            "spørsmål": "",
+            "svaralternativer": [],
+            "riktigSvar": ""
+        },
+        {
+            "spørsmål": "",
+            "svaralternativer": [],
+            "riktigSvar": ""
+        },
+        {
+            "spørsmål": "",
+            "svaralternativer": [],
+            "riktigSvar": ""
+        },
+        {
+            "spørsmål": "",
+            "svaralternativer": [],
+            "riktigSvar": ""
+        }
+    ]
+}

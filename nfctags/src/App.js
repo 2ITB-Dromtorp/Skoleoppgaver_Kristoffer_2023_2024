@@ -1,11 +1,17 @@
 import './App.css';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import Quiz from './Quiz';
 
 function App() {
 
   return (
-    <div>
-      Mekk
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/:Tema/:Page" element={<Quiz />} />
+      </Routes>
+    </BrowserRouter>
+
   );
 }
 
