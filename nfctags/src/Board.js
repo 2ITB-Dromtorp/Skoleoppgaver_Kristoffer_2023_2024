@@ -1,16 +1,24 @@
-import { useParams } from 'react-router-dom';
+
 import { useEffect } from 'react';
-import { useState } from 'react';
-import axios from 'axios';
+import { socket } from './App';
 
 const Board = () => {
-    const { Player } = useParams();
 
     useEffect(() => {
+        function onJoin() {
+            console.log("konnekted")
+        }
+        function onDisconnect() {
+            console.log("kisonnected")
+        }
 
-        axios.get("/" + Player + "/Roll").then((response) => {
+        socket.on("connect", onJoin)
+        socket.on("disconnect", onDisconnect)
 
-        });
+        return () => {
+            socket.off("connect", onJoin)
+            socket.off("disconnect", onDisconnect)
+        }
 
     }, [])
 
