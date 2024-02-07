@@ -4,6 +4,10 @@ import { socket } from './App';
 
 const Client = () => {
 
+    const clientResponse = () => {
+        socket.emit("clientResponse", 'Hello, World!');
+    }
+
     useEffect(() => {
         function onJoin() {
             console.log("konnekted")
@@ -12,9 +16,7 @@ const Client = () => {
             console.log("kisonnected")
         }
 
-        const clientResponse = () => {
-            socket.emit("clientResponse", 'Hello, World!');
-        }
+
 
         socket.on("connect", onJoin)
         socket.on("disconnect", onDisconnect)
