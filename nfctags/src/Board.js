@@ -13,23 +13,24 @@ const Board = () => {
         socket.emit("startGame")
     }
 
-    /*const renderCell = (cellValue, rowIndex, colIndex) => {
+    const renderCell = (cellValue) => {
+
 
         return (
-            <div className={`tile`} key={`${rowIndex}-${colIndex}`}>
-                {cellValue}
+            <div className={`tile`}>
+                {cellValue.tile}
             </div>
         );
     };
 
     const renderGameBoard = () => {
 
-        return gameBoard.map((row, rowIndex) => (
-            <div className='board-row' key={rowIndex}>
-                {row.map((cellValue, colIndex) => renderCell(cellValue, rowIndex, colIndex))}
+        return gameBoard.map((row) => (
+            <div className='board-row'>
+                {row.map((cellValue) => renderCell(cellValue))}
             </div>
         ));
-    };*/
+    };
 
     useEffect(() => {
         function onJoin() {
@@ -44,14 +45,13 @@ const Board = () => {
         socket.on("connect", onJoin)
         socket.on("disconnect", onDisconnect)
         socket.on("updatePlayers", (player) => setPlayers(player))
-        socket.on("startGame", (map) => setGameBoard(map))
+        socket.on("renderBoard", (map) => setGameBoard(map))
 
         console.log(players)
         console.log(gameBoard)
 
         return () => {
             socket.off("connect", onJoin)
-            socket.on("getBoard", (map) => setGameBoard(map))
             socket.off("disconnect", onDisconnect)
         }
 
@@ -65,7 +65,7 @@ const Board = () => {
             {players > 0 && players}
 
             <div className="game-board">
-                {gameBoard.length > 0}
+                {gameBoard.length > 0 && renderGameBoard()}
             </div>
 
         </div>

@@ -28,24 +28,20 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 .game-board {
   display: grid;
   /* Use CSS Grid for layout */
   grid-template-columns: repeat(10, 1fr);
   /* Create  10 equal columns */
-  grid-gap: 10px;
   /* Space between the grid items */
+  grid-auto-rows: minmax(min-content, max-content);
+  /* Ensures rows adapt to content */
+  grid-gap: 0;
+
 }
+
+.board-row {}
 
 .tile {
   width: 50px;
@@ -64,7 +60,6 @@
   /* Center text vertically */
   font-size: 14px;
   /* Font size for numbers */
-  cursor: pointer;
   /* Change cursor on hover */
 }
 

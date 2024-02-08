@@ -49,10 +49,9 @@ const ladders = {
 };
 
 class Player {
-    constructor(Name, x, y) {
+    constructor(Name, position) {
         this.Name = Name;
-        this.x = x;
-        this.y = y;
+        this.Position = position
     }
 }
 
@@ -62,8 +61,8 @@ class Players {
         this.players = []
     }
     // create a new player and save it in the collection
-    newPlayer(name, x, y) {
-        let p = new Player(name, x, y)
+    newPlayer(name, position) {
+        let p = new Player(name, position)
         this.players.push(p)
         return p
     }
@@ -80,20 +79,69 @@ class Players {
     }
 
     movePlayer(name, steps) {
-
+        for (let i = 0; i < this.numberOfPlayers(); i++) {
+            if (this.players[i].Name === name) {
+                this.players[i].Position += steps
+            }
+        }
     }
 }
+
+let gameBoard
 
 let GamePlayers
 
 let host
 
+function setupGameBoard() {
+
+    const BOARD_SIZE = 10;
+    let gameBoard = Array.from({ length: BOARD_SIZE }, () =>
+        Array.from({ length: BOARD_SIZE }, () => 0)
+    );
+
+    let tilenumber = 1
+
+    for (let i = 0; i < BOARD_SIZE; i++) {
+        for (let j = 0; j < BOARD_SIZE; j++) {
+
+            const cellNumber = i * BOARD_SIZE + j + 1;
+            if (snakes[cellNumber]) {
+                gameBoard[i][j] = { tile: tilenumber, position: snakes[cellNumber], type: "snake", playerinTile: [] }; // Negative values indicate snakes
+            } else if (ladders[cellNumber]) {
+                gameBoard[i][j] = { tile: tilenumber, position: ladders[cellNumber], type: "ladder", playerinTile: [] }; // Positive values indicate ladders
+            } else {
+                gameBoard[i][j] = { tile: tilenumber, position: cellNumber, type: "normal", playerinTile: [] };
+            }
+            tilenumber++
+        }
+    }
+
+    return gameBoard
+}
+
 io.on('connection', async (socket) => {
+
     console.log('a user connected');
 
     socket.on("host", async () => {
         GamePlayers = new Players()
         host = socket
+    })
+
+    socket.on("playerRoll", async (playerName) => {
+
+        var diceRoll = Math.floor(Math.random() * 6) + 1
+        Players.movePlayer(playerName, diceRoll)
+
+        for (let i = 0; i < gameBoard.length; i++) {
+            for (let j = 0; j < gameBoard[i].length; j++) {
+
+            }
+        }
+
+        host.emit("renderBoard", gameBoard)
+
     })
 
     socket.on("startGame", async () => {
@@ -103,38 +151,13 @@ io.on('connection', async (socket) => {
 
         console.log("game started")
 
-        const BOARD_SIZE = 10;
+        gameBoard = setupGameBoard()
 
-        const gameBoard = Array.from({ length: BOARD_SIZE }, () =>
-            Array.from({ length: BOARD_SIZE }, () => 0)
-        );
-
-        let tilenumber = 0
-
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            tilenumber++
-            for (let j = 0; j < BOARD_SIZE; j++) {
-
-
-                const cellNumber = i * BOARD_SIZE + j + 1;
-                if (snakes[cellNumber]) {
-                    gameBoard[i][j] = { tile: tilenumber, position: snakes[cellNumber] }; // Negative values indicate snakes
-                } else if (ladders[cellNumber]) {
-                    gameBoard[i][j] = { tile: tilenumber, position: ladders[cellNumber] }; // Positive values indicate ladders
-                } else {
-                    gameBoard[i][j] = { tile: tilenumber, position: cellNumber };
-                }
-                tilenumber++
-            }
-        }
-
-        console.log(gameBoard)
-
-        host.emit("startGame", gameBoard)
+        host.emit("renderBoard", gameBoard)
     })
 
     socket.on("PlayerJoin", async (playerName) => {
-        GamePlayers.newPlayer(playerName, 0, 0)
+        GamePlayers.newPlayer(playerName, 1)
         host.emit("updatePlayers", GamePlayers.allPlayers())
     })
 
