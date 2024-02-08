@@ -38,42 +38,47 @@
   }
 }
 
-.game-block {
-  margin: 0;
-  padding: 0;
-  width: 1.5em;
-  height: 1.5em;
-  border: 1px solid #ddd;
+.game-board {
+  display: grid;
+  /* Use CSS Grid for layout */
+  grid-template-columns: repeat(10, 1fr);
+  /* Create  10 equal columns */
+  grid-gap: 10px;
+  /* Space between the grid items */
 }
 
-.piece-i {
-  background-color: #ec858b;
+.tile {
+  width: 50px;
+  /* Width of each tile */
+  height: 50px;
+  /* Height of each tile */
+  border: 1px solid #000;
+  /* Border around each tile */
+  background-color: #fff;
+  /* White background for tiles */
+  display: flex;
+  /* Flex container for centering text */
+  justify-content: center;
+  /* Center text horizontally */
+  align-items: center;
+  /* Center text vertically */
+  font-size: 14px;
+  /* Font size for numbers */
+  cursor: pointer;
+  /* Change cursor on hover */
 }
 
-.piece-j {
-  background-color: #f1b598;
+.tile.snake {
+  background-color: #f00;
+  /* Red background for snakes */
 }
 
-.piece-l {
-  background-color: #f8efae;
+.tile.ladder {
+  background-color: #0f0;
+  /* Green background for ladders */
 }
 
-.piece-o {
-  background-color: #b5a677;
-}
-
-.piece-s {
-  background-color: #816e56;
-}
-
-.piece-t {
-  background-color: #b77c72;
-}
-
-.piece-z {
-  background-color: #e3be58;
-}
-
-.piece-preview {
-  background-color: #eee;
+.tile.empty {
+  background-color: #ccc;
+  /* Gray background for empty spaces */
 }
