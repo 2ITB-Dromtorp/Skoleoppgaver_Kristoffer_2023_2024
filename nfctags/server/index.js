@@ -107,9 +107,9 @@ function setupGameBoard() {
 
             const cellNumber = i * BOARD_SIZE + j + 1;
             if (snakes[cellNumber]) {
-                gameBoard[i][j] = { tile: tilenumber, position: snakes[cellNumber], type: "snake", playerinTile: [] }; // Negative values indicate snakes
+                gameBoard[i][j] = { tile: tilenumber, position: snakes[cellNumber], type: "snake", playerinTile: [] };
             } else if (ladders[cellNumber]) {
-                gameBoard[i][j] = { tile: tilenumber, position: ladders[cellNumber], type: "ladder", playerinTile: [] }; // Positive values indicate ladders
+                gameBoard[i][j] = { tile: tilenumber, position: ladders[cellNumber], type: "ladder", playerinTile: [] };
             } else {
                 gameBoard[i][j] = { tile: tilenumber, position: cellNumber, type: "normal", playerinTile: [] };
             }
@@ -152,6 +152,8 @@ io.on('connection', async (socket) => {
         console.log("game started")
 
         gameBoard = setupGameBoard()
+
+        gameBoard[0][0].playerinTile = GamePlayers.allPlayers()
 
         host.emit("renderBoard", gameBoard)
     })

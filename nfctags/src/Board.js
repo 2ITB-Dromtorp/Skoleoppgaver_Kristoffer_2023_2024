@@ -15,10 +15,12 @@ const Board = () => {
 
     const renderCell = (cellValue) => {
 
-
         return (
             <div className={`tile`}>
-                {cellValue.tile}
+                <p>{cellValue.tile}</p>
+                {cellValue.playerinTile.length > 0 && cellValue.playerinTile.map((player) => {
+                    return <p>{player.Name}</p>
+                })}
             </div>
         );
     };
