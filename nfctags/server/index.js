@@ -78,13 +78,6 @@ class Players {
         this.players = []
     }
 
-    movePlayer(name, steps) {
-        for (let i = 0; i < this.numberOfPlayers(); i++) {
-            if (this.players[i].Name === name) {
-                this.players[i].Position += steps
-            }
-        }
-    }
 }
 
 let gameBoard
@@ -132,13 +125,26 @@ io.on('connection', async (socket) => {
     socket.on("playerRoll", async (playerName) => {
 
         var diceRoll = Math.floor(Math.random() * 6) + 1
-        Players.movePlayer(playerName, diceRoll)
 
-        for (let i = 0; i < gameBoard.length; i++) {
-            for (let j = 0; j < gameBoard[i].length; j++) {
+        for (mekk in GamePlayers) {
 
+            if (mekk.Name == playerName) {
+                mekk.Position += diceRoll
+            }
+
+            for (let i = 0; i < gameBoard.length; i++) {
+                for (let j = 0; j < gameBoard[i].length; j++) {
+                    if (gameBoard[i][j].playerinTile.length > 0) {
+                        gameBoard[i][j].playerinTile.indexOf(mekk.Name)
+                    }
+                    if (gameBoard[i][j].tilenumber == mekk.Position) {
+                        mekk.Position = gameBoard[i][j].position
+                    }
+                }
             }
         }
+
+
 
         host.emit("renderBoard", gameBoard)
 
