@@ -10,6 +10,10 @@ const Client = () => {
         socket.emit("PlayerJoin", PlayerName);
     }
 
+    const rollDice = () => {
+        socket.emit("playerRoll", PlayerName);
+    }
+
     useEffect(() => {
 
         function onJoin() {
@@ -39,7 +43,7 @@ const Client = () => {
             <input type='text' onChange={e => setPlayerName(e.target.value)}></input>
             <button onClick={JoinGame}>submit</button>
 
-            <button>Roll Dice</button>
+            <button onClick={rollDice}>Roll Dice</button>
         </div>
     );
 };

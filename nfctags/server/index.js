@@ -77,18 +77,28 @@ class Players {
     reset() {
         this.players = []
     }
+    
+    getPlayer(name) {
+        for (let player of this.allPlayers()) {
+            if (player.Name == name) {
+                
+                return player
+            }
+        }
+    }
 
 }
 
+const BOARD_SIZE = 10;
+
 let gameBoard
 
-let GamePlayers
+let GamePlayers = []
 
 let host
 
 function setupGameBoard() {
 
-    const BOARD_SIZE = 10;
     let gameBoard = Array.from({ length: BOARD_SIZE }, () =>
         Array.from({ length: BOARD_SIZE }, () => 0)
     );
@@ -126,26 +136,31 @@ io.on('connection', async (socket) => {
 
         var diceRoll = Math.floor(Math.random() * 6) + 1
 
-        for (mekk in GamePlayers) {
+        console.log(diceRoll)
 
-            if (mekk.Name == playerName) {
-                mekk.Position += diceRoll
-            }
+        GamePlayers.getPlayer(playerName).Position += diceRoll
 
-            for (let i = 0; i < gameBoard.length; i++) {
-                for (let j = 0; j < gameBoard[i].length; j++) {
+        for (let ThePlayer of GamePlayers.allPlayers()) {
+
+            for (let i = 0; i < BOARD_SIZE; i++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+
                     if (gameBoard[i][j].playerinTile.length > 0) {
-                        gameBoard[i][j].playerinTile.indexOf(mekk.Name)
+                        //gameBoard[i][j].playerinTile.indexOf(GamePlayers[mekk].Name)
+                        gameBoard[i][j].playerinTile = []
                     }
-                    if (gameBoard[i][j].tilenumber == mekk.Position) {
-                        mekk.Position = gameBoard[i][j].position
+
+                    if (gameBoard[i][j].tile === ThePlayer.Position) {
+                        ThePlayer.Position = gameBoard[i][j].position
+                        gameBoard[i][j].playerinTile.push(ThePlayer)
                     }
+
+
                 }
             }
+
         }
-
-
-
+        
         host.emit("renderBoard", gameBoard)
 
     })
