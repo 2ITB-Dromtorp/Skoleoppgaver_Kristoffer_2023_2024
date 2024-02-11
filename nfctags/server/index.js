@@ -81,7 +81,6 @@ class Players {
     getPlayer(name) {
         for (let player of this.allPlayers()) {
             if (player.Name == name) {
-                
                 return player
             }
         }
@@ -93,13 +92,13 @@ const BOARD_SIZE = 10;
 
 let gameBoard
 
-let GamePlayers = []
+let GamePlayers
 
 let host
 
 function setupGameBoard() {
 
-    let gameBoard = Array.from({ length: BOARD_SIZE }, () =>
+    gameBoard = Array.from({ length: BOARD_SIZE }, () =>
         Array.from({ length: BOARD_SIZE }, () => 0)
     );
 
@@ -138,28 +137,28 @@ io.on('connection', async (socket) => {
 
         console.log(diceRoll)
 
+        console.log(GamePlayers)
+
         GamePlayers.getPlayer(playerName).Position += diceRoll
 
-        for (let ThePlayer of GamePlayers.allPlayers()) {
+        let player = GamePlayers.getPlayer(playerName)
 
             for (let i = 0; i < BOARD_SIZE; i++) {
                 for (let j = 0; j < BOARD_SIZE; j++) {
 
-                    if (gameBoard[i][j].playerinTile.length > 0) {
-                        //gameBoard[i][j].playerinTile.indexOf(GamePlayers[mekk].Name)
-                        gameBoard[i][j].playerinTile = []
+                    if (gameBoard[i][j].playerinTile.length >  0) {
+                        gameBoard[i][j].playerinTile = gameBoard[i][j].playerinTile.filter(p => p !== player);
                     }
-
-                    if (gameBoard[i][j].tile === ThePlayer.Position) {
-                        ThePlayer.Position = gameBoard[i][j].position
-                        gameBoard[i][j].playerinTile.push(ThePlayer)
+                    if (gameBoard[i][j].tile === player.Position) {
+                        console.log(GamePlayers)
+                        GamePlayers.getPlayer(playerName).Position = gameBoard[i][j].position
+                        gameBoard[i][j].playerinTile.push(GamePlayers.getPlayer(playerName));
                     }
-
 
                 }
             }
 
-        }
+
         
         host.emit("renderBoard", gameBoard)
 
