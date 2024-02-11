@@ -90,12 +90,6 @@ class Players {
 
 const BOARD_SIZE = 10;
 
-let gameBoard
-
-let GamePlayers
-
-let host
-
 function setupGameBoard() {
 
     gameBoard = Array.from({ length: BOARD_SIZE }, () =>
@@ -122,26 +116,42 @@ function setupGameBoard() {
     return gameBoard
 }
 
+let gameRooms = {};
+
 io.on('connection', async (socket) => {
 
     console.log('a user connected');
 
-    socket.on("host", async () => {
-        GamePlayers = new Players()
-        host = socket
+    socket.on("host", async (RoomCode) => {
+
+        gameRooms[RoomCode] = {
+            gameboard: setupGameBoard(),
+            gameplayers: new Players,
+            playerturn: 1,
+            gameStarted: false
+        }
+
+        socket.join(RoomCode)
+        
+        console.log("room hosted at " + RoomCode)
     })
 
-    socket.on("playerRoll", async (playerName) => {
+    socket.on("playerRoll", async (data) => {
 
-        var diceRoll = Math.floor(Math.random() * 6) + 1
+
+        let diceRoll = Math.floor(Math.random() * 6) + 1
+
+        let playerName = data.Player
+        let roomCode = data.RoomCode
+
+        let gameBoard = gameRooms[roomCode].gameboard
 
         console.log(diceRoll)
 
-        console.log(GamePlayers)
+        gameRooms[roomCode].gameplayers.getPlayer(playerName).Position += diceRoll
 
-        GamePlayers.getPlayer(playerName).Position += diceRoll
+        let player = gameRooms[roomCode].gameplayers.getPlayer(playerName)
 
-        let player = GamePlayers.getPlayer(playerName)
 
             for (let i = 0; i < BOARD_SIZE; i++) {
                 for (let j = 0; j < BOARD_SIZE; j++) {
@@ -150,37 +160,46 @@ io.on('connection', async (socket) => {
                         gameBoard[i][j].playerinTile = gameBoard[i][j].playerinTile.filter(p => p !== player);
                     }
                     if (gameBoard[i][j].tile === player.Position) {
-                        console.log(GamePlayers)
-                        GamePlayers.getPlayer(playerName).Position = gameBoard[i][j].position
-                        gameBoard[i][j].playerinTile.push(GamePlayers.getPlayer(playerName));
+                        gameRooms[roomCode].gameplayers.getPlayer(playerName).Position = gameBoard[i][j].position
+
+                        gameBoard[i][j].playerinTile.push(gameRooms[roomCode].gameplayers.getPlayer(playerName));
                     }
 
                 }
             }
 
-
+        console.log(gameRooms[roomCode].gameplayers.getPlayer(playerName))
         
-        host.emit("renderBoard", gameBoard)
+        io.to(data.RoomCode).emit("renderBoard", gameBoard)
 
     })
 
-    socket.on("startGame", async () => {
-        if (GamePlayers.numberOfPlayers() < 1) {
-            return
-        }
+    socket.on("startGame", async (roomCode) => {
 
         console.log("game started")
 
-        gameBoard = setupGameBoard()
-
-        gameBoard[0][0].playerinTile = GamePlayers.allPlayers()
-
-        host.emit("renderBoard", gameBoard)
+        gameRooms[roomCode].gameboard[0][0].playerinTile = gameRooms[roomCode].gameplayers.allPlayers()
+        gameRooms[roomCode].gameStarted = true
+        
+        io.to(roomCode).emit("renderBoard", gameBoard)
     })
 
-    socket.on("PlayerJoin", async (playerName) => {
-        GamePlayers.newPlayer(playerName, 1)
-        host.emit("updatePlayers", GamePlayers.allPlayers())
+    socket.on("PlayerJoin", async (data) => {
+
+        console.log(data)
+
+        let roomCode = data.RoomCode
+
+        if (!gameRooms[roomCode]) {
+            console.log("room dosent exist")
+            return;
+        }
+
+        socket.join(data.RoomCode)
+
+        gameRooms[roomCode].gameplayers.newPlayer(data.Player,  1);
+        
+        io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gameplayers.allPlayers())
     })
 
     socket.on("PlayerLeave", async (playerName) => {

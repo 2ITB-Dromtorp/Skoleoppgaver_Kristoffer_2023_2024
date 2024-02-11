@@ -8,9 +8,14 @@ const Board = () => {
     const [players, setPlayers] = useState([])
     const [gameBoard, setGameBoard] = useState([])
 
-    const startGame = () => {
+    const [roomCode, setRoomCode] = useState("")
 
-        socket.emit("startGame")
+    const createRoom = () => {
+        socket.emit("host", roomCode)
+    }
+
+    const startGame = () => {
+        socket.emit("startGame", roomCode)
     }
 
     const renderCell = (cellValue) => {
@@ -37,7 +42,6 @@ const Board = () => {
     useEffect(() => {
         function onJoin() {
             console.log("konnekted")
-            socket.emit("host")
         }
         function onDisconnect() {
             console.log("kisonnected")
@@ -53,18 +57,25 @@ const Board = () => {
         console.log(gameBoard)
 
         return () => {
-            socket.off("connect", onJoin)
-            socket.off("disconnect", onDisconnect)
+            socket.off("connect", onJoin);
+            socket.off("disconnect", onDisconnect);
         }
 
     }, [players, gameBoard])
 
     return (
         <div>
-            <h1>Waiting for Players</h1>
-            <button onClick={startGame}>Start Game</button>
+            <h1>Host</h1>
+            <input type='text' onChange={e => setRoomCode(e.target.value)} ></input>
+            <button onClick={createRoom}>Host Room</button>
 
-            {players > 0 && players}
+            <button onClick={startGame}> Start Game </button>
+
+            <div>
+            {players.length > 0 && players.map((ekte) => {
+                return <p>{ekte.Name}</p>
+            })}
+            </div>
 
             <div className="game-board">
                 {gameBoard.length > 0 && renderGameBoard()}

@@ -4,14 +4,15 @@ import { socket } from './App';
 
 const Client = () => {
 
+    const [roomCode, setRoomCode] = useState("")
     const [PlayerName, setPlayerName] = useState("")
 
     function JoinGame() {
-        socket.emit("PlayerJoin", PlayerName);
+        socket.emit("PlayerJoin", {Player: PlayerName, RoomCode: roomCode});
     }
 
     const rollDice = () => {
-        socket.emit("playerRoll", PlayerName);
+        socket.emit("playerRoll", {Player: PlayerName, RoomCode: roomCode});
     }
 
     useEffect(() => {
@@ -39,9 +40,11 @@ const Client = () => {
 
     return (
         <div>
+            <input type='text' onChange={e => setRoomCode(e.target.value)} ></input>
+
             <h1>Player Name</h1>
             <input type='text' onChange={e => setPlayerName(e.target.value)}></input>
-            <button onClick={JoinGame}>submit</button>
+            <button onClick={JoinGame}>join</button>
 
             <button onClick={rollDice}>Roll Dice</button>
         </div>
