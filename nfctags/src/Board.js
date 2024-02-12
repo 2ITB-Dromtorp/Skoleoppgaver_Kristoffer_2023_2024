@@ -66,21 +66,21 @@ const Board = () => {
     }, [players, gameBoard])
 
     return (
-        <div>
+        <div className='BoardContainer'>
             <h1>Host</h1>
             <input type='text' onChange={e => setRoomCode(e.target.value)} ></input>
             <button onClick={createRoom}>Host Room</button>
 
             <button onClick={startGame}> Start Game </button>
 
+            <div className="game-board">
+                {gameBoard.length > 0 && renderGameBoard()}
+            </div>
+
             <div>
                 {players.length > 0 && players.map((ekte) => {
                     return <p>{ekte.Name}</p>
                 })}
-            </div>
-
-            <div className="game-board">
-                {gameBoard.length > 0 && renderGameBoard()}
             </div>
 
         </div>

@@ -128,7 +128,7 @@ io.on('connection', async (socket) => {
         gameRooms[RoomCode] = {
             gameboard: setupGameBoard(),
             gameplayers: new Players,
-            playerturn: 1,
+            playerturn: 0,
             gameStarted: false
         }
 
@@ -140,14 +140,18 @@ io.on('connection', async (socket) => {
     socket.on("playerRoll", async (data) => {
 
 
-        let diceRoll = Math.floor(Math.random() * 6) + 1
 
         let playerName = data.Player
         let roomCode = data.RoomCode
 
+        if (gameRooms[roomCode].gameStarted == false || gameRooms[roomCode].playerturn !== gameRooms[roomCode].gameplayers.getPlayer(playerName).PlayerNumber) {
+            console.log("not players turn" + gameRooms[roomCode].playerturn)
+            return
+        }
+
         let gameBoard = gameRooms[roomCode].gameboard
 
-        console.log(diceRoll)
+        let diceRoll = Math.floor(Math.random() * 6) + 1
 
         gameRooms[roomCode].gameplayers.getPlayer(playerName).Position += diceRoll
 
@@ -169,6 +173,12 @@ io.on('connection', async (socket) => {
         }
 
         console.log(gameRooms[roomCode].gameplayers.getPlayer(playerName))
+
+        if (gameRooms[roomCode].playerturn === (gameRooms[roomCode].gameplayers.numberOfPlayers() - 1)) {
+            gameRooms[roomCode].playerturn = 0
+        } else {
+            gameRooms[roomCode].playerturn += 1
+        }
 
         io.to(data.RoomCode).emit("renderBoard", gameBoard)
 

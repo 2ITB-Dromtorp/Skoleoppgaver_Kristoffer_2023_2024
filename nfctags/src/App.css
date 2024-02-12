@@ -28,6 +28,10 @@
   color: #61dafb;
 }
 
+.BoardContainer {
+  display: flex;
+  flex-direction: column;
+}
 
 .game-board {
   display: grid;
@@ -35,9 +39,12 @@
   grid-template-rows: repeat(10, 80px);
   gap: 0px;
   margin-bottom: 20px;
+
+  transform: rotate(-90deg);
 }
 
 .tile {
+  transform: rotate(90deg);
   width: 80px;
   /* Width of each tile */
   height: 80px;
@@ -154,6 +161,70 @@
 
 .player-7 {
   background: #c26819;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-8 {
+  background: crimson;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-9 {
+  background: lightslategrey;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-10 {
+  background: pink;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-11 {
+  background: burlywood;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-12 {
+  background: yellowgreen;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-13 {
+  background: rgb(110, 18, 202);
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-14 {
+  background: gainsboro;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-15 {
+  background: rgb(222, 209, 159);
   border-radius: 50%;
   width: 30%;
   height: 30%;
