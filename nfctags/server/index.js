@@ -97,20 +97,17 @@ function setupGameBoard() {
         Array.from({ length: BOARD_SIZE }, () => 0)
     );
 
-    let tilenumber = 1
-
     for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
 
             const cellNumber = i * BOARD_SIZE + j + 1;
             if (snakes[cellNumber]) {
-                gameBoard[i][j] = { tile: tilenumber, position: snakes[cellNumber], type: "snake", playerinTile: [] };
+                gameBoard[i][j] = { tile: cellNumber, position: snakes[cellNumber], type: "snake", playerinTile: [] };
             } else if (ladders[cellNumber]) {
-                gameBoard[i][j] = { tile: tilenumber, position: ladders[cellNumber], type: "ladder", playerinTile: [] };
+                gameBoard[i][j] = { tile: cellNumber, position: ladders[cellNumber], type: "ladder", playerinTile: [] };
             } else {
-                gameBoard[i][j] = { tile: tilenumber, position: cellNumber, type: "normal", playerinTile: [] };
+                gameBoard[i][j] = { tile: cellNumber, position: cellNumber, type: "normal", playerinTile: [] };
             }
-            tilenumber++
         }
     }
 
@@ -164,15 +161,13 @@ io.on('connection', async (socket) => {
                     gameBoard[i][j].playerinTile = gameBoard[i][j].playerinTile.filter(p => p !== player);
                 }
                 if (gameBoard[i][j].tile === player.Position) {
-                    gameRooms[roomCode].gameplayers.getPlayer(playerName).Position = gameBoard[i][j].position
+                    gameRooms[roomCode].gameplayers.getPlayer(playerName).Position = gameBoard[i][j].position;
 
                     gameBoard[i][j].playerinTile.push(gameRooms[roomCode].gameplayers.getPlayer(playerName));
                 }
 
             }
         }
-
-        console.log(gameRooms[roomCode].gameplayers.getPlayer(playerName))
 
         if (gameRooms[roomCode].playerturn === (gameRooms[roomCode].gameplayers.numberOfPlayers() - 1)) {
             gameRooms[roomCode].playerturn = 0
@@ -218,6 +213,11 @@ io.on('connection', async (socket) => {
 
     socket.on("PlayerLeave", async (playerName) => {
         host.emit("playerLeave", playerName)
+    })
+
+    socket.on("removeHost", async (roomCode) => {
+        delete gameRooms[roomCode]
+        console.log(gameRooms)
     })
 
     socket.on('disconnect', () => {

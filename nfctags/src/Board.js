@@ -47,6 +47,7 @@ const Board = () => {
         }
         function onDisconnect() {
             console.log("kisonnected")
+            socket.emit("removeHost", roomCode)
         }
 
 
