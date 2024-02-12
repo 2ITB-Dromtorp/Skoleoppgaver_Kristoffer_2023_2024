@@ -21,11 +21,13 @@ const Board = () => {
     const renderCell = (cellValue) => {
 
         return (
-            <div className={`tile`}>
-                <p>{cellValue.tile}</p>
-                {cellValue.playerinTile.length > 0 && cellValue.playerinTile.map((player) => {
-                    return <p>{player.Name}</p>
-                })}
+            <div className={`tile ${cellValue.type}`}>
+                <div className='tile-number'>{cellValue.tile}</div>
+                <div className='tile-players-container'>
+                    {cellValue.playerinTile.length > 0 && cellValue.playerinTile.map((player) => {
+                        return <div className={`player-${player.PlayerNumber}`}></div>
+                    })}
+                </div>
             </div>
         );
     };
@@ -72,9 +74,9 @@ const Board = () => {
             <button onClick={startGame}> Start Game </button>
 
             <div>
-            {players.length > 0 && players.map((ekte) => {
-                return <p>{ekte.Name}</p>
-            })}
+                {players.length > 0 && players.map((ekte) => {
+                    return <p>{ekte.Name}</p>
+                })}
             </div>
 
             <div className="game-board">

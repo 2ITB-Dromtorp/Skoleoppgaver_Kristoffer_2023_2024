@@ -49,9 +49,10 @@ const ladders = {
 };
 
 class Player {
-    constructor(Name, position) {
+    constructor(Name, position, playernumber) {
         this.Name = Name;
-        this.Position = position
+        this.Position = position;
+        this.PlayerNumber = playernumber;
     }
 }
 
@@ -61,8 +62,8 @@ class Players {
         this.players = []
     }
     // create a new player and save it in the collection
-    newPlayer(name, position) {
-        let p = new Player(name, position)
+    newPlayer(name, position, number) {
+        let p = new Player(name, position, number)
         this.players.push(p)
         return p
     }
@@ -77,7 +78,7 @@ class Players {
     reset() {
         this.players = []
     }
-    
+
     getPlayer(name) {
         for (let player of this.allPlayers()) {
             if (player.Name == name) {
@@ -132,7 +133,7 @@ io.on('connection', async (socket) => {
         }
 
         socket.join(RoomCode)
-        
+
         console.log("room hosted at " + RoomCode)
     })
 
@@ -152,24 +153,23 @@ io.on('connection', async (socket) => {
 
         let player = gameRooms[roomCode].gameplayers.getPlayer(playerName)
 
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            for (let j = 0; j < BOARD_SIZE; j++) {
 
-            for (let i = 0; i < BOARD_SIZE; i++) {
-                for (let j = 0; j < BOARD_SIZE; j++) {
-
-                    if (gameBoard[i][j].playerinTile.length >  0) {
-                        gameBoard[i][j].playerinTile = gameBoard[i][j].playerinTile.filter(p => p !== player);
-                    }
-                    if (gameBoard[i][j].tile === player.Position) {
-                        gameRooms[roomCode].gameplayers.getPlayer(playerName).Position = gameBoard[i][j].position
-
-                        gameBoard[i][j].playerinTile.push(gameRooms[roomCode].gameplayers.getPlayer(playerName));
-                    }
-
+                if (gameBoard[i][j].playerinTile.length > 0) {
+                    gameBoard[i][j].playerinTile = gameBoard[i][j].playerinTile.filter(p => p !== player);
                 }
+                if (gameBoard[i][j].tile === player.Position) {
+                    gameRooms[roomCode].gameplayers.getPlayer(playerName).Position = gameBoard[i][j].position
+
+                    gameBoard[i][j].playerinTile.push(gameRooms[roomCode].gameplayers.getPlayer(playerName));
+                }
+
             }
+        }
 
         console.log(gameRooms[roomCode].gameplayers.getPlayer(playerName))
-        
+
         io.to(data.RoomCode).emit("renderBoard", gameBoard)
 
     })
@@ -180,7 +180,7 @@ io.on('connection', async (socket) => {
 
         gameRooms[roomCode].gameboard[0][0].playerinTile = gameRooms[roomCode].gameplayers.allPlayers()
         gameRooms[roomCode].gameStarted = true
-        
+
         io.to(roomCode).emit("renderBoard", gameBoard)
     })
 
@@ -197,8 +197,12 @@ io.on('connection', async (socket) => {
 
         socket.join(data.RoomCode)
 
-        gameRooms[roomCode].gameplayers.newPlayer(data.Player,  1);
-        
+        let playernumber = gameRooms[roomCode].gameplayers.numberOfPlayers()
+
+        console.log(playernumber)
+
+        gameRooms[roomCode].gameplayers.newPlayer(data.Player, 1, playernumber);
+
         io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gameplayers.allPlayers())
     })
 

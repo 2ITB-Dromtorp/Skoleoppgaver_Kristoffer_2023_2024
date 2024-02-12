@@ -31,36 +31,31 @@
 
 .game-board {
   display: grid;
-  /* Use CSS Grid for layout */
-  grid-template-columns: repeat(10, 1fr);
-  /* Create  10 equal columns */
-  /* Space between the grid items */
-  grid-auto-rows: minmax(min-content, max-content);
-  /* Ensures rows adapt to content */
-  grid-gap: 0;
-
+  grid-template-columns: repeat(10, 80px);
+  grid-template-rows: repeat(10, 80px);
+  gap: 0px;
+  margin-bottom: 20px;
 }
 
-.board-row {}
-
 .tile {
-  width: 50px;
+  width: 80px;
   /* Width of each tile */
-  height: 50px;
+  height: 80px;
   /* Height of each tile */
   border: 1px solid #000;
   /* Border around each tile */
   background-color: #fff;
   /* White background for tiles */
-  display: flex;
-  /* Flex container for centering text */
+  flex-flow: row wrap;
   justify-content: center;
-  /* Center text horizontally */
+  align-content: center;
   align-items: center;
+
   /* Center text vertically */
   font-size: 14px;
   /* Font size for numbers */
   /* Change cursor on hover */
+
 }
 
 .tile.snake {
@@ -76,4 +71,91 @@
 .tile.empty {
   background-color: #ccc;
   /* Gray background for empty spaces */
+}
+
+.tile-number {
+  display: inline-block;
+  position: relative;
+  left: 7.5%;
+
+  font-weight: 600;
+  color: #232323;
+  font-size: 1vw;
+}
+
+.tile-players-container {
+  width: 60%;
+  height: 60%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+
+
+
+}
+
+.player-0 {
+  background: #f44336;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-1 {
+  background: #4caf50;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-2 {
+  background: #2196f3;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-3 {
+  background: #ffeb3b;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-4 {
+  background: gray;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-5 {
+  background: #282c34;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-6 {
+  background: #b919c2;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
+}
+
+.player-7 {
+  background: #c26819;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+  margin: 5%;
 }
