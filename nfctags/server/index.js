@@ -136,8 +136,6 @@ io.on('connection', async (socket) => {
 
     socket.on("playerRoll", async (data) => {
 
-
-
         let playerName = data.Player
         let roomCode = data.RoomCode
 
@@ -150,22 +148,24 @@ io.on('connection', async (socket) => {
 
         let diceRoll = Math.floor(Math.random() * 6) + 1
 
-        gameRooms[roomCode].gameplayers.getPlayer(playerName).Position += diceRoll
+        for (let i = 0; i < diceRoll; i++) {
 
-        let player = gameRooms[roomCode].gameplayers.getPlayer(playerName)
+            let player = gameRooms[roomCode].gameplayers.getPlayer(playerName)
 
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            for (let j = 0; j < BOARD_SIZE; j++) {
+            player.Position += i
 
-                if (gameBoard[i][j].playerinTile.length > 0) {
-                    gameBoard[i][j].playerinTile = gameBoard[i][j].playerinTile.filter(p => p !== player);
+            for (let l = 0; l < BOARD_SIZE; l++) {
+                for (let j = 0; j < BOARD_SIZE; j++) {
+
+                    if (gameBoard[l][j].playerinTile.length > 0) {
+                        gameBoard[l][j].playerinTile = gameBoard[l][j].playerinTile.filter(p => p !== player);
+                    }
+                    if (gameBoard[l][j].tile === player.Position) {
+                        gameBoard[l][j].playerinTile.push(gameRooms[roomCode].gameplayers.getPlayer(playerName));
+                        io.to(data.RoomCode).emit("renderBoard", gameBoard)
+                    }
+
                 }
-                if (gameBoard[i][j].tile === player.Position) {
-                    gameRooms[roomCode].gameplayers.getPlayer(playerName).Position = gameBoard[i][j].position;
-
-                    gameBoard[i][j].playerinTile.push(gameRooms[roomCode].gameplayers.getPlayer(playerName));
-                }
-
             }
         }
 
@@ -174,9 +174,6 @@ io.on('connection', async (socket) => {
         } else {
             gameRooms[roomCode].playerturn += 1
         }
-
-        io.to(data.RoomCode).emit("renderBoard", gameBoard)
-
     })
 
     socket.on("startGame", async (roomCode) => {

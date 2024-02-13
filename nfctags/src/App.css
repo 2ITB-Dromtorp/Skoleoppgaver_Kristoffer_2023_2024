@@ -28,23 +28,15 @@
   color: #61dafb;
 }
 
-.BoardContainer {
-  display: flex;
-  flex-direction: column;
-}
-
 .game-board {
   display: grid;
   grid-template-columns: repeat(10, 80px);
-  grid-template-rows: repeat(10, 80px);
   gap: 0px;
   margin-bottom: 20px;
 
-  transform: rotate(-90deg);
 }
 
 .tile {
-  transform: rotate(90deg);
   width: 80px;
   /* Width of each tile */
   height: 80px;
