@@ -7,7 +7,7 @@ const Board = () => {
     //const [response, SetReponse] = useState("")
     const [players, setPlayers] = useState([])
     const [gameBoard, setGameBoard] = useState([])
-
+    const [gameStateMessage, setGameStateMessage] = useState(0)
     const [roomCode, setRoomCode] = useState("")
 
     const createRoom = () => {
@@ -42,29 +42,24 @@ const Board = () => {
     };
 
     useEffect(() => {
-        function onJoin() {
-            console.log("konnekted")
-        }
         function onDisconnect() {
             console.log("kisonnected")
             socket.emit("removeHost", roomCode)
         }
 
-
-        socket.on("connect", onJoin)
         socket.on("disconnect", onDisconnect)
         socket.on("updatePlayers", (player) => setPlayers(player))
         socket.on("renderBoard", (map) => setGameBoard(map))
+        socket.on("message", (message) => setGameStateMessage(message))
 
         console.log(players)
         console.log(gameBoard)
 
         return () => {
-            socket.off("connect", onJoin);
             socket.off("disconnect", onDisconnect);
         }
 
-    }, [players, gameBoard])
+    }, [players, gameBoard, gameStateMessage])
 
     return (
         <div className='BoardContainer'>
@@ -74,6 +69,7 @@ const Board = () => {
 
             <button onClick={startGame}> Start Game </button>
 
+            <h1>{gameStateMessage}</h1>
             <div className="game-board">
                 {gameBoard.length > 0 && renderGameBoard()}
             </div>

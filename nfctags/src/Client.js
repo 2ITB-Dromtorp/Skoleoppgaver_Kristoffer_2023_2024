@@ -6,13 +6,15 @@ const Client = () => {
 
     const [roomCode, setRoomCode] = useState("")
     const [PlayerName, setPlayerName] = useState("")
+    const [gameStateMessage, setGameStateMessage] = useState(0)
+
 
     function JoinGame() {
-        socket.emit("PlayerJoin", {Player: PlayerName, RoomCode: roomCode});
+        socket.emit("PlayerJoin", { Player: PlayerName, RoomCode: roomCode });
     }
 
     const rollDice = () => {
-        socket.emit("playerRoll", {Player: PlayerName, RoomCode: roomCode});
+        socket.emit("playerRoll", { Player: PlayerName, RoomCode: roomCode });
     }
 
     useEffect(() => {
@@ -26,7 +28,7 @@ const Client = () => {
 
         socket.on("connect", onJoin)
         socket.on("disconnect", onDisconnect)
-
+        socket.on("message", (message) => setGameStateMessage(message))
         //socket.on("clientResponse", clientResponse)
 
         return () => {
@@ -47,6 +49,7 @@ const Client = () => {
             <button onClick={JoinGame}>join</button>
 
             <button onClick={rollDice}>Roll Dice</button>
+            <h1>{gameStateMessage}</h1>
         </div>
     );
 };
