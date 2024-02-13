@@ -59,7 +59,7 @@ const Board = () => {
             socket.off("disconnect", onDisconnect);
         }
 
-    }, [players, gameBoard, gameStateMessage])
+    }, [players, gameBoard, gameStateMessage, roomCode])
 
     return (
         <div className='BoardContainer'>

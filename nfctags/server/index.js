@@ -167,6 +167,7 @@ io.on('connection', async (socket) => {
                 let player = gameRooms[roomCode].gamePlayers.getPlayer(playerName)
                 let currentPosition = isSnake ? player.Position : (player.Position + i)
                 console.log("position:" + currentPosition)
+                console.log(isSnake)
 
                 for (let l = 0; l < BOARD_SIZE; l++) {
                     for (let j = 0; j < BOARD_SIZE; j++) {
@@ -179,6 +180,10 @@ io.on('connection', async (socket) => {
                             gameBoard[l][j].playerinTile.push(gameRooms[roomCode].gamePlayers.getPlayer(playerName));
 
                             newPosition = gameBoard[l][j]
+
+                            if (gameBoard[l][j].type === "snake" && isSnake) {
+                                gameBoard[l][j].playerinTile = gameBoard[l][j].playerinTile.filter(p => p !== player);
+                            }
 
                             io.to(data.RoomCode).emit("renderBoard", gameBoard)
                         }
