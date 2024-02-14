@@ -128,7 +128,8 @@ io.on('connection', async (socket) => {
             playerTurn: 0,
             gameStarted: false,
             playerisMoving: false,
-            maxPlayers: 16
+            maxPlayers: 16,
+            Winner: ""
         }
 
         socket.join(RoomCode)
@@ -156,7 +157,7 @@ io.on('connection', async (socket) => {
         let gameBoard = gameRooms[roomCode].gameboard
 
         let newPosition
-        let delay = 520;
+        let delay = 150;
         console.log(diceRoll)
 
         io.to(data.RoomCode).emit("message", diceRoll)
@@ -167,25 +168,32 @@ io.on('connection', async (socket) => {
                 let player = gameRooms[roomCode].gamePlayers.getPlayer(playerName)
                 let currentPosition = isSnake ? player.Position : (player.Position + i)
                 console.log("position:" + currentPosition)
-                console.log(isSnake)
 
                 for (let l = 0; l < BOARD_SIZE; l++) {
                     for (let j = 0; j < BOARD_SIZE; j++) {
 
                         if (gameBoard[l][j].playerinTile.length > 0) {
                             gameBoard[l][j].playerinTile = gameBoard[l][j].playerinTile.filter(p => p !== player);
-                        }
-
-                        if (gameBoard[l][j].tile === currentPosition) {
+                            if (gameBoard[l][j].type == "snake") {
+                                io.to(data.RoomCode).emit("renderBoard", gameBoard)
+                            }
+                        } else if (gameBoard[l][j].tile === currentPosition) {
                             gameBoard[l][j].playerinTile.push(gameRooms[roomCode].gamePlayers.getPlayer(playerName));
 
                             newPosition = gameBoard[l][j]
 
-                            if (gameBoard[l][j].type === "snake" && isSnake) {
-                                gameBoard[l][j].playerinTile = gameBoard[l][j].playerinTile.filter(p => p !== player);
-                            }
-
                             io.to(data.RoomCode).emit("renderBoard", gameBoard)
+                        } else if ((player.Position + diceRoll) === 100) {
+                            gameRooms[roomCode].gameStarted = false
+                            gameRooms[roomCode].Winner = gameRooms[roomCode].gamePlayers.getPlayer(playerName)
+                            io.to(data.RoomCode).emit("playerWin", gameRooms[roomCode].Winner)
+                            io.to(data.RoomCode).emit("renderBoard", gameBoard)
+
+                            return
+                        } else if ((player.Position + diceRoll) > 100) {
+                            io.to(data.RoomCode).emit("message", (diceRoll + " is higher than 100"))
+                            gameRooms[roomCode].playerisMoving = false
+                            return
                         }
                     }
                 }
@@ -198,7 +206,7 @@ io.on('connection', async (socket) => {
                 if (newPosition.type == "ladder") {
                     renderLoop(diceRoll, false)
                 } else if (newPosition.type == "snake") {
-                    renderLoop((diceRoll), true)
+                    renderLoop(diceRoll, true)
                 }
 
                 if (gameRooms[roomCode].playerTurn === (gameRooms[roomCode].gamePlayers.numberOfPlayers() - 1)) {

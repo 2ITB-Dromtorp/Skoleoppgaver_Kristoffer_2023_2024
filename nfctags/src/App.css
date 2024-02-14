@@ -29,11 +29,16 @@
 }
 
 .game-board {
-  display: grid;
-  grid-template-columns: repeat(10, 80px);
+  display: flex;
+  flex-direction: column-reverse;
   gap: 0px;
   margin-bottom: 20px;
 
+}
+
+.board-row {
+  display: flex;
+  flex-direction: row;
 }
 
 .tile {

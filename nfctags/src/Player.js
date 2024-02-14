@@ -1,26 +1,23 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { socket } from './App';
+import { useParams } from "react-router-dom"
 
-const Client = () => {
+const Player = () => {
 
-    const [roomCode, setRoomCode] = useState("")
-    const [PlayerName, setPlayerName] = useState("")
     const [gameStateMessage, setGameStateMessage] = useState(0)
 
-
-    function JoinGame() {
-        socket.emit("PlayerJoin", { Player: PlayerName, RoomCode: roomCode });
-    }
+    var { PlayerName, HostID } = useParams();
 
     const rollDice = () => {
-        socket.emit("playerRoll", { Player: PlayerName, RoomCode: roomCode });
+        socket.emit("playerRoll", { Player: PlayerName, RoomCode: HostID });
     }
 
     useEffect(() => {
 
         function onJoin() {
             console.log("konnekted")
+            socket.emit("PlayerJoin", { Player: PlayerName, RoomCode: HostID });
         }
         function onDisconnect() {
             console.log("kisonnected")
@@ -38,20 +35,15 @@ const Client = () => {
 
         }
 
-    }, [])
+    }, [HostID, PlayerName])
 
     return (
         <div>
-            <input type='text' onChange={e => setRoomCode(e.target.value)} ></input>
-
-            <h1>Player Name</h1>
-            <input type='text' onChange={e => setPlayerName(e.target.value)}></input>
-            <button onClick={JoinGame}>join</button>
-
+            <h1>{PlayerName}</h1>
             <button onClick={rollDice}>Roll Dice</button>
-            <h1>{gameStateMessage}</h1>
+            <h2>{gameStateMessage}</h2>
         </div>
     );
 };
 
-export default Client;
+export default Player;
