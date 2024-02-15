@@ -8,7 +8,7 @@ const Board = () => {
 
     const [players, setPlayers] = useState([])
     const [gameBoard, setGameBoard] = useState([])
-    const [gameStateMessage, setGameStateMessage] = useState(0)
+    const [gameStateMessage, setGameStateMessage] = useState()
     const [roomCode, setRoomCode] = useState("")
     const [HostRoomUi, setHostRoomUi] = useState(true)
     const [WaitForPlayers, setWaitForPlayers] = useState(false)
@@ -93,9 +93,7 @@ const Board = () => {
                     <button onClick={createRoom}>Host Room</button>
                 </div>
 
-
             )}
-
 
 
             {WaitForPlayers && (
@@ -105,6 +103,7 @@ const Board = () => {
                     <h1>Waiting for Players</h1>
 
                     <div>
+
                         {players.length > 0 && players.map((ekte) => {
                             return <p>{ekte.Name}</p>
                         })}
@@ -116,10 +115,30 @@ const Board = () => {
             )}
 
             {GameRunning && (
-                <div>
+                <div className='game-running'>
 
                     <div className="game-board">
                         {gameBoard.length > 0 && renderGameBoard()}
+                    </div>
+
+                    <div className='game-MessageBoard'>
+                        <h1>{gameStateMessage}</h1>
+
+
+                        <div className='PlayerList'>
+                            <h1>Players:</h1>
+                            <div>
+
+                                {players.length > 0 && players.map((ekte) => {
+                                    return <div className='PlayerInList'>
+                                        {ekte.Name}
+                                        {ekte.Turn && <div className='displayTurn'><span></span></div>}
+                                    </div>
+                                })}
+
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>

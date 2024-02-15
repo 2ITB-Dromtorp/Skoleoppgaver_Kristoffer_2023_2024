@@ -48,10 +48,11 @@ const ladders = {
 };
 
 class Player {
-    constructor(Name, position, playernumber) {
+    constructor(Name, position, playernumber, turn) {
         this.Name = Name;
         this.Position = position;
         this.PlayerNumber = playernumber;
+        this.Turn = turn
     }
 }
 
@@ -61,8 +62,8 @@ class Players {
         this.players = []
     }
     // create a new player and save it in the collection
-    newPlayer(name, position, number) {
-        let p = new Player(name, position, number)
+    newPlayer(name, position, number, turn) {
+        let p = new Player(name, position, number, turn)
         this.players.push(p)
         return p
     }
@@ -81,6 +82,14 @@ class Players {
     getPlayer(name) {
         for (let player of this.allPlayers()) {
             if (player.Name == name) {
+                return player
+            }
+        }
+    }
+
+    getPlayerByTurn(number) {
+        for (let player of this.allPlayers()) {
+            if (player.PlayerNumber == number) {
                 return player
             }
         }
@@ -159,7 +168,7 @@ io.on('connection', async (socket) => {
         let delay = 150;
         console.log(diceRoll)
 
-        io.to(data.RoomCode).emit("message", diceRoll)
+        io.to(data.RoomCode).emit("message", playerName + " Rolled " + diceRoll)
 
         function renderLoop(i, isSnake) {
             if (i <= diceRoll) {
@@ -181,14 +190,15 @@ io.on('connection', async (socket) => {
 
                             newPosition = gameBoard[l][j]
 
-                            io.to(data.RoomCode).emit("renderBoard", gameBoard)
-                        } else if ((player.Position + diceRoll) === 100) {
-                            gameRooms[roomCode].gameStarted = false
-                            gameRooms[roomCode].Winner = gameRooms[roomCode].gamePlayers.getPlayer(playerName)
-                            io.to(data.RoomCode).emit("playerWin", gameRooms[roomCode].Winner)
-                            io.to(data.RoomCode).emit("renderBoard", gameBoard)
+                            if ((player.Position + diceRoll) === 100) {
+                                gameRooms[roomCode].gameStarted = false
+                                gameRooms[roomCode].Winner = gameRooms[roomCode].gamePlayers.getPlayer(playerName)
+                                io.to(data.RoomCode).emit("playerWin", gameRooms[roomCode].Winner)
+                                io.to(data.RoomCode).emit("renderBoard", gameBoard)
+                                return
+                            }
 
-                            return
+                            io.to(data.RoomCode).emit("renderBoard", gameBoard)
                         } else if ((player.Position + diceRoll) > 100) {
                             io.to(data.RoomCode).emit("message", (diceRoll + " is higher than 100"))
                             gameRooms[roomCode].playerisMoving = false
@@ -216,6 +226,9 @@ io.on('connection', async (socket) => {
 
                 gameRooms[roomCode].playerisMoving = false
 
+                io.to(data.RoomCode).emit("message", gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn")
+                gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Turn = true
+                io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
             }
 
         }
@@ -230,6 +243,8 @@ io.on('connection', async (socket) => {
         gameRooms[roomCode].gameboard[0][0].playerinTile = gameRooms[roomCode].gamePlayers.allPlayers()
         gameRooms[roomCode].gameStarted = true
 
+        io.to(roomCode).emit("clientStart")
+        io.to(roomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
         io.to(roomCode).emit("renderBoard", gameBoard)
     })
 
@@ -247,10 +262,17 @@ io.on('connection', async (socket) => {
         socket.join(data.RoomCode)
 
         let playernumber = gameRooms[roomCode].gamePlayers.numberOfPlayers()
+        let firstTurn = false
 
-        console.log(playernumber)
+        if (playernumber === 1) {
+            firstTurn = true
+        } else {
+            firstTurn = false
+        }
 
-        gameRooms[roomCode].gamePlayers.newPlayer(data.Player, 1, playernumber);
+        gameRooms[roomCode].gamePlayers.newPlayer(data.Player, 1, playernumber, firstTurn);
+
+
 
         if (gameRooms[roomCode].gameStarted == true) {
             gameRooms[roomCode].gameboard[0][0].playerinTile.push(gameRooms[roomCode].gamePlayers.getPlayer(data.Player))

@@ -41,6 +41,29 @@
   flex-direction: row;
 }
 
+.game-running {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+
+  align-items: center;
+  gap: 10%;
+}
+
+.PlayerList {
+  background-color: rgb(188, 188, 188);
+  height: 50%;
+  position: relative;
+  padding: 20px;
+}
+
+.game-MessageBoard {
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  gap: 150px;
+}
+
 .tile {
   width: 80px;
   /* Width of each tile */
@@ -96,8 +119,25 @@
   align-content: center;
   align-items: center;
 
+}
 
+.PlayerInList {
+  width: 60%;
+  height: 60%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
 
+}
+
+.displayTurn {
+  background: hsl(122, 52%, 42%);
+  border-radius: 75%;
+  width: 20px;
+  height: 20px;
+  margin: 5%;
 }
 
 .player-0 {
