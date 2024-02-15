@@ -236,9 +236,9 @@ io.on('connection', async (socket) => {
 
     socket.on("PlayerJoin", async (data) => {
 
-        console.log(data)
-
         let roomCode = data.RoomCode
+
+        console.log(data)
 
         if (!gameRooms[roomCode]) {
             console.log("room dosent exist")

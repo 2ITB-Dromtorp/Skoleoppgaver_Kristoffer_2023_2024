@@ -2,19 +2,17 @@ import './App.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Board from './Board';
 import { io } from 'socket.io-client';
-import Join from './Join';
+
+
 import Player from './Player';
-import Host from './Host';
 
 function App() {
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/host" element={<Host />} />
-        <Route path="/board/:HostID" element={<Board />} />
-        <Route path="/join" element={<Join />} />
-        <Route path="/player/:PlayerName/:HostID" element={<Player />} />
+        <Route path="/host" element={<Board />} />
+        <Route path="/join" element={<Player />} />
 
       </Routes>
     </BrowserRouter>

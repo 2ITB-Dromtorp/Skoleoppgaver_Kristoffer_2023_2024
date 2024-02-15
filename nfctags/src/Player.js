@@ -1,23 +1,29 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { socket } from './App';
-import { useParams } from "react-router-dom"
 
 const Player = () => {
 
     const [gameStateMessage, setGameStateMessage] = useState(0)
+    const [roomCode, setRoomCode] = useState("")
+    const [PlayerName, setPlayerName] = useState("Player Name")
+    const [showJoinRoomUI, setShowJoinRoomUI] = useState(true);
+    const [clientGameRunning, setclientGameRunning] = useState(false);
 
-    var { PlayerName, HostID } = useParams();
+    const handleJoinButtonClick = () => {
+        setShowJoinRoomUI(false); // Hide the JoinRoomUI component
+        setclientGameRunning(true)
+        socket.emit("PlayerJoin", { Player: PlayerName, RoomCode: roomCode });
+    };
 
     const rollDice = () => {
-        socket.emit("playerRoll", { Player: PlayerName, RoomCode: HostID });
+        socket.emit("playerRoll", { Player: PlayerName, RoomCode: roomCode });
     }
 
     useEffect(() => {
 
         function onJoin() {
             console.log("konnekted")
-            socket.emit("PlayerJoin", { Player: PlayerName, RoomCode: HostID });
         }
         function onDisconnect() {
             console.log("kisonnected")
@@ -35,13 +41,32 @@ const Player = () => {
 
         }
 
-    }, [HostID, PlayerName])
+    }, [roomCode, PlayerName])
 
     return (
         <div>
-            <h1>{PlayerName}</h1>
-            <button onClick={rollDice}>Roll Dice</button>
-            <h2>{gameStateMessage}</h2>
+
+            {showJoinRoomUI && (
+                <div>
+                    <h1>Room Code</h1>
+                    <input type='text' onChange={e => setRoomCode(e.target.value)} />
+
+                    <h1>Player Name</h1>
+                    <input type='text' onChange={e => setPlayerName(e.target.value)} />
+
+                    <button onClick={handleJoinButtonClick}>join</button>
+                </div>
+            )}
+
+            {clientGameRunning && (
+                <div>
+                    <h1>{PlayerName}</h1>
+                    <button onClick={rollDice}>Roll Dice</button>
+                    <h2>{gameStateMessage}</h2>
+                </div>
+            )}
+
+
         </div>
     );
 };

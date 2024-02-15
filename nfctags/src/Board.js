@@ -1,20 +1,33 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { socket } from './App';
-import { useParams } from "react-router-dom"
+import Sound from 'react-sound'
+import Music from './Assets/Kahoot.mp3'
+
 const Board = () => {
 
     const [players, setPlayers] = useState([])
     const [gameBoard, setGameBoard] = useState([])
     const [gameStateMessage, setGameStateMessage] = useState(0)
+    const [roomCode, setRoomCode] = useState("")
+    const [HostRoomUi, setHostRoomUi] = useState(true)
+    const [WaitForPlayers, setWaitForPlayers] = useState(false)
+    const [GameRunning, setGameRunning] = useState(false)
+    const [playSound, setPlaySound] = useState(false)
 
+    const createRoom = () => {
+        setHostRoomUi(false)
+        setWaitForPlayers(true)
+        setPlaySound(true)
+        socket.emit("host", roomCode)
+    }
 
-    var { HostID } = useParams()
-
-    console.log(HostID)
+    console.log(roomCode)
 
     const startGame = () => {
-        socket.emit("startGame", HostID)
+        setWaitForPlayers(false)
+        setGameRunning(true)
+        socket.emit("startGame", roomCode)
     }
 
     const renderCell = (cellValue) => {
@@ -45,7 +58,7 @@ const Board = () => {
             console.log("kisonnected")
         }
         function onJoin() {
-            socket.emit("host", HostID)
+            console.log("connected")
         }
 
         socket.on("disconnect", onDisconnect)
@@ -62,27 +75,55 @@ const Board = () => {
             socket.off("connect", onJoin)
         }
 
-    }, [players, gameBoard, gameStateMessage, HostID])
+    }, [players, gameBoard, gameStateMessage, roomCode])
 
     return (
         <div className='BoardContainer'>
 
+            <Sound url={Music} autoLoad={true} playStatus={playSound ? "PLAYING" : "STOPPED"}
+                playFromPosition={0}
+                onLoad={() => setPlaySound(false)}
+            />
 
-            <h1>{"Room Code:" + HostID}</h1>
 
-            <h1>Waiting for Players</h1>
-            <button onClick={startGame}> Start Game </button>
+            {HostRoomUi && (
+                <div>
+                    <h1>Host</h1>
+                    <input type='text' onChange={e => setRoomCode(e.target.value)} ></input>
+                    <button onClick={createRoom}>Host Room</button>
+                </div>
 
-            <div className="game-board">
-                {gameBoard.length > 0 && renderGameBoard()}
-            </div>
 
-            <div>
-                {players.length > 0 && players.map((ekte) => {
-                    return <p>{ekte.Name}</p>
-                })}
-            </div>
+            )}
 
+
+
+            {WaitForPlayers && (
+                <div>
+                    <h1>{"Room Code:" + roomCode}</h1>
+
+                    <h1>Waiting for Players</h1>
+
+                    <div>
+                        {players.length > 0 && players.map((ekte) => {
+                            return <p>{ekte.Name}</p>
+                        })}
+                    </div>
+
+
+                    <button onClick={startGame}> Start Game </button>
+                </div>
+            )}
+
+            {GameRunning && (
+                <div>
+
+                    <div className="game-board">
+                        {gameBoard.length > 0 && renderGameBoard()}
+                    </div>
+
+                </div>
+            )}
 
         </div>
     );
