@@ -5,7 +5,14 @@ const path = require("node:path")
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "localhost:8080",
+        methods: ["GET", "POST"],
+        allowedHeaders: ["Access-Control-Allow-Credentials"],
+        credentials: true
+    }
+});
 
 app.use(express.json())
 app.use(cors())
