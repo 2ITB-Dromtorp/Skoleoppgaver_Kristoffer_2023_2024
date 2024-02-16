@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { socket } from './App';
 import Sound from 'react-sound'
 import Music from './Assets/Kahoot.mp3'
+//import { useMemo } from 'react';
 
 const Board = () => {
 
@@ -14,6 +15,9 @@ const Board = () => {
     const [WaitForPlayers, setWaitForPlayers] = useState(false)
     const [GameRunning, setGameRunning] = useState(false)
     const [playSound, setPlaySound] = useState(false)
+    const [gameSpeed, setGameSpeed] = useState(400)
+    const [gameMode, setGameMode] = useState("normal"); // Declare a state variable...
+
 
     const createRoom = () => {
         setHostRoomUi(false)
@@ -27,17 +31,29 @@ const Board = () => {
     const startGame = () => {
         setWaitForPlayers(false)
         setGameRunning(true)
-        socket.emit("startGame", roomCode)
+        socket.emit("startGame", { RoomCode: roomCode, speed: gameSpeed, mode: gameMode })
     }
 
     const renderCell = (cellValue) => {
 
+        let showPosition = false
+
+        if (cellValue.position !== cellValue.tile) {
+            showPosition = true
+        }
+
         return (
             <div className={`tile ${cellValue.type}`}>
-                <div className='tile-number'>{cellValue.tile}</div>
+                <div className='cell-info'>
+                    <div className='tile-number'>{cellValue.tile}</div>
+
+                    {showPosition && (<div className='position-number'>{cellValue.position}</div>)}
+                </div>
+
                 <div className='tile-players-container'>
                     {cellValue.playerinTile.length > 0 && cellValue.playerinTile.map((player) => {
-                        return <div className={`player-${player.PlayerNumber}`}></div>
+                        return <div className={`player-${player.PlayerNumber}`}>
+                        </div>
                     })}
                 </div>
             </div>
@@ -88,8 +104,20 @@ const Board = () => {
 
             {HostRoomUi && (
                 <div>
-                    <h1>Host</h1>
-                    <input type='text' onChange={e => setRoomCode(e.target.value)} ></input>
+                    <label for="RoomCode">Host Room</label>
+                    <input type='text' id="RoomCode" onChange={e => setRoomCode(e.target.value)} ></input>
+
+                    <label for="gameSpeed">Game Speed</label>
+                    <input type='text' id="gameSpeed" defaultValue={gameSpeed} onChange={e => setGameSpeed(e.target.value)} ></input>
+
+                    <label for="Mode">Game Mode</label>
+                    <select id="Mode" value={gameMode} onChange={e => setGameMode(e.target.value)}>
+                        <option value="normal">Normal</option>
+                        <option value="randomized">Randomized</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="NFCmode">NFC Mode</option>
+                    </select>
+
                     <button onClick={createRoom}>Host Room</button>
                 </div>
 
@@ -132,7 +160,6 @@ const Board = () => {
                                 {players.length > 0 && players.map((ekte) => {
                                     return <div className='PlayerInList'>
                                         {ekte.Name}
-                                        {ekte.Turn && <div className='displayTurn'><span></span></div>}
                                     </div>
                                 })}
 

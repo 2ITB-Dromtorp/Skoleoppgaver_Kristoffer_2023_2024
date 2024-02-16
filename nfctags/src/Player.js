@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { socket } from './App';
-import { useNavigate } from "react-router-dom";
 
 const Player = () => {
 
@@ -11,14 +10,8 @@ const Player = () => {
     const [showJoinRoomUI, setShowJoinRoomUI] = useState(true);
     const [waitForHost, setWaitForHost] = useState(false)
     const [clientGameRunning, setclientGameRunning] = useState(false);
-    const navigate = useNavigate();
-
 
     const handleJoinButtonClick = () => {
-
-        if (document.getElementById("option").value === "NFC") {
-            switchToNFC()
-        }
 
         setShowJoinRoomUI(false); // Hide the JoinRoomUI component
         setWaitForHost(true)
@@ -27,11 +20,6 @@ const Player = () => {
 
     const rollDice = () => {
         socket.emit("playerRoll", { Player: PlayerName, RoomCode: roomCode });
-    }
-
-    const switchToNFC = () => {
-        socket.emit("PlayerJoin", { Player: PlayerName, RoomCode: roomCode });
-        navigate("/nfc/" + PlayerName + "/" + roomCode);
     }
 
     useEffect(() => {
@@ -46,7 +34,6 @@ const Player = () => {
         socket.on("connect", onJoin)
         socket.on("disconnect", onDisconnect)
         socket.on("message", (message) => setGameStateMessage(message))
-        //socket.on("clientResponse", clientResponse)
         socket.on("clientStart", () => setclientGameRunning(true))
 
         return () => {
@@ -82,7 +69,10 @@ const Player = () => {
             )}
 
             {waitForHost && (
-                <h1>Waiting for Host to start</h1>
+                <div>
+                    <h1>Waiting for Host to start</h1>
+                    <h2>Join the room "{roomCode}" as {PlayerName}</h2>
+                </div>
             )}
 
             {clientGameRunning && (
