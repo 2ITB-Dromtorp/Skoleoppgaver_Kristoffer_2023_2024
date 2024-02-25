@@ -8,8 +8,6 @@ import { useParams } from 'react-router-dom';
 const NFC = () => {
 
     const [gameStateMessage, setGameStateMessage] = useState(0)
-    const [waitForHost, setWaitForHost] = useState(true)
-    const [clientGameRunning, setclientGameRunning] = useState(false);
 
     let { PlayerName, HostID } = useParams();
 
@@ -26,25 +24,18 @@ const NFC = () => {
         socket.on("disconnect", onDisconnect)
         socket.on("message", (message) => setGameStateMessage(message))
         //socket.on("clientResponse", clientResponse)
-        socket.on("clientStart", () => setclientGameRunning(true))
-
         return () => {
             socket.off("connect", onJoin)
             socket.off("disconnect", onDisconnect)
             socket.off("message", (message) => setGameStateMessage(message))
-            socket.off("clientStart", () => setclientGameRunning(true))
-
             //socket.off("clientResponse", clientResponse)
 
         }
 
-    }, [clientGameRunning, HostID, PlayerName])
+    }, [HostID, PlayerName, gameStateMessage])
 
     return (
         <div>
-            {waitForHost && (
-                <h1>Waiting for Host to start</h1>
-            )}
 
             {clientGameRunning && (
                 <div>

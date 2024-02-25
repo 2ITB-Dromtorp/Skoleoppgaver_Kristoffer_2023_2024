@@ -7,9 +7,8 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
     cors: {
-        origin: "localhost:8080",
+        origin: "http://localhost:3000", // Specify the exact origin
         methods: ["GET", "POST"],
-        allowedHeaders: ["Access-Control-Allow-Credentials"],
         credentials: true
     }
 });
@@ -20,9 +19,9 @@ app.use(express.static("build"))
 
 const port = process.env.PORT || 8080
 
-app.get("*", (req, res) => {
+/*app.get("*", (req, res) => {
     res.sendFile(path.resolve("./build/index.html"))
-})
+})*/
 
 server.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
@@ -133,6 +132,37 @@ function setupGameBoard() {
 
 let gameRooms = {};
 
+function changeTurn(roomCode) {
+    const gameRoom = gameRooms[roomCode];
+
+    if (gameRoom.turnChanged) return;
+
+    gameRoom.turnChanged = true;
+
+    const players = gameRoom.gamePlayers.allPlayers();
+    const currentPlayer = players[gameRoom.playerTurn];
+    const nextPlayerIndex = (gameRoom.playerTurn +  1) % players.length;
+
+    console.log(nextPlayerIndex)
+
+    // Update the current player's Turn property to false
+    currentPlayer.Turn = false;
+
+    // Update the next player's Turn property to true
+    const nextPlayer = players[nextPlayerIndex];
+    nextPlayer.Turn = true;
+
+    // Update the playerTurn index for the game room
+    gameRoom.playerTurn = nextPlayerIndex;
+
+    gameRoom.turnChanged = false;
+
+    // Emit updates to the frontend
+    io.to(roomCode).emit("updatePlayers", players);
+
+}
+
+
 io.on('connection', async (socket) => {
 
     console.log('a user connected');
@@ -144,6 +174,7 @@ io.on('connection', async (socket) => {
             gamePlayers: new Players,
             playerTurn: 0,
             gameStarted: false,
+            turnChanged: false,
             playerisMoving: false,
             maxPlayers: 16,
             Winner: "",
@@ -183,6 +214,8 @@ io.on('connection', async (socket) => {
         function renderLoop(i, isSnake) {
             if (i <= diceRoll) {
 
+                console.log(isSnake)
+
                 let player = gameRooms[roomCode].gamePlayers.getPlayer(playerName)
                 let currentPosition = isSnake ? player.Position : (player.Position + i)
                 console.log("position:" + currentPosition)
@@ -191,24 +224,22 @@ io.on('connection', async (socket) => {
                     for (let j = 0; j < BOARD_SIZE; j++) {
 
                         if (gameBoard[l][j].playerinTile.length > 0) {
+
                             gameBoard[l][j].playerinTile = gameBoard[l][j].playerinTile.filter(p => p !== player);
-                            if (gameBoard[l][j].type == "snake") {
-                                io.to(data.RoomCode).emit("renderBoard", gameBoard)
-                            }
+
                         } else if (gameBoard[l][j].tile === currentPosition) {
-                            if (!gameBoard[l][j].playerinTile.some(p => p.Name === playerName)) {
-                                gameBoard[l][j].playerinTile.push(gameRooms[roomCode].gamePlayers.getPlayer(playerName));
-                            }
+                            gameBoard[l][j].playerinTile.push(player);
 
                             newPosition = gameBoard[l][j]
 
-                            if ((player.Position + diceRoll) === 100) {
+                            /*if ((player.Position + diceRoll) === 100) {
                                 gameRooms[roomCode].gameStarted = false
                                 gameRooms[roomCode].Winner = gameRooms[roomCode].gamePlayers.getPlayer(playerName)
                                 io.to(data.RoomCode).emit("playerWin", gameRooms[roomCode].Winner)
                                 io.to(data.RoomCode).emit("renderBoard", gameBoard)
                                 return
-                            }
+                            }*/
+
 
                             io.to(data.RoomCode).emit("renderBoard", gameBoard)
                         } else if ((player.Position + diceRoll) > 100) {
@@ -222,30 +253,31 @@ io.on('connection', async (socket) => {
                     renderLoop(i + 1, false);
                 }, delay);
             } else {
-                gameRooms[roomCode].gamePlayers.getPlayer(playerName).Position = newPosition.position
-                if (newPosition.type == "ladder") {
-                    renderLoop(diceRoll, false)
-                } else if (newPosition.type == "snake") {
-                    renderLoop(diceRoll, true)
-                }
+                console.log(newPosition)
 
-                if (gameRooms[roomCode].playerTurn === (gameRooms[roomCode].gamePlayers.numberOfPlayers() - 1)) {
-                    gameRooms[roomCode].playerTurn = 0
-                } else {
-                    gameRooms[roomCode].playerTurn += 1
-                }
 
-                gameRooms[roomCode].playerisMoving = false
-                gameRooms[roomCode].gamePlayers.getPlayer(playerName).Turn = false
+                    gameRooms[roomCode].gamePlayers.getPlayer(playerName).Position = newPosition.position
 
-                io.to(data.RoomCode).emit("message", gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn")
-                gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Turn = true
-                io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
+                    if (newPosition.type == "ladder" || newPosition.type == "snake") {
+                        renderLoop(diceRoll, true)
+                    }
+    
+                    if (isSnake === false) {
+                        changeTurn(roomCode)
+    
+                        gameRooms[roomCode].playerisMoving = false
+                
+                        io.to(data.RoomCode).emit("message", gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn")
+                        io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
+    
+                        return
+                    }
             }
 
         }
 
         renderLoop(1, false)
+
     })
 
     socket.on("startGame", async (data) => {
@@ -254,6 +286,10 @@ io.on('connection', async (socket) => {
 
         let roomCode = data.RoomCode
 
+        /*if (data.mode == NFCmode) {
+
+        }*/
+
         gameRooms[roomCode].gameboard[0][0].playerinTile = gameRooms[roomCode].gamePlayers.allPlayers()
         gameRooms[roomCode].gameStarted = true
         gameRooms[roomCode].gameSpeed = data.speed
@@ -261,6 +297,7 @@ io.on('connection', async (socket) => {
         io.to(roomCode).emit("clientStart")
         io.to(roomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
         io.to(roomCode).emit("renderBoard", gameBoard)
+        io.to(roomCode).emit("message", gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn")
     })
 
     socket.on("PlayerJoin", async (data) => {
@@ -279,8 +316,6 @@ io.on('connection', async (socket) => {
         let playernumber = gameRooms[roomCode].gamePlayers.numberOfPlayers()
 
         gameRooms[roomCode].gamePlayers.newPlayer(data.Player, 1, playernumber);
-
-
 
         if (gameRooms[roomCode].gameStarted == true) {
             gameRooms[roomCode].gameboard[0][0].playerinTile.push(gameRooms[roomCode].gamePlayers.getPlayer(data.Player))

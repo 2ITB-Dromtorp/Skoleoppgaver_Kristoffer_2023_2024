@@ -22,4 +22,7 @@ function App() {
 
 export default App;
 
-export const socket = io("http://localhost:8080")
+export const socket = io("localhost:8080", {
+  withCredentials: true,
+}
+)
