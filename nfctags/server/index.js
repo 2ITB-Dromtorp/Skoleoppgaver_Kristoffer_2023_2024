@@ -45,7 +45,7 @@ const ladders = {
     16: 37,
     24: 69,
     36: 46,
-    41: 62,
+    41: 60,
     65: 84,
     73: 94,
 };
@@ -141,7 +141,7 @@ function changeTurn(roomCode) {
 
     const players = gameRoom.gamePlayers.allPlayers();
     const currentPlayer = players[gameRoom.playerTurn];
-    const nextPlayerIndex = (gameRoom.playerTurn +  1) % players.length;
+    const nextPlayerIndex = (gameRoom.playerTurn + 1) % players.length;
 
     console.log(nextPlayerIndex)
 
@@ -227,6 +227,7 @@ io.on('connection', async (socket) => {
 
                             gameBoard[l][j].playerinTile = gameBoard[l][j].playerinTile.filter(p => p !== player);
 
+
                         } else if (gameBoard[l][j].tile === currentPosition) {
                             gameBoard[l][j].playerinTile.push(player);
 
@@ -250,28 +251,33 @@ io.on('connection', async (socket) => {
                 }
 
                 setTimeout(() => {
+
                     renderLoop(i + 1, false);
+
                 }, delay);
             } else {
                 console.log(newPosition)
 
+                if (isSnake) {
+                    return;
+                }
 
-                    gameRooms[roomCode].gamePlayers.getPlayer(playerName).Position = newPosition.position
+                gameRooms[roomCode].gamePlayers.getPlayer(playerName).Position = newPosition.position
 
-                    if (newPosition.type == "ladder" || newPosition.type == "snake") {
-                        renderLoop(diceRoll, true)
-                    }
-    
-                    if (isSnake === false) {
-                        changeTurn(roomCode)
-    
-                        gameRooms[roomCode].playerisMoving = false
-                
-                        io.to(data.RoomCode).emit("message", gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn")
-                        io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
-    
-                        return
-                    }
+                if (newPosition.type == "ladder" || newPosition.type == "snake") {
+                    renderLoop(diceRoll, true)
+                } else {
+                    changeTurn(roomCode)
+
+                    io.to(data.RoomCode).emit("renderBoard", gameBoard)
+
+                    gameRooms[roomCode].playerisMoving = false
+
+                    io.to(data.RoomCode).emit("message", gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn")
+                    io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
+                }
+
+
             }
 
         }

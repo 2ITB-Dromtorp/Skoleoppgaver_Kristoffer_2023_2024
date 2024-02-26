@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { socket } from './App';
+import { useNavigate } from 'react-router-dom';
 
 const Player = () => {
 
@@ -11,12 +12,18 @@ const Player = () => {
     const [waitForHost, setWaitForHost] = useState(false)
     const [clientGameRunning, setclientGameRunning] = useState(false);
 
+    const navigate = useNavigate()
+
     const handleJoinButtonClick = () => {
 
         setShowJoinRoomUI(false); // Hide the JoinRoomUI component
         setWaitForHost(true)
         socket.emit("PlayerJoin", { Player: PlayerName, RoomCode: roomCode });
     };
+
+    const handleLeave = () => {
+        navigate("/join")
+    }
 
     const rollDice = () => {
         socket.emit("playerRoll", { Player: PlayerName, RoomCode: roomCode });
@@ -80,6 +87,8 @@ const Player = () => {
                     <h1>{PlayerName}</h1>
                     <button onClick={rollDice}>Roll Dice</button>
                     <h2>{gameStateMessage}</h2>
+
+                    <button onClick={handleLeave}>Leave</button>
                 </div>
             )}
 
