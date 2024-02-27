@@ -83,8 +83,12 @@ class Players {
         return this.players.length
     }
 
-    reset() {
-        this.players = []
+    removePlayer(name) {
+        for (let player of this.allPlayers()) {
+            if (player.Name == name) {
+                this.players.splice(player.PlayerNumber, 1);
+            }
+        }
     }
 
     getPlayer(name) {
@@ -173,6 +177,7 @@ io.on('connection', async (socket) => {
             gameboard: setupGameBoard(),
             gamePlayers: new Players,
             playerTurn: 0,
+            canJoin: false,
             gameStarted: false,
             turnChanged: false,
             playerisMoving: false,
@@ -225,27 +230,22 @@ io.on('connection', async (socket) => {
 
                         if (gameBoard[l][j].playerinTile.length > 0) {
 
-                            gameBoard[l][j].playerinTile = gameBoard[l][j].playerinTile.filter(p => p !== player);
+                            gameBoard[l][j].playerinTile = gameBoard[l][j].playerinTile.filter(p => p.Name !== playerName);
 
-
-                        } else if (gameBoard[l][j].tile === currentPosition) {
-                            gameBoard[l][j].playerinTile.push(player);
-
+                        }
+                        if (gameBoard[l][j].tile === currentPosition) {
                             newPosition = gameBoard[l][j]
 
-                            /*if ((player.Position + diceRoll) === 100) {
-                                gameRooms[roomCode].gameStarted = false
-                                gameRooms[roomCode].Winner = gameRooms[roomCode].gamePlayers.getPlayer(playerName)
-                                io.to(data.RoomCode).emit("playerWin", gameRooms[roomCode].Winner)
-                                io.to(data.RoomCode).emit("renderBoard", gameBoard)
-                                return
-                            }*/
 
+                            gameBoard[l][j].playerinTile.push(gameRooms[roomCode].gamePlayers.getPlayer(playerName));
+
+                            console.log(newPosition)
 
                             io.to(data.RoomCode).emit("renderBoard", gameBoard)
                         } else if ((player.Position + diceRoll) > 100) {
                             io.to(data.RoomCode).emit("message", (diceRoll + " is higher than 100"))
                             gameRooms[roomCode].playerisMoving = false
+                            break;
                         }
                     }
                 }
@@ -256,13 +256,29 @@ io.on('connection', async (socket) => {
 
                 }, delay);
             } else {
-                console.log(newPosition)
-
                 if (isSnake) {
                     return;
                 }
 
+                if ((gameRooms[roomCode].gamePlayers.getPlayer(playerName).Position + diceRoll) > 100) {
+
+                    changeTurn(roomCode)
+
+                    io.to(data.RoomCode).emit("message", gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn")
+                    io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
+                    return
+                }
+
                 gameRooms[roomCode].gamePlayers.getPlayer(playerName).Position = newPosition.position
+
+                if ((gameRooms[roomCode].gamePlayers.getPlayer(playerName).Position) === 100) {
+                    gameRooms[roomCode].gameStarted = false
+                    gameRooms[roomCode].Winner = gameRooms[roomCode].gamePlayers.getPlayer(playerName).Name
+                    io.to(data.RoomCode).emit("message", (gameRooms[roomCode].Winner + " Won the game🔥"))
+
+                    io.to(data.RoomCode).emit("playerWin", gameRooms[roomCode].Winner)
+                    return
+                }
 
                 if (newPosition.type == "ladder" || newPosition.type == "snake") {
                     renderLoop(diceRoll, true)
@@ -283,7 +299,6 @@ io.on('connection', async (socket) => {
         }
 
         renderLoop(1, false)
-
     })
 
     socket.on("startGame", async (data) => {
@@ -292,9 +307,14 @@ io.on('connection', async (socket) => {
 
         let roomCode = data.RoomCode
 
-        /*if (data.mode == NFCmode) {
+        if (data.mode == "NFCmode") {
 
-        }*/
+            gameRooms[roomCode].gamePlayers.newPlayer("NFCPlayer1", 1, 0);
+            gameRooms[roomCode].gamePlayers.newPlayer("NFCPlayer2", 1, 1);
+
+        }
+
+        gameRooms[roomCode].canJoin = false
 
         gameRooms[roomCode].gameboard[0][0].playerinTile = gameRooms[roomCode].gamePlayers.allPlayers()
         gameRooms[roomCode].gameStarted = true
@@ -317,7 +337,16 @@ io.on('connection', async (socket) => {
             return;
         }
 
+        if (gameRooms[roomCode].canJoin == false) {
+            io.to(data.RoomCode).emit("clientMessage", "Can't join room")
+            return
+        }
+
         socket.join(data.RoomCode)
+
+        if (gameRooms[roomCode].gameStarted) {
+            io.to(roomCode).emit("clientStart")
+        }
 
         let playernumber = gameRooms[roomCode].gamePlayers.numberOfPlayers()
 
@@ -331,16 +360,36 @@ io.on('connection', async (socket) => {
         io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
     })
 
-    socket.on("PlayerLeave", async (playerName) => {
-        host.emit("playerLeave", playerName)
-    })
-
     socket.on("removeHost", async (roomCode) => {
         delete gameRooms[roomCode]
-        console.log(gameRooms)
+    })
+
+    socket.on("LeaveGame", async (data) => {
+        if (!gameRooms[data.RoomCode]) {
+            console.log("BRUH")
+            return
+        }
+
+        let player = gameRooms[data.RoomCode].gamePlayers.getPlayer(data.Player)
+
+        gameRooms[data.RoomCode].gamePlayers.removePlayer(data.Player)
+        io.to(data.RoomCode).emit("updatePlayers", gameRooms[data.RoomCode].gamePlayers.allPlayers())
+
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            for (let j = 0; j < BOARD_SIZE; j++) {
+                const cell = gameRooms[data.RoomCode].gameboard[i][j];
+                if (cell.playerinTile.includes(player)) {
+                    cell.playerinTile = cell.playerinTile.filter(p => p !== player);
+                }
+            }
+        }
+
+        io.to(data.RoomCode).emit("renderBoard", gameRooms[data.RoomCode].gameboard)
+
+
     })
 
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        console.log("user disconnect")
     });
 });

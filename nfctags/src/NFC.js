@@ -41,7 +41,6 @@ const NFC = () => {
             <div>
                 <h1>{PlayerName}</h1>
                 <h2>{gameStateMessage}</h2>
-
             </div>
 
 

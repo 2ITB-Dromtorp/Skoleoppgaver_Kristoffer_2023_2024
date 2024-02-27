@@ -10,6 +10,7 @@ const Player = () => {
     const [PlayerName, setPlayerName] = useState("Player Name")
     const [showJoinRoomUI, setShowJoinRoomUI] = useState(true);
     const [waitForHost, setWaitForHost] = useState(false)
+    const [clientMessage, setClientMessage] = useState(gameStateMessage)
     const [clientGameRunning, setclientGameRunning] = useState(false);
 
     const navigate = useNavigate()
@@ -18,10 +19,12 @@ const Player = () => {
 
         setShowJoinRoomUI(false); // Hide the JoinRoomUI component
         setWaitForHost(true)
+
         socket.emit("PlayerJoin", { Player: PlayerName, RoomCode: roomCode });
     };
 
     const handleLeave = () => {
+        socket.emit("LeaveGame", { Player: PlayerName, RoomCode: roomCode })
         navigate("/join")
     }
 
@@ -29,23 +32,27 @@ const Player = () => {
         socket.emit("playerRoll", { Player: PlayerName, RoomCode: roomCode });
     }
 
+
     useEffect(() => {
 
         function onJoin() {
             console.log("konnekted")
         }
-        function onDisconnect() {
-            console.log("kisonnected")
+
+        function onLeave() {
+            socket.emit("LeaveGame", { Player: PlayerName, RoomCode: roomCode })
+            window.location.reload()
         }
 
+
         socket.on("connect", onJoin)
-        socket.on("disconnect", onDisconnect)
+        socket.on("disconnect", onLeave)
         socket.on("message", (message) => setGameStateMessage(message))
         socket.on("clientStart", () => setclientGameRunning(true))
 
         return () => {
             socket.off("connect", onJoin)
-            socket.off("disconnect", onDisconnect)
+            socket.off("disconnect", onLeave)
             socket.off("message", (message) => setGameStateMessage(message))
             socket.off("clientStart", () => setclientGameRunning(true))
 
@@ -66,16 +73,11 @@ const Player = () => {
                     <h1>Player Name</h1>
                     <input type='text' onChange={e => setPlayerName(e.target.value)} />
 
-                    <select id="option">
-                        <option value="Normal">Normal</option>
-                        <option value="NFC">NFC</option>
-                    </select>
-
                     <button onClick={handleJoinButtonClick}>join</button>
                 </div>
             )}
 
-            {waitForHost && (
+            {(waitForHost && !clientGameRunning) && (
                 <div>
                     <h1>Waiting for Host to start</h1>
                     <h2>Join the room "{roomCode}" as {PlayerName}</h2>

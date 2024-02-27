@@ -33,7 +33,20 @@
   flex-direction: column-reverse;
   gap: 0px;
   margin-bottom: 20px;
+}
 
+.winscreen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.BoardContainer {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
 }
 
 .board-row {
@@ -66,9 +79,9 @@
 }
 
 .tile {
-  width: 80px;
+  width: 65px;
   /* Width of each tile */
-  height: 80px;
+  height: 65px;
   /* Height of each tile */
   border: 1px solid #000;
   /* Border around each tile */
@@ -79,16 +92,17 @@
   align-content: center;
   align-items: center;
 
-  /* Center text vertically */
-  font-size: 14px;
-  /* Font size for numbers */
-  /* Change cursor on hover */
 
 }
 
 .tile.snake {
   background-color: #f44336;
   /* Red background for snakes */
+}
+
+.dice {
+  width: 30px;
+  height: 30px;
 }
 
 .tile.ladder {
@@ -108,7 +122,7 @@
 
   font-weight: 600;
   color: #232323;
-  font-size: 18px;
+  font-size: 16px;
 
 }
 
