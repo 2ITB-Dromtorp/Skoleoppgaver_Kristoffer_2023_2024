@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { socket } from './App';
+import { socket } from '../App';
 import { useNavigate } from 'react-router-dom';
 
 const Player = () => {
@@ -10,7 +10,6 @@ const Player = () => {
     const [PlayerName, setPlayerName] = useState("Player Name")
     const [showJoinRoomUI, setShowJoinRoomUI] = useState(true);
     const [waitForHost, setWaitForHost] = useState(false)
-    const [clientMessage, setClientMessage] = useState(gameStateMessage)
     const [clientGameRunning, setclientGameRunning] = useState(false);
 
     const navigate = useNavigate()
@@ -49,6 +48,7 @@ const Player = () => {
         socket.on("disconnect", onLeave)
         socket.on("message", (message) => setGameStateMessage(message))
         socket.on("clientStart", () => setclientGameRunning(true))
+        socket.on("clientMessage", (clientmessage) => setGameStateMessage(clientmessage))
 
         return () => {
             socket.off("connect", onJoin)

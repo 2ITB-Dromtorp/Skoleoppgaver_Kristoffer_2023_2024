@@ -1,10 +1,11 @@
 import './App.css';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import Board from './Board';
+import Board from './Components/Board';
 import { io } from 'socket.io-client';
-import NFC from './NFC';
+import NFC from './Components/NFC';
+import Home from './Components/Home';
 
-import Player from './Player';
+import Player from './Components/Player';
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/host" element={<Board />} />
         <Route path="/join" element={<Player />} />
+        <Route path='/' element={<Home />} />
         <Route path="/nfc/:PlayerName/:HostID" element={<NFC />} />
       </Routes>
     </BrowserRouter>

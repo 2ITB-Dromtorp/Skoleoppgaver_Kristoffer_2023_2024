@@ -1,11 +1,11 @@
 
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { socket } from './App';
+import { socket } from '../App';
 import Sound from 'react-sound'
-import Music from './Assets/Kahoot.mp3'
+import Music from '../Assets/Kahoot.mp3'
 //import { useMemo } from 'react';
-import dice from './Assets/dice.png';
+import dice from '../Assets/dice.png';
 import ConfettiExplosion from 'react-confetti-explosion';
 import Confetti from 'react-confetti'
 
@@ -45,7 +45,7 @@ const Board = () => {
         setWaitForPlayers(false)
         setGameRunning(true)
         setPlaySound(false)
-        socket.emit("startGame", { RoomCode: roomCode, speed: gameSpeed, mode: gameMode })
+        socket.emit("startGame", { RoomCode: roomCode, speed: gameSpeed, mode: gameMode, canjoin: canJoin, max: maxPlayers})
     }
 
     const renderCell = (cellValue) => {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { socket } from './App';
+import { socket } from '../App';
 
 import { useParams } from 'react-router-dom';
 
