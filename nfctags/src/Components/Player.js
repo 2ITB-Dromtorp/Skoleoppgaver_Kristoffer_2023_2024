@@ -56,7 +56,7 @@ const Player = () => {
             socket.off("message", (message) => setGameStateMessage(message))
             socket.off("clientStart", () => setclientGameRunning(true))
 
-            //socket.off("clientResponse", clientResponse)
+            socket.off("clientMessage", (clientmessage) => setGameStateMessage(clientmessage))
 
         }
 
@@ -81,6 +81,8 @@ const Player = () => {
                 <div>
                     <h1>Waiting for Host to start</h1>
                     <h2>Join the room "{roomCode}" as {PlayerName}</h2>
+                    <h2>{gameStateMessage}</h2>
+
                 </div>
             )}
 

@@ -171,24 +171,25 @@ io.on('connection', async (socket) => {
 
     console.log('a user connected');
 
-    socket.on("host", async (RoomCode) => {
+    socket.on("host", async (data) => {
 
-        gameRooms[RoomCode] = {
+        gameRooms[data.RoomCode] = {
             gameboard: setupGameBoard(),
             gamePlayers: new Players,
+            gameMode: data.mode,
             playerTurn: 0,
             canJoin: true,
             gameStarted: false,
             turnChanged: false,
             playerisMoving: false,
-            maxPlayers: 16,
+            maxPlayers: data.max,
             Winner: "",
-            gameSpeed: 400,
+            gameSpeed: data.speed,
         }
 
-        socket.join(RoomCode)
+        socket.join(data.RoomCode)
 
-        console.log("room hosted at " + RoomCode)
+        console.log("room hosted at " + data.RoomCode)
     })
 
     socket.on("playerRoll", async (data) => {
@@ -198,18 +199,19 @@ io.on('connection', async (socket) => {
         let roomCode = data.RoomCode
 
         if (gameRooms[roomCode].gameStarted == false) {
-            console.log("not players turn" + gameRooms[roomCode].playerTurn)
+            console.log("not stared")
+            socket.emit("clientMessage", "Not Started")
             return
         }
         else if (gameRooms[roomCode].playerisMoving == true) {
             console.log("already moving")
 
-            io.to(data.RoomCode).emit("clientMessage", (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "is already moving"))
+            socket.emit("clientMessage", (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "is already moving"))
             return
         }
         else if (gameRooms[roomCode].playerTurn !== gameRooms[roomCode].gamePlayers.getPlayer(playerName).PlayerNumber) {
             console.log("not turn")
-            io.to(data.RoomCode).emit("clientMessage", "Not your turn")
+            socket.emit("clientMessage", "Not your turn")
             return
         }
 
@@ -314,7 +316,7 @@ io.on('connection', async (socket) => {
 
         let roomCode = data.RoomCode
 
-        if (data.mode == "NFCmode") {
+        if (gameRooms[roomCode].gameMode == "NFCmode") {
 
             gameRooms[roomCode].gamePlayers.newPlayer("NFCPlayer1", 1, 0);
             gameRooms[roomCode].gamePlayers.newPlayer("NFCPlayer2", 1, 1);
@@ -322,11 +324,9 @@ io.on('connection', async (socket) => {
         }
 
         gameRooms[roomCode].canJoin = data.canjoin
-        gameRooms[roomCode].maxPlayers = data.max
 
         gameRooms[roomCode].gameboard[0][0].playerinTile = gameRooms[roomCode].gamePlayers.allPlayers()
         gameRooms[roomCode].gameStarted = true
-        gameRooms[roomCode].gameSpeed = data.speed
 
         io.to(roomCode).emit("clientStart")
         io.to(roomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
@@ -341,22 +341,28 @@ io.on('connection', async (socket) => {
         console.log(data)
 
         if (!gameRooms[roomCode]) {
-            console.log("room dosent exist")
+            console.log("room dosen't exist")
+            socket.emit("clientMessage", "Room dosen't exist")
             return;
         }
         else if(gameRooms[roomCode].canJoin == false) {
-            io.to(roomCode).emit("clientMessage", "Can't join room")
+            console.log("Can't join room")
+
+            socket.emit("clientMessage", "Can't join room")
             return
         }
-        else if (gameRooms[roomCode].maxPlayers >= gameRooms[roomCode].gamePlayers.numberOfPlayers()) {
-            io.to(roomCode).emit("clientMessage", "Too many Players")
+        else if (gameRooms[roomCode].maxPlayers < (gameRooms[roomCode].gamePlayers.numberOfPlayers() + 1)) {
+            console.log("Too many Players")
+            console.log(gameRooms[roomCode].maxPlayers)
+            console.log(gameRooms[roomCode].gamePlayers.numberOfPlayers())
+            socket.emit("clientMessage", "Too many Players")
             return
         }
 
         socket.join(data.RoomCode)
 
         if (gameRooms[roomCode].gameStarted) {
-            io.to(roomCode).emit("clientStart")
+            socket.emit("clientStart")
         }
 
         let playernumber = gameRooms[roomCode].gamePlayers.numberOfPlayers()

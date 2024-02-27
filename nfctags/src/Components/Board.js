@@ -32,7 +32,7 @@ const Board = () => {
         setHostRoomUi(false)
         setWaitForPlayers(true)
         setPlaySound(true)
-        socket.emit("host", roomCode)
+        socket.emit("host", {RoomCode: roomCode, max: maxPlayers, mode: gameMode, speed: gameSpeed})
 
         if (gameMode === "NFCmode") {
             startGame()
@@ -45,7 +45,7 @@ const Board = () => {
         setWaitForPlayers(false)
         setGameRunning(true)
         setPlaySound(false)
-        socket.emit("startGame", { RoomCode: roomCode, speed: gameSpeed, mode: gameMode, canjoin: canJoin, max: maxPlayers})
+        socket.emit("startGame", { RoomCode: roomCode, canjoin: canJoin})
     }
 
     const renderCell = (cellValue) => {
@@ -152,14 +152,6 @@ const Board = () => {
                         <option value={6}>6</option>
                         <option value={7}>7</option>
                         <option value={8}>8</option>
-                        <option value={9}>9</option>
-                        <option value={10}>10</option>
-                        <option value={11}>11</option>
-                        <option value={12}>12</option>
-                        <option value={13}>13</option>
-                        <option value={14}>14</option>
-                        <option value={15}>15</option>
-                        <option value={16}>16</option>
                     </select>
 
                     <button onClick={createRoom}>Host Room</button>
