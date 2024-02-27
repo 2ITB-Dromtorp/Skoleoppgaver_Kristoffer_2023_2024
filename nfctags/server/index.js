@@ -177,7 +177,7 @@ io.on('connection', async (socket) => {
             gameboard: setupGameBoard(),
             gamePlayers: new Players,
             playerTurn: 0,
-            canJoin: false,
+            canJoin: true,
             gameStarted: false,
             turnChanged: false,
             playerisMoving: false,
@@ -197,12 +197,19 @@ io.on('connection', async (socket) => {
         let playerName = data.Player
         let roomCode = data.RoomCode
 
-        if (gameRooms[roomCode].gameStarted == false || gameRooms[roomCode].playerTurn !== gameRooms[roomCode].gamePlayers.getPlayer(playerName).PlayerNumber) {
+        if (gameRooms[roomCode].gameStarted == false) {
             console.log("not players turn" + gameRooms[roomCode].playerTurn)
             return
         }
-        if (gameRooms[roomCode].playerisMoving == true) {
-            console.log("wait until animation")
+        else if (gameRooms[roomCode].playerisMoving == true) {
+            console.log("already moving")
+
+            io.to(data.RoomCode).emit("clientMessage", (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "is already moving"))
+            return
+        }
+        else if (gameRooms[roomCode].playerTurn !== gameRooms[roomCode].gamePlayers.getPlayer(playerName).PlayerNumber) {
+            console.log("not turn")
+            io.to(data.RoomCode).emit("clientMessage", "Not your turn")
             return
         }
 
@@ -314,7 +321,8 @@ io.on('connection', async (socket) => {
 
         }
 
-        gameRooms[roomCode].canJoin = false
+        gameRooms[roomCode].canJoin = data.canjoin
+        gameRooms[roomCode].maxPlayers = data.max
 
         gameRooms[roomCode].gameboard[0][0].playerinTile = gameRooms[roomCode].gamePlayers.allPlayers()
         gameRooms[roomCode].gameStarted = true
@@ -336,9 +344,12 @@ io.on('connection', async (socket) => {
             console.log("room dosent exist")
             return;
         }
-
-        if (gameRooms[roomCode].canJoin == false) {
-            io.to(data.RoomCode).emit("clientMessage", "Can't join room")
+        else if(gameRooms[roomCode].canJoin == false) {
+            io.to(roomCode).emit("clientMessage", "Can't join room")
+            return
+        }
+        else if (gameRooms[roomCode].maxPlayers >= gameRooms[roomCode].gamePlayers.numberOfPlayers()) {
+            io.to(roomCode).emit("clientMessage", "Too many Players")
             return
         }
 
