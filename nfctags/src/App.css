@@ -15,6 +15,17 @@ select {
   font-family: pixelfont;
 }
 
+* {
+  image-rendering: optimizeSpeed;             /* STOP SMOOTHING, GIVE ME SPEED  */
+  image-rendering: -moz-crisp-edges;          /* Firefox                        */
+  image-rendering: -o-crisp-edges;            /* Opera                          */
+  image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+  image-rendering: pixelated;                 /* Universal support since 2021   */
+  image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
+  -ms-interpolation-mode: bicubic;   /* IE8+                           */
+
+}
+
 .HostUI {
   display: flex;
   flex-direction: column;
@@ -35,7 +46,14 @@ input {
   display: flex;
   flex-direction: column-reverse;
   gap: 0px;
-  margin-bottom: 20px;
+
+  background-image: url("./Assets/border.png");
+  background-position: center;
+  background-size: 100%, 100%;
+  background-repeat: no-repeat;
+  padding:11vh;
+
+
 }
 
 .winscreen {
@@ -46,6 +64,10 @@ input {
 }
 
 .BoardContainer {
+  background-image: url("Assets/testbackground.gif");
+  background-position: center;
+  background-size: 100%, 100%;
+  background-repeat: no-repeat;
   display: flex;
   height: 100vh;
   justify-content: center;
@@ -63,7 +85,7 @@ input {
   flex-direction: row;
 
   align-items: center;
-  gap: 10%;
+  gap: 4%;
 }
 
 .PlayerList {
@@ -87,11 +109,10 @@ h1 {
 }
 
 .tile {
-  width: 65px;
+  width: 70px;
   /* Width of each tile */
-  height: 65px;
+  height: 70px;
   /* Height of each tile */
-  border: 1px solid #000;
   /* Border around each tile */
   background-color: #fff;
   /* White background for tiles */
@@ -103,20 +124,42 @@ h1 {
 
 }
 
-.tile.snake {
-  background-color: #f44336;
-  /* Red background for snakes */
+#tile-100 {
+  background-image: url("./Assets/Flag.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 50% 80%;
+  z-index: 0;
 }
+
+#tile-1 {
+  background-image: url("./Assets/spawn.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 90% 90%;
+  z-index: 0;
+}
+
+/*.tile.snake {
+  background-image: url("./Assets/snakeTile.png");
+  background-position: center;
+  background-size: 85% 85%;
+  background-repeat: no-repeat;
+
+}*/
 
 .dice {
   width: 30px;
   height: 30px;
 }
 
-.tile.ladder {
-  background-color: #4caf50;
-  /* Green background for ladders */
-}
+/*.tile.ladder {
+  background-image: url("./Assets/ladderTile.png");
+  background-position: center;
+  background-size: 85% 85%;
+  background-repeat: no-repeat;
+
+}*/
 
 .tile.empty {
   background-color: #ccc;
@@ -127,11 +170,13 @@ h1 {
   display: inline-block;
   position: relative;
   left: 7.5%;
-  bottom: 7.5%;
-
+  top: 3px;
+  z-index: 1;
+  
+  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
   font-weight: 600;
   color: #232323;
-  font-size: 13px;
+  font-size: 1.8vh;
 
 }
 
@@ -141,15 +186,59 @@ h1 {
   gap: 15%;
 }
 
-.position-number {
+/*.position-number {
   font-size: 10px;
-
+  z-index: 1;
   background-color: wheat;
   margin-top: 2.5px;
   padding: 2px;
   padding-left: 4px;
   padding-right: 4px;
 
+}*/
+
+.eventBoard {
+  font-size:  x-large;
+  background-image: url("./Assets/eventBoard.png");
+  background-position: center;
+  background-size: 100%, 100%;
+  background-repeat: no-repeat;
+  padding-top: 12vh;
+  padding-left: 7vh;
+  padding-right: 7vh;
+
+  padding-bottom: 12vh;
+
+}
+
+
+
+.gameSpeed{
+  transform: rotateY(180deg);
+  appearance: none;
+  background: #d3d3d3;
+  transition: opacity .2s;
+  opacity: 0.7;
+  height: 15px;
+  border-radius: 5px;  
+}
+.gameSpeed:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+.gameSpeed::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  border: 0;
+ background-image: url("./Assets/Slider.png");
+ border: 2px solid black;
+ border-radius: 10px;
+ background-position: center;
+ background-repeat: no-repeat;
+ background-size:contain;
+ 
 }
 
 .tile-players-container {
@@ -190,12 +279,27 @@ h1 {
   margin: 5%;
 }
 
+.name-0 {
+  color:#f44336;
+
+  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
+
+}
+
 .player-1 {
   background: #4caf50;
   border-radius: 50%;
   width: 30%;
   height: 30%;
   margin: 5%;
+}
+
+
+.name-1 {
+  color:#4caf50;;
+
+  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
+
 }
 
 .player-2 {
@@ -206,12 +310,27 @@ h1 {
   margin: 5%;
 }
 
+.name-2 {
+  color:#2196f3;;
+
+  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
+
+}
+
+
 .player-3 {
   background: #ffeb3b;
   border-radius: 50%;
   width: 30%;
   height: 30%;
   margin: 5%;
+}
+
+.name-3 {
+  color:#ffeb3b;;
+
+  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
+
 }
 
 .player-4 {
@@ -222,12 +341,26 @@ h1 {
   margin: 5%;
 }
 
+.name-4 {
+  color: gray;
+
+  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
+
+}
+
 .player-5 {
   background: #282c34;
   border-radius: 50%;
   width: 30%;
   height: 30%;
   margin: 5%;
+}
+
+.name-5 {
+  color:#282c34;
+
+  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
+
 }
 
 .player-6 {
@@ -238,6 +371,13 @@ h1 {
   margin: 5%;
 }
 
+.name-6 {
+  color:#b919c2;
+
+  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
+
+}
+
 .player-7 {
   background: #c26819;
   border-radius: 50%;
@@ -246,66 +386,24 @@ h1 {
   margin: 5%;
 }
 
+.name-7 {
+  color:#b919c2;
+
+  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
+
+}
+
 .player-8 {
-  background: crimson;
+  background: brown;
   border-radius: 50%;
   width: 30%;
   height: 30%;
   margin: 5%;
 }
 
-.player-9 {
-  background: lightslategrey;
-  border-radius: 50%;
-  width: 30%;
-  height: 30%;
-  margin: 5%;
-}
+.name-8 {
+  color: brown;
 
-.player-10 {
-  background: pink;
-  border-radius: 50%;
-  width: 30%;
-  height: 30%;
-  margin: 5%;
-}
+  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
 
-.player-11 {
-  background: burlywood;
-  border-radius: 50%;
-  width: 30%;
-  height: 30%;
-  margin: 5%;
-}
-
-.player-12 {
-  background: yellowgreen;
-  border-radius: 50%;
-  width: 30%;
-  height: 30%;
-  margin: 5%;
-}
-
-.player-13 {
-  background: rgb(110, 18, 202);
-  border-radius: 50%;
-  width: 30%;
-  height: 30%;
-  margin: 5%;
-}
-
-.player-14 {
-  background: gainsboro;
-  border-radius: 50%;
-  width: 30%;
-  height: 30%;
-  margin: 5%;
-}
-
-.player-15 {
-  background: rgb(222, 209, 159);
-  border-radius: 50%;
-  width: 30%;
-  height: 30%;
-  margin: 5%;
 }

@@ -163,10 +163,10 @@ io.on('connection', async (socket) => {
 
         const ladders = {
             2: 19,
-            8: 23,
+            8: 27,
             16: 37,
-            24: 69,
-            36: 46,
+            24: 54,
+            34: 48,
             41: 60,
             65: 84,
             73: 94,
@@ -314,11 +314,12 @@ io.on('connection', async (socket) => {
         console.log("game started")
 
         let roomCode = data.RoomCode
-
+        
         if (gameRooms[roomCode].gameMode == "NFCmode") {
 
             gameRooms[roomCode].gamePlayers.newPlayer("NFCPlayer1", 1, 0);
             gameRooms[roomCode].gamePlayers.newPlayer("NFCPlayer2", 1, 1);
+            gameRooms[roomCode].roomCode = "NFCode"
 
         }
 
@@ -397,6 +398,8 @@ io.on('connection', async (socket) => {
 
         gameRooms[data.RoomCode].gamePlayers.removePlayer(data.Player)
         io.to(data.RoomCode).emit("updatePlayers", gameRooms[data.RoomCode].gamePlayers.allPlayers())
+
+        changeTurn(data.RoomCode)
 
         for (let i = 0; i < BOARD_SIZE; i++) {
             for (let j = 0; j < BOARD_SIZE; j++) {
