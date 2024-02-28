@@ -7,13 +7,19 @@ body {
   font-family: pixelfont;
 }
 
-.HostUI {
+select {
   font-family: pixelfont;
-
 }
 
 .Mode {
   font-family: pixelfont;
+}
+
+.HostUI {
+  display: flex;
+  flex-direction: column;
+
+  gap: 25px;
 }
 
 button {
