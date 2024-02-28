@@ -1,31 +1,28 @@
-.App {
-  text-align: center;
+@font-face {
+  font-family: pixelfont;
+  src: url(Assets/Daydream.ttf);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  font-family: pixelfont;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.HostUI {
+  font-family: pixelfont;
+
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.Mode {
+  font-family: pixelfont;
 }
 
-.App-link {
-  color: #61dafb;
+button {
+  font-family: pixelfont;
+  color: green;
+}
+
+input {
+  font-family: pixelfont;
 }
 
 .game-board {
@@ -74,8 +71,13 @@
   display: flex;
   text-align: center;
   flex-direction: column;
-  width: 10%;
+  width: max-content;
+  padding: 1%;
   gap: 150px;
+}
+
+h1 {
+  font-size: 24px;
 }
 
 .tile {
@@ -119,10 +121,11 @@
   display: inline-block;
   position: relative;
   left: 7.5%;
+  bottom: 7.5%;
 
   font-weight: 600;
   color: #232323;
-  font-size: 16px;
+  font-size: 13px;
 
 }
 
@@ -133,7 +136,7 @@
 }
 
 .position-number {
-  font-size: 14px;
+  font-size: 10px;
 
   background-color: wheat;
   margin-top: 2.5px;

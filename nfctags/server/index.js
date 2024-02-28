@@ -26,30 +26,6 @@ const port = process.env.PORT || 8080
 server.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
-
-const snakes = {
-    14: 4,
-    16: 6,
-    28: 10,
-    43: 19,
-    51: 31,
-    62: 39,
-    77: 26,
-    90: 70,
-    99: 78
-};
-
-const ladders = {
-    2: 19,
-    8: 23,
-    16: 37,
-    24: 69,
-    36: 46,
-    41: 60,
-    65: 84,
-    73: 94,
-};
-
 class Player {
     constructor(Name, position, playernumber) {
         this.Name = Name;
@@ -109,9 +85,10 @@ class Players {
 
 }
 
+
 const BOARD_SIZE = 10;
 
-function setupGameBoard() {
+function setupGameBoard(snakes, ladders) {
 
     gameBoard = Array.from({ length: BOARD_SIZE }, () =>
         Array.from({ length: BOARD_SIZE }, () => 0)
@@ -166,15 +143,37 @@ function changeTurn(roomCode) {
 
 }
 
-
 io.on('connection', async (socket) => {
 
     console.log('a user connected');
 
     socket.on("host", async (data) => {
 
+        const snakes = {
+            14: 4,
+            16: 6,
+            28: 10,
+            43: 19,
+            51: 31,
+            62: 39,
+            77: 26,
+            90: 70,
+            99: 78
+        };
+
+        const ladders = {
+            2: 19,
+            8: 23,
+            16: 37,
+            24: 69,
+            36: 46,
+            41: 60,
+            65: 84,
+            73: 94,
+        };
+
         gameRooms[data.RoomCode] = {
-            gameboard: setupGameBoard(),
+            gameboard: setupGameBoard(snakes, ladders),
             gamePlayers: new Players,
             gameMode: data.mode,
             playerTurn: 0,
@@ -345,7 +344,7 @@ io.on('connection', async (socket) => {
             socket.emit("clientMessage", "Room dosen't exist")
             return;
         }
-        else if(gameRooms[roomCode].canJoin == false) {
+        else if (gameRooms[roomCode].canJoin == false) {
             console.log("Can't join room")
 
             socket.emit("clientMessage", "Can't join room")
@@ -357,6 +356,13 @@ io.on('connection', async (socket) => {
             console.log(gameRooms[roomCode].gamePlayers.numberOfPlayers())
             socket.emit("clientMessage", "Too many Players")
             return
+        }
+
+        for (i = 0; i < gameRooms[roomCode].gamePlayers.allPlayers().length; i++) {
+            if (gameRooms[roomCode].gamePlayers.allPlayers()[i].Name === data.Player) {
+                socket.emit("clientMessage", "Player already has that name")
+                return
+            }
         }
 
         socket.join(data.RoomCode)
@@ -378,12 +384,12 @@ io.on('connection', async (socket) => {
     })
 
     socket.on("removeHost", async (roomCode) => {
-        delete gameRooms[roomCode]
+        gameRooms[roomCode] = null
+        io.to(roomCode).emit("hostisgone")
     })
 
     socket.on("LeaveGame", async (data) => {
         if (!gameRooms[data.RoomCode]) {
-            console.log("BRUH")
             return
         }
 

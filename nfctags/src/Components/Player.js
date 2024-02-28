@@ -11,6 +11,7 @@ const Player = () => {
     const [showJoinRoomUI, setShowJoinRoomUI] = useState(true);
     const [waitForHost, setWaitForHost] = useState(false)
     const [clientGameRunning, setclientGameRunning] = useState(false);
+    const [error, setError] = useState(false)
 
     const navigate = useNavigate()
 
@@ -18,6 +19,7 @@ const Player = () => {
 
         setShowJoinRoomUI(false); // Hide the JoinRoomUI component
         setWaitForHost(true)
+        setError(false)
 
         socket.emit("PlayerJoin", { Player: PlayerName, RoomCode: roomCode });
     };
@@ -43,12 +45,26 @@ const Player = () => {
             window.location.reload()
         }
 
+        function handleClientMessage(message) {
+
+            if (message === "Room dosen't exist" || message === "Player already has that name") {
+                setShowJoinRoomUI(true)
+                setWaitForHost(false)
+                setError(true)
+                setGameStateMessage(message)
+
+            } else {
+                setGameStateMessage(message)
+            }
+
+        }
 
         socket.on("connect", onJoin)
         socket.on("disconnect", onLeave)
         socket.on("message", (message) => setGameStateMessage(message))
         socket.on("clientStart", () => setclientGameRunning(true))
-        socket.on("clientMessage", (clientmessage) => setGameStateMessage(clientmessage))
+        socket.on("clientMessage", (clientmessage) => handleClientMessage(clientmessage))
+        socket.on("hostisgone", () => window.location.reload())
 
         return () => {
             socket.off("connect", onJoin)
@@ -74,6 +90,9 @@ const Player = () => {
                     <input type='text' onChange={e => setPlayerName(e.target.value)} />
 
                     <button onClick={handleJoinButtonClick}>join</button>
+
+                    {error && <h2>{gameStateMessage}</h2>}
+
                 </div>
             )}
 
@@ -81,7 +100,6 @@ const Player = () => {
                 <div>
                     <h1>Waiting for Host to start</h1>
                     <h2>Join the room "{roomCode}" as {PlayerName}</h2>
-                    <h2>{gameStateMessage}</h2>
 
                 </div>
             )}

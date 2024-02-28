@@ -32,7 +32,7 @@ const Board = () => {
         setHostRoomUi(false)
         setWaitForPlayers(true)
         setPlaySound(true)
-        socket.emit("host", {RoomCode: roomCode, max: maxPlayers, mode: gameMode, speed: gameSpeed})
+        socket.emit("host", { RoomCode: roomCode, max: maxPlayers, mode: gameMode, speed: gameSpeed })
 
         if (gameMode === "NFCmode") {
             startGame()
@@ -45,7 +45,7 @@ const Board = () => {
         setWaitForPlayers(false)
         setGameRunning(true)
         setPlaySound(false)
-        socket.emit("startGame", { RoomCode: roomCode, canjoin: canJoin})
+        socket.emit("startGame", { RoomCode: roomCode, canjoin: canJoin })
     }
 
     const renderCell = (cellValue) => {
@@ -82,6 +82,11 @@ const Board = () => {
             </div>
         ));
     };
+
+    const stopGame = () => {
+        socket.emit("removeHost", roomCode)
+        window.location.reload()
+    }
 
     function handleWinner(player) {
         setGameStateMessage(player + " is the winner")
@@ -122,7 +127,7 @@ const Board = () => {
             />
 
             {HostRoomUi && (
-                <div>
+                <div className='HostUI'>
                     <label for="RoomCode">Host Room</label>
                     <input type='text' id="RoomCode" onChange={e => setRoomCode(e.target.value)} ></input>
 
@@ -133,7 +138,6 @@ const Board = () => {
                     <label for="Mode">Game Mode</label>
                     <select id="Mode" value={gameMode} onChange={e => setGameMode(e.target.value)}>
                         <option value="normal">Normal</option>
-                        <option value="randomized">Randomized</option>
                         <option value="NFCmode">NFC Mode</option>
                     </select>
 
@@ -209,7 +213,7 @@ const Board = () => {
                             </div>
                         </div>
 
-                        <button>Leave Game</button>
+                        <button onClick={stopGame}>Leave Game</button>
 
                     </div>
 
