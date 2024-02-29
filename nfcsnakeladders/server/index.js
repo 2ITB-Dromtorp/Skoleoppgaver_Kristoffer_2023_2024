@@ -8,7 +8,6 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 app.use(express.json())
-app.use(cors())
 app.use(express.static("build"))
 
 const port = process.env.PORT || 8080
