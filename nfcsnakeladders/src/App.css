@@ -407,6 +407,7 @@ h1 {
   width: 30%;
   height: 30%;
   margin: 5%;
+  z-index: 2;
 }
 
 .name-0 {
@@ -422,12 +423,12 @@ h1 {
   width: 30%;
   height: 30%;
   margin: 5%;
+  z-index: 2;
 }
 
 
 .name-1 {
   color: #4caf50;
-  ;
 
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
 
@@ -439,6 +440,8 @@ h1 {
   width: 30%;
   height: 30%;
   margin: 5%;
+  z-index: 2;
+
 }
 
 .name-2 {
@@ -456,11 +459,12 @@ h1 {
   width: 30%;
   height: 30%;
   margin: 5%;
+  z-index: 2;
+
 }
 
 .name-3 {
   color: #ffeb3b;
-  ;
 
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
 
@@ -472,6 +476,8 @@ h1 {
   width: 30%;
   height: 30%;
   margin: 5%;
+  z-index: 2;
+
 }
 
 .name-4 {
@@ -487,6 +493,8 @@ h1 {
   width: 30%;
   height: 30%;
   margin: 5%;
+  z-index: 2;
+
 }
 
 .name-5 {
@@ -502,6 +510,8 @@ h1 {
   width: 30%;
   height: 30%;
   margin: 5%;
+  z-index: 2;
+
 }
 
 .name-6 {
@@ -517,6 +527,8 @@ h1 {
   width: 30%;
   height: 30%;
   margin: 5%;
+  z-index: 2;
+
 }
 
 .name-7 {
@@ -532,6 +544,8 @@ h1 {
   width: 30%;
   height: 30%;
   margin: 5%;
+  z-index: 2;
+
 }
 
 .name-8 {
