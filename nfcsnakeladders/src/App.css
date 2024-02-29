@@ -387,6 +387,7 @@ h1 {
 .PlayersWaiting {
   display: flex;
   flex-direction: row;
+  gap: 20px;
 }
 
 .PlayerContainer {
