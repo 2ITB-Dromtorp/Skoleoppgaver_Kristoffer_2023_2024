@@ -5,11 +5,19 @@ import { socket } from '../App';
 import Sound from 'react-sound'
 import Music from '../Assets/Kahoot.mp3'
 //import { useMemo } from 'react';
-import dice from '../Assets/dice.png';
+import diceImg from '../Assets/dice.png';
 import ConfettiExplosion from 'react-confetti-explosion';
 import Confetti from 'react-confetti'
 import ladder from '../Assets/ladder.png'
 import snake from '../Assets/snake.png'
+import emptyDice from '../Assets/diceEmpty.png'
+import dice1 from '../Assets/dice1.png'
+import dice2 from '../Assets/dice2.png'
+import dice3 from '../Assets/dice3.png'
+import dice4 from '../Assets/dice4.png'
+import dice5 from '../Assets/dice5.png'
+import dice6 from '../Assets/dice6.png'
+
 
 const Board = () => {
 
@@ -32,7 +40,7 @@ const Board = () => {
     const [canJoin, setCanJoin] = useState(true)
     const [width, setWidth] = useState(window.innerWidth);
     const [hostMessage, setHostMessage] = useState("")
-
+    const [diceDisplay, setDiceDisplay] = useState()
 
     const createRoom = () => {
         setHostRoomUi(false)
@@ -45,7 +53,7 @@ const Board = () => {
         }
     }
 
-    console.log(roomCode)
+
 
     const startGame = () => {
 
@@ -180,7 +188,6 @@ const Board = () => {
         }
 
         const connectSnakesAndLadders = () => {
-            console.log("test")
             const newconnections = [];
 
             gameBoard.forEach(row => {
@@ -197,15 +204,43 @@ const Board = () => {
 
             setConnections(newconnections);
         }
+        function changeDiceDisplay(dice) {
+            switch (dice) {
+                case 0:
+                    setDiceDisplay(emptyDice)
+                    break;
+                case 1:
+                    setDiceDisplay(dice1)
+                    break;
+                case 2:
+                    setDiceDisplay(dice2)
+                    break;
+                case 3:
+                    setDiceDisplay(dice3)
+                    break;
+                case 4:
+                    setDiceDisplay(dice4)
+                    break;
+                case 5:
+                    setDiceDisplay(dice5)
+                    break;
+                case 6:
+                    setDiceDisplay(dice6)
+                    break;
+            }
+        }
 
         socket.on("connect", onJoin)
         socket.on("playerWin", (winner) => handleWinner(winner))
         socket.on("updatePlayers", (player) => setPlayers(player))
         socket.on("renderBoard", (map) => {
             setGameBoard(map);
-            // Call connectSnakesAndLadders here if the game has started
         })
-        socket.on("message", (message) => setGameStateMessage(message))
+        socket.on("message", (messagedata) => {
+            setGameStateMessage(messagedata.message)
+
+            changeDiceDisplay(messagedata.data.dice)
+        })
 
         console.log(players)
         console.log(gameBoard)
@@ -229,7 +264,7 @@ const Board = () => {
 
         }
 
-    }, [players, gameBoard, gameStateMessage, roomCode, GameRunning, width, hostMessage, gameMode, maxPlayers, gameSpeed])
+    }, [players, gameBoard, diceDisplay, gameStateMessage, roomCode, GameRunning, width, hostMessage, gameMode, maxPlayers, gameSpeed])
 
     return (
         <div className='BoardContainer'>
@@ -279,25 +314,30 @@ const Board = () => {
 
             {WaitForPlayers && (
                 <div className='waitforplayers'>
-                    <h2>{"Room Code:"}</h2>
-                    <h1>{roomCode}</h1>
+                    <h1>Room Code: {roomCode}</h1>
 
-                    <h1>Waiting for Players</h1>
+                    <h2>Waiting for Players</h2>
 
                     <h2>{players.length + "/" + maxPlayers}</h2>
 
-                    <div>
+                    <div className='PlayersWaiting'>
 
                         {players.length > 0 && players.map((ekte) => {
                             return <p>{ekte.Name}</p>
                         })}
                     </div>
 
-                    <button onClick={startGame}> Start Game </button>
+                    <div className='StartButtons'>
+
+                        <button onClick={startGame}> Start Game </button>
+
+
+                        <button onClick={() => window.location.reload()}> Go back </button>
+
+                    </div>
 
                     <h2>{hostMessage}</h2>
 
-                    <button onClick={() => window.location.reload()}> Go back </button>
                 </div>
             )}
 
@@ -306,7 +346,7 @@ const Board = () => {
                 <div className='winscreen'>
                     {isExploding && <ConfettiExplosion particleCount={500} duration={5000} />}
                     <Confetti />
-                    <h1>{playerwinName} is win</h1>
+                    <h1 className='player-win'>{playerwinName} is win</h1>
                 </div>
             }
 
@@ -319,19 +359,21 @@ const Board = () => {
                     </div>
 
                     <div className='game-MessageBoard'>
-                        <div className='eventBoard'>{gameStateMessage}</div>
+                        <div className='eventBoard'>
+                            <p>{gameStateMessage}</p>
+                            <img style={{ width: "25%" }} src={diceDisplay}></img>
+                        </div>
+
+                        <div className='PlayerMainText'>Players</div>
 
                         <div className='PlayerList'>
-                            <h1>Players:</h1>
-                            <div>
-
+                            <div className='PlayersGrid'>
                                 {players.length > 0 && players.map((ekte) => {
                                     return <div className='PlayerInList'>
                                         <p className={`name-${ekte.PlayerNumber}`}>{ekte.Name}</p>
-                                        {ekte.Turn && <img alt="skibidi" className='dice' src={dice}></img>}
+                                        {ekte.Turn && <img alt="skibidi" className='dice' src={diceImg}></img>}
                                     </div>
                                 })}
-
                             </div>
                         </div>
 

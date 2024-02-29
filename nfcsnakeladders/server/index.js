@@ -7,7 +7,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000", // Specify the exact origin
+        origin: "http://localhost:8080", // Specify the exact origin
         methods: ["GET", "POST"],
         credentials: true
     }
@@ -19,9 +19,9 @@ app.use(express.static("build"))
 
 const port = process.env.PORT || 8080
 
-/*app.get("*", (req, res) => {
+app.get("*", (req, res) => {
     res.sendFile(path.resolve("./build/index.html"))
-})*/
+})
 
 server.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
@@ -134,6 +134,7 @@ function changeTurn(roomCode) {
 
     gameRoom.turnChanged = false;
 
+    io.to(roomCode).emit("message", { message: (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn"), data: { name: "bruh", dice: 0 } })
     io.to(roomCode).emit("updatePlayers", players);
 }
 
@@ -216,7 +217,7 @@ io.on('connection', async (socket) => {
         let delay = gameRooms[roomCode].gameSpeed;
         console.log(diceRoll)
 
-        io.to(data.RoomCode).emit("message", playerName + " Rolled " + diceRoll)
+        io.to(data.RoomCode).emit("message", { message: (playerName + " Rolled " + diceRoll), data: { name: playerName, dice: diceRoll } })
 
         function renderLoop(i, isSnake) {
             if (i <= diceRoll) {
@@ -245,7 +246,9 @@ io.on('connection', async (socket) => {
 
                             io.to(data.RoomCode).emit("renderBoard", gameBoard)
                         } else if ((player.Position + diceRoll) > 100) {
-                            io.to(data.RoomCode).emit("message", (diceRoll + " is higher than 100"))
+
+                            io.to(data.RoomCode).emit("message", { message: (diceRoll + " is higher than 100"), data: { name: playerName, dice: diceRoll } })
+
                             gameRooms[roomCode].playerisMoving = false
                             break;
                         }
@@ -291,7 +294,6 @@ io.on('connection', async (socket) => {
 
                     gameRooms[roomCode].playerisMoving = false
 
-                    io.to(data.RoomCode).emit("message", gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn")
                     io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
                 }
 
@@ -325,7 +327,7 @@ io.on('connection', async (socket) => {
         io.to(roomCode).emit("clientStart")
         io.to(roomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
         io.to(roomCode).emit("renderBoard", gameBoard)
-        io.to(roomCode).emit("message", gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn")
+        io.to(data.RoomCode).emit("message", { message: (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn"), data: { name: "bruh", dice: 0 } })
     })
 
     socket.on("PlayerJoin", async (data) => {
@@ -341,6 +343,7 @@ io.on('connection', async (socket) => {
         }
         else if (gameRooms[roomCode].canJoin == false) {
             console.log("Can't join room")
+
             socket.emit("clientMessage", "You cannot join this room")
             return
         }

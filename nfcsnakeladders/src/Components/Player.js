@@ -2,6 +2,15 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { socket } from '../App';
 import { useNavigate } from 'react-router-dom';
+import logo from '../Assets/gameLogo.png'
+import emptyDice from '../Assets/diceEmpty.png'
+import dice1 from '../Assets/dice1.png'
+import dice2 from '../Assets/dice2.png'
+import dice3 from '../Assets/dice3.png'
+import dice4 from '../Assets/dice4.png'
+import dice5 from '../Assets/dice5.png'
+import dice6 from '../Assets/dice6.png'
+
 
 const Player = () => {
 
@@ -12,6 +21,7 @@ const Player = () => {
     const [waitForHost, setWaitForHost] = useState(false)
     const [clientGameRunning, setclientGameRunning] = useState(false);
     const [error, setError] = useState(false)
+    const [diceDisplay, setDiceDisplay] = useState()
 
     const navigate = useNavigate()
 
@@ -59,9 +69,38 @@ const Player = () => {
 
         }
 
+        function changeDiceDisplay(dice) {
+            switch (dice) {
+                case 0:
+                    setDiceDisplay(emptyDice)
+                    break;
+                case 1:
+                    setDiceDisplay(dice1)
+                    break;
+                case 2:
+                    setDiceDisplay(dice2)
+                    break;
+                case 3:
+                    setDiceDisplay(dice3)
+                    break;
+                case 4:
+                    setDiceDisplay(dice4)
+                    break;
+                case 5:
+                    setDiceDisplay(dice5)
+                    break;
+                case 6:
+                    setDiceDisplay(dice6)
+                    break;
+            }
+        }
+
         socket.on("connect", onJoin)
         socket.on("disconnect", onLeave)
-        socket.on("message", (message) => setGameStateMessage(message))
+        socket.on("message", (data) => {
+            setGameStateMessage(data.message)
+            changeDiceDisplay(data.data.dice)
+        })
         socket.on("clientStart", () => setclientGameRunning(true))
         socket.on("clientMessage", (clientmessage) => handleClientMessage(clientmessage))
         socket.on("hostisgone", () => window.location.reload())
@@ -79,36 +118,44 @@ const Player = () => {
     }, [roomCode, PlayerName, clientGameRunning])
 
     return (
-        <div>
+        <div className='PlayerContainer'>
 
             {showJoinRoomUI && (
-                <div>
-                    <h1>Room Code</h1>
-                    <input type='text' onChange={e => setRoomCode(e.target.value)} />
+                <div className='JoinUI'>
 
-                    <h1>Player Name</h1>
-                    <input type='text' onChange={e => setPlayerName(e.target.value)} />
+                    <img style={{ width: "40%" }} src={logo}></img>
 
-                    <button onClick={handleJoinButtonClick}>join</button>
+                    <div className='JoinUInner'>
+                        <h1>Room Code</h1>
+                        <input type='text' onChange={e => setRoomCode(e.target.value)} />
 
-                    {error && <h2>{gameStateMessage}</h2>}
+                        <h1>Player Name</h1>
+                        <input type='text' onChange={e => setPlayerName(e.target.value)} />
+
+                        <button onClick={handleJoinButtonClick}>join</button>
+
+                        {error && <h2>{gameStateMessage}</h2>}
+                    </div>
 
                 </div>
             )}
 
             {(waitForHost && !clientGameRunning) && (
-                <div>
+                <div className='JoinUI'>
+
                     <h1>Waiting for Host to start</h1>
-                    <h2>Join the room "{roomCode}" as {PlayerName}</h2>
+
+                    <h2>Joined the room "{roomCode}" as {PlayerName}</h2>
 
                 </div>
             )}
 
             {clientGameRunning && (
-                <div>
-                    <h1>{PlayerName}</h1>
+                <div className='JoinUI'>
+                    <h1>Name: {PlayerName}</h1>
                     <button onClick={rollDice}>Roll Dice</button>
                     <h2>{gameStateMessage}</h2>
+                    <img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
 
                     <button onClick={handleLeave}>Leave</button>
                 </div>

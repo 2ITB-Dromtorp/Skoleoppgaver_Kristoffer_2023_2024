@@ -82,6 +82,10 @@ select {
 
 button {
   font-family: pixelfont;
+  background-image: url("./Assets/button.png");
+  background-size: 100%, 100%;
+  background-position: center;
+  background-repeat: no-repeat;
   background-color: #626262;
   /* Green */
   border: none;
@@ -91,6 +95,22 @@ button {
   display: inline-block;
   font-size: 16px;
   cursor: pointer;
+}
+
+.PlayerMainText {
+  font-family: pixelfont;
+  background-image: url("./Assets/button.png");
+  background-size: 100%, 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #626262;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 18px;
 }
 
 .waitforplayers {
@@ -155,15 +175,12 @@ input {
   background-color: rgb(188, 188, 188);
   height: 50%;
   position: relative;
-  padding: 20px;
 }
 
 .game-MessageBoard {
   display: flex;
   text-align: center;
   flex-direction: column;
-  width: max-content;
-  gap: 20px;
 }
 
 h1 {
@@ -260,17 +277,23 @@ h1 {
 }*/
 
 .eventBoard {
-  font-size: x-large;
+  font-size: large;
   background-image: url("./Assets/eventBoard.png");
   background-position: center;
   background-size: 100%, 100%;
   background-repeat: no-repeat;
-  padding-top: 12vh;
-  padding-left: 7vh;
-  padding-right: 7vh;
+  padding-top: 11vh;
+  padding-left: 9vh;
+  padding-right: 9vh;
 
-  padding-bottom: 12vh;
+  padding-bottom: 11vh;
+  width: 200px;
 
+}
+
+.PlayersGrid {
+  display: grid;
+  flex-direction: row;
 }
 
 
@@ -317,14 +340,57 @@ h1 {
 }
 
 .PlayerInList {
-  width: 70%;
-  height: 70%;
+  width: 90%;
+  height: 90%;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-content: center;
   align-items: center;
+  gap: 12px;
+}
 
+.JoinUI {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  height: 100vh;
+  background-color: #282c34;
+}
+
+.JoinUInner {
+  background-color: #232323;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 60%;
+}
+
+.waitforplayers {
+  background-image: url("./Assets/eventBoard.png");
+  background-position: center;
+  background-size: 100%, 100%;
+  background-repeat: no-repeat;
+  padding: 28vh;
+}
+
+.StartButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 10%;
+}
+
+.PlayersWaiting {
+  display: flex;
+  flex-direction: row;
+}
+
+.PlayerContainer {
+  color: white;
 }
 
 .displayTurn {
