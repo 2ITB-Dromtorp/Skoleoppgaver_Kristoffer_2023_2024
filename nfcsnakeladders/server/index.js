@@ -7,7 +7,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:8080", // Specify the exact origin
+        origin: ("http://mulighet.no:" + process.env.PORT), // Specify the exact origin
         methods: ["GET", "POST"],
         credentials: true
     }
