@@ -208,18 +208,15 @@ io.on('connection', async (socket) => {
 
         let newPosition
         let delay = gameRooms[roomCode].gameSpeed;
-        console.log(diceRoll)
 
         io.to(data.RoomCode).emit("message", { message: (playerName + " Rolled " + diceRoll), data: { name: playerName, dice: diceRoll } })
 
         function renderLoop(i, isSnake) {
             if (i <= diceRoll) {
 
-                console.log(isSnake)
 
                 let player = gameRooms[roomCode].gamePlayers.getPlayer(playerName)
                 let currentPosition = isSnake ? player.Position : (player.Position + i)
-                console.log("position:" + currentPosition)
 
                 for (let l = 0; l < BOARD_SIZE; l++) {
                     for (let j = 0; j < BOARD_SIZE; j++) {

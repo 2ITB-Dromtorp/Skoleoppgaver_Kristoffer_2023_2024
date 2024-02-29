@@ -298,6 +298,7 @@ const Board = () => {
 
                     <label for="maxplayer">Max Players</label>
                     <select id="maxplayer" value={maxPlayers} onChange={e => setMaxPlayers(e.target.value)}>
+                        <option value={1}>1</option>
                         <option value={2}>2</option>
                         <option value={3}>3</option>
                         <option value={4}>4</option>
