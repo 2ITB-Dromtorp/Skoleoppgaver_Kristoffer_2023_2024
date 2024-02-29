@@ -7,6 +7,39 @@ body {
   font-family: pixelfont;
 }
 
+.Home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #282c34;
+  gap: 5%;
+}
+
+.HomeButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.HomeButtonStyle {
+  background-color: #04AA6D;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 32px;
+  cursor: pointer;
+}
+
+.HomeButtonStyle:hover {
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+
+}
+
 select {
   font-family: pixelfont;
 }
@@ -16,26 +49,55 @@ select {
 }
 
 * {
-  image-rendering: optimizeSpeed;             /* STOP SMOOTHING, GIVE ME SPEED  */
-  image-rendering: -moz-crisp-edges;          /* Firefox                        */
-  image-rendering: -o-crisp-edges;            /* Opera                          */
-  image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
-  image-rendering: pixelated;                 /* Universal support since 2021   */
-  image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
-  -ms-interpolation-mode: bicubic;   /* IE8+                           */
+  image-rendering: optimizeSpeed;
+  /* STOP SMOOTHING, GIVE ME SPEED  */
+  image-rendering: -moz-crisp-edges;
+  /* Firefox                        */
+  image-rendering: -o-crisp-edges;
+  /* Opera                          */
+  image-rendering: -webkit-optimize-contrast;
+  /* Chrome (and eventually Safari) */
+  image-rendering: pixelated;
+  /* Universal support since 2021   */
+  image-rendering: optimize-contrast;
+  /* CSS3 Proposed                  */
+  -ms-interpolation-mode: bicubic;
+  /* IE8+                           */
 
 }
 
 .HostUI {
   display: flex;
   flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  gap: 15px;
+  background-image: url("./Assets/hostBoard.png");
+  background-position: center;
+  background-size: 100%, 100%;
+  background-repeat: no-repeat;
+  padding: 15vh;
 
-  gap: 25px;
 }
 
 button {
   font-family: pixelfont;
-  color: green;
+  background-color: #626262;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.waitforplayers {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 input {
@@ -51,7 +113,7 @@ input {
   background-position: center;
   background-size: 100%, 100%;
   background-repeat: no-repeat;
-  padding:11vh;
+  padding: 8vh;
 
 
 }
@@ -72,6 +134,7 @@ input {
   height: 100vh;
   justify-content: center;
   align-items: center;
+
 }
 
 .board-row {
@@ -100,8 +163,7 @@ input {
   text-align: center;
   flex-direction: column;
   width: max-content;
-  padding: 1%;
-  gap: 150px;
+  gap: 20px;
 }
 
 h1 {
@@ -109,9 +171,9 @@ h1 {
 }
 
 .tile {
-  width: 70px;
+  width: 65px;
   /* Width of each tile */
-  height: 70px;
+  height: 65px;
   /* Height of each tile */
   /* Border around each tile */
   background-color: #fff;
@@ -172,7 +234,7 @@ h1 {
   left: 7.5%;
   top: 3px;
   z-index: 1;
-  
+
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
   font-weight: 600;
   color: #232323;
@@ -198,7 +260,7 @@ h1 {
 }*/
 
 .eventBoard {
-  font-size:  x-large;
+  font-size: x-large;
   background-image: url("./Assets/eventBoard.png");
   background-position: center;
   background-size: 100%, 100%;
@@ -213,17 +275,19 @@ h1 {
 
 
 
-.gameSpeed{
+.gameSpeed {
   transform: rotateY(180deg);
   appearance: none;
   background: #d3d3d3;
   transition: opacity .2s;
   opacity: 0.7;
   height: 15px;
-  border-radius: 5px;  
+  border-radius: 5px;
 }
+
 .gameSpeed:hover {
-  opacity: 1; /* Fully shown on mouse-over */
+  opacity: 1;
+  /* Fully shown on mouse-over */
 }
 
 .gameSpeed::-webkit-slider-thumb {
@@ -232,13 +296,13 @@ h1 {
   width: 40px;
   height: 40px;
   border: 0;
- background-image: url("./Assets/Slider.png");
- border: 2px solid black;
- border-radius: 10px;
- background-position: center;
- background-repeat: no-repeat;
- background-size:contain;
- 
+  background-image: url("./Assets/Slider.png");
+  border: 2px solid black;
+  border-radius: 10px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
 }
 
 .tile-players-container {
@@ -253,8 +317,8 @@ h1 {
 }
 
 .PlayerInList {
-  width: 60%;
-  height: 60%;
+  width: 70%;
+  height: 70%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -280,7 +344,7 @@ h1 {
 }
 
 .name-0 {
-  color:#f44336;
+  color: #f44336;
 
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
 
@@ -296,7 +360,8 @@ h1 {
 
 
 .name-1 {
-  color:#4caf50;;
+  color: #4caf50;
+  ;
 
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
 
@@ -311,7 +376,8 @@ h1 {
 }
 
 .name-2 {
-  color:#2196f3;;
+  color: #2196f3;
+  ;
 
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
 
@@ -327,7 +393,8 @@ h1 {
 }
 
 .name-3 {
-  color:#ffeb3b;;
+  color: #ffeb3b;
+  ;
 
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
 
@@ -357,7 +424,7 @@ h1 {
 }
 
 .name-5 {
-  color:#282c34;
+  color: #282c34;
 
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
 
@@ -372,7 +439,7 @@ h1 {
 }
 
 .name-6 {
-  color:#b919c2;
+  color: #b919c2;
 
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
 
@@ -387,7 +454,7 @@ h1 {
 }
 
 .name-7 {
-  color:#b919c2;
+  color: #b919c2;
 
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
 

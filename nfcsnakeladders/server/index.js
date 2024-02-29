@@ -34,13 +34,11 @@ class Player {
         this.Turn = false
     }
 }
-
-// Class that holds a collection of players and properties and functions for the group
 class Players {
     constructor() {
         this.players = []
     }
-    // create a new player and save it in the collection
+
     newPlayer(name, position, number) {
         let p = new Player(name, position, number)
 
@@ -54,7 +52,7 @@ class Players {
     allPlayers() {
         return this.players
     }
-    // this could include summary stats like average score, etc. For simplicity, just the count for now
+
     numberOfPlayers() {
         return this.players.length
     }
@@ -126,21 +124,17 @@ function changeTurn(roomCode) {
 
     console.log(nextPlayerIndex)
 
-    // Update the current player's Turn property to false
     currentPlayer.Turn = false;
 
-    // Update the next player's Turn property to true
     const nextPlayer = players[nextPlayerIndex];
+
     nextPlayer.Turn = true;
 
-    // Update the playerTurn index for the game room
     gameRoom.playerTurn = nextPlayerIndex;
 
     gameRoom.turnChanged = false;
 
-    // Emit updates to the frontend
     io.to(roomCode).emit("updatePlayers", players);
-
 }
 
 io.on('connection', async (socket) => {
@@ -314,7 +308,7 @@ io.on('connection', async (socket) => {
         console.log("game started")
 
         let roomCode = data.RoomCode
-        
+
         if (gameRooms[roomCode].gameMode == "NFCmode") {
 
             gameRooms[roomCode].gamePlayers.newPlayer("NFCPlayer1", 1, 0);
@@ -347,8 +341,7 @@ io.on('connection', async (socket) => {
         }
         else if (gameRooms[roomCode].canJoin == false) {
             console.log("Can't join room")
-
-            socket.emit("clientMessage", "Can't join room")
+            socket.emit("clientMessage", "You cannot join this room")
             return
         }
         else if (gameRooms[roomCode].maxPlayers < (gameRooms[roomCode].gamePlayers.numberOfPlayers() + 1)) {

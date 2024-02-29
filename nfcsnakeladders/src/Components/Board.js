@@ -10,7 +10,6 @@ import ConfettiExplosion from 'react-confetti-explosion';
 import Confetti from 'react-confetti'
 import ladder from '../Assets/ladder.png'
 import snake from '../Assets/snake.png'
-import Player from './Player';
 
 const Board = () => {
 
@@ -51,14 +50,14 @@ const Board = () => {
     const startGame = () => {
 
 
-        if (players.length < 2) {
+        if (players.length < 2 && !(gameMode === "NFCmode")) {
             setHostMessage("Not Enough Players")
             return
         }
 
         setWaitForPlayers(false)
         setGameRunning(true)
-        
+
         setPlaySound(false)
 
 
@@ -80,7 +79,7 @@ const Board = () => {
 
 
         return (
-            <div id={`tile-${cellValue.tile}`} style={cellValue.tile % 2 === 0 ? {backgroundColor: "#cfd1cf"} : {backgroundColor: "white"}} className={`tile ${cellValue.type}`}>
+            <div id={`tile-${cellValue.tile}`} style={cellValue.tile % 2 === 0 ? { backgroundColor: "#cfd1cf" } : { backgroundColor: "white" }} className={`tile ${cellValue.type}`}>
                 <div className='cell-info'>
                     <div className='tile-number'>{cellValue.tile}</div>
 
@@ -151,7 +150,7 @@ const Board = () => {
             const lineCenterX = (cx1 + cx2) / 2;
             const lineCenterY = (cy1 + cy2) / 2;
 
-            let image 
+            let image
 
             if (type === "snake") {
                 image = snake
@@ -201,10 +200,7 @@ const Board = () => {
 
         socket.on("connect", onJoin)
         socket.on("playerWin", (winner) => handleWinner(winner))
-        socket.on("updatePlayers", (player) => {
-            setPlayers(player)
-            setHostMessage(player.Name + " joined the room")
-        })
+        socket.on("updatePlayers", (player) => setPlayers(player))
         socket.on("renderBoard", (map) => {
             setGameBoard(map);
             // Call connectSnakesAndLadders here if the game has started
@@ -245,11 +241,13 @@ const Board = () => {
 
             {HostRoomUi && (
                 <div className='HostUI'>
-                    <label for="RoomCode">Host Room</label>
+                    <h2 for="RoomCode">Host Room</h2>
+
+                    <label for="RoomCode">Room Code</label>
                     <input type='text' className="RoomCode" onChange={e => setRoomCode(e.target.value)} ></input>
 
                     <label for="gameSpeed">Game Speed</label>
-                    <input type="range" className='gameSpeed'  min="50" max="1000" step={50} value={gameSpeed} onChange={e => setGameSpeed(e.target.value)}></input>
+                    <input type="range" className='gameSpeed' min="50" max="1000" step={50} value={gameSpeed} onChange={e => setGameSpeed(e.target.value)}></input>
 
                     <label for="Mode">Game Mode</label>
                     <select id="Mode" value={gameMode} onChange={e => setGameMode(e.target.value)}>
@@ -263,7 +261,7 @@ const Board = () => {
                         <option value={false}>no</option>
                     </select>
 
-                    <label for="maxplayer">Max Player</label>
+                    <label for="maxplayer">Max Players</label>
                     <select id="maxplayer" value={maxPlayers} onChange={e => setMaxPlayers(e.target.value)}>
                         <option value={2}>2</option>
                         <option value={3}>3</option>
@@ -280,8 +278,9 @@ const Board = () => {
             )}
 
             {WaitForPlayers && (
-                <div>
-                    <h1>{"Room Code:" + roomCode}</h1>
+                <div className='waitforplayers'>
+                    <h2>{"Room Code:"}</h2>
+                    <h1>{roomCode}</h1>
 
                     <h1>Waiting for Players</h1>
 
@@ -297,6 +296,8 @@ const Board = () => {
                     <button onClick={startGame}> Start Game </button>
 
                     <h2>{hostMessage}</h2>
+
+                    <button onClick={() => window.location.reload()}> Go back </button>
                 </div>
             )}
 

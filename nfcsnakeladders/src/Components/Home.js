@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import logo from "../Assets/gameLogo.png"
 
 const Home = () => {
 
@@ -13,9 +14,13 @@ const Home = () => {
     }
 
     return (
-        <div>
-            <button onClick={host}>Host</button>
-            <button onClick={join}>Join</button>
+        <div className="Home">
+            <img style={{ width: "70%" }} alt="logo" src={logo}></img>
+            <div className="HomeButtons">
+                <button className="HomeButtonStyle" onClick={host}>Host</button>
+                <button className="HomeButtonStyle" onClick={join}>Join</button>
+            </div>
+
         </div>
     );
 };
