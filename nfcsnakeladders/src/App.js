@@ -24,7 +24,7 @@ function App() {
 
 export default App;
 
-export const socket = io("localhost:8080", {
+export const socket = io(("http//mulighet.no:" + process.env.PORT), {
   withCredentials: true,
 }
 )
