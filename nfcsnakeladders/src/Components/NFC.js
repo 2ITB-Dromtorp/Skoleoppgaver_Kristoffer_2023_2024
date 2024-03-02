@@ -3,12 +3,19 @@ import { useEffect } from 'react';
 import { socket } from '../App';
 
 import { useParams } from 'react-router-dom';
-
+import emptyDice from '../Assets/diceEmpty.png'
+import dice1 from '../Assets/dice1.png'
+import dice2 from '../Assets/dice2.png'
+import dice3 from '../Assets/dice3.png'
+import dice4 from '../Assets/dice4.png'
+import dice5 from '../Assets/dice5.png'
+import dice6 from '../Assets/dice6.png'
 
 const NFC = () => {
 
     const [gameStateMessage, setGameStateMessage] = useState(0)
-
+    const [diceDisplay, setDiceDisplay] = useState()
+    const [currentPlayer, setCurrentPlayer] = useState()
     let { PlayerName, HostID } = useParams();
 
     useEffect(() => {
@@ -20,29 +27,69 @@ const NFC = () => {
             console.log("kisonnected")
         }
 
+        function changeDiceDisplay(dice) {
+            switch (dice) {
+                case 0:
+                    setDiceDisplay(emptyDice)
+                    break;
+                case 1:
+                    setDiceDisplay(dice1)
+                    break;
+                case 2:
+                    setDiceDisplay(dice2)
+                    break;
+                case 3:
+                    setDiceDisplay(dice3)
+                    break;
+                case 4:
+                    setDiceDisplay(dice4)
+                    break;
+                case 5:
+                    setDiceDisplay(dice5)
+                    break;
+                case 6:
+                    setDiceDisplay(dice6)
+                    break;
+            }
+        }
+
+
         socket.on("connect", onJoin)
         socket.on("disconnect", onDisconnect)
-        socket.on("message", (message) => setGameStateMessage(message))
+        socket.on("message", (data) => {
+            if (data.data.name === PlayerName) {
+                setGameStateMessage("Your turn")
+            } else {
+                setGameStateMessage(data.message)
+            }
+
+            changeDiceDisplay(data.data.dice)
+            setCurrentPlayer(data.data.name)
+        })
         //socket.on("clientResponse", clientResponse)
         return () => {
             socket.off("connect", onJoin)
             socket.off("disconnect", onDisconnect)
-            socket.off("message", (message) => setGameStateMessage(message))
+            socket.on("message", (data) => {
+                if (data.data.name === PlayerName) {
+                    setGameStateMessage("Your turn")
+                } else {
+                    setGameStateMessage(data.message)
+                }
+    
+                changeDiceDisplay(data.data.dice)
+                setCurrentPlayer(data.data.name)
+            })
             //socket.off("clientResponse", clientResponse)
-
         }
 
     }, [HostID, PlayerName, gameStateMessage])
 
     return (
-        <div>
+        <div className='PlayerContainer'>
 
-
-            <div>
-                <h1>{PlayerName}</h1>
-                <h2>{gameStateMessage}</h2>
-            </div>
-
+                <h2 className={`name-${currentPlayer.PlayerNumber}`}>{gameStateMessage}</h2>
+                <img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
 
         </div>
     );

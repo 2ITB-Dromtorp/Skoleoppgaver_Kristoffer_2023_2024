@@ -365,7 +365,7 @@ const Board = () => {
                             <img style={{ width: "25%" }} src={diceDisplay}></img>
                         </div>
 
-                        <div className='PlayerMainText'>Players</div>
+                        <div className='PlayerMainText'>{roomCode}</div>
 
                         <div className='PlayerList'>
                             <div className='PlayersGrid'>

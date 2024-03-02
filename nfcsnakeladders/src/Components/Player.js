@@ -22,6 +22,7 @@ const Player = () => {
     const [clientGameRunning, setclientGameRunning] = useState(false);
     const [error, setError] = useState(false)
     const [diceDisplay, setDiceDisplay] = useState()
+    const [currentPlayer, setCurrentPlayer] = useState()
 
     const navigate = useNavigate()
 
@@ -98,8 +99,14 @@ const Player = () => {
         socket.on("connect", onJoin)
         socket.on("disconnect", onLeave)
         socket.on("message", (data) => {
-            setGameStateMessage(data.message)
+            if (data.data.name === PlayerName) {
+                setGameStateMessage("Your turn")
+            } else {
+                setGameStateMessage(data.message)
+            }
+
             changeDiceDisplay(data.data.dice)
+            setCurrentPlayer(data.data.name)
         })
         socket.on("clientStart", () => setclientGameRunning(true))
         socket.on("clientMessage", (clientmessage) => handleClientMessage(clientmessage))
@@ -130,7 +137,7 @@ const Player = () => {
                         <input type='text' onChange={e => setRoomCode(e.target.value)} />
 
                         <h1>Player Name</h1>
-                        <input type='text' onChange={e => setPlayerName(e.target.value)} />
+                        <input type='text' pattern="[A-Za-z]{1,25}" maxlength="10" onChange={e => setPlayerName(e.target.value)} />
 
                         <button onClick={handleJoinButtonClick}>join</button>
 
@@ -145,18 +152,14 @@ const Player = () => {
 
                     <h1>Waiting for Host to start</h1>
 
-                    <h2>Joined the room "{roomCode}" as {PlayerName}</h2>
-
                 </div>
             )}
 
             {clientGameRunning && (
                 <div className='JoinUI'>
-                    <h1>Name: {PlayerName}</h1>
-                    <button onClick={rollDice}>Roll Dice</button>
-                    <h2>{gameStateMessage}</h2>
-                    <img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
-
+                    <h1 className=''>Name: {PlayerName}</h1>
+                    <h2 className={`name-${currentPlayer.PlayerNumber}`}>{gameStateMessage}</h2>
+                    <button onClick={rollDice}><img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img></button>
                     <button onClick={handleLeave}>Leave</button>
                 </div>
             )}

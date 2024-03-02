@@ -28,6 +28,7 @@ class Player {
     }
 }
 class Players {
+
     constructor() {
         this.players = []
     }
@@ -127,7 +128,7 @@ function changeTurn(roomCode) {
 
     gameRoom.turnChanged = false;
 
-    io.to(roomCode).emit("message", { message: (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn"), data: { name: "bruh", dice: 0 } })
+    io.to(roomCode).emit("message", { message: (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn"), player: { name: gameRoom.gamePlayers.getPlayerByTurn(gameRoom.playerTurn), dice: 0 } })
     io.to(roomCode).emit("updatePlayers", players);
 }
 
@@ -180,27 +181,28 @@ io.on('connection', async (socket) => {
     })
 
     socket.on("playerRoll", async (data) => {
-        let diceRoll = Math.floor(Math.random() * 6) + 1
-
-        let playerName = data.Player
-        let roomCode = data.RoomCode
 
         if (gameRooms[roomCode].gameStarted == false) {
             console.log("not stared")
             socket.emit("clientMessage", "Not Started")
             return
         }
-        else if (gameRooms[roomCode].playerisMoving == true) {
+        if (gameRooms[roomCode].playerisMoving == true) {
             console.log("already moving")
 
             socket.emit("clientMessage", (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "is already moving"))
             return
         }
-        else if (gameRooms[roomCode].playerTurn !== gameRooms[roomCode].gamePlayers.getPlayer(playerName).PlayerNumber) {
+        if (gameRooms[roomCode].playerTurn !== gameRooms[roomCode].gamePlayers.getPlayer(playerName).PlayerNumber) {
             console.log("not turn")
             socket.emit("clientMessage", "Not your turn")
             return
         }
+
+        let playerName = data.Player
+        let roomCode = data.RoomCode
+
+        let diceRoll = Math.floor(Math.random() * 6) + 1
 
         gameRooms[roomCode].playerisMoving = true
 
@@ -209,7 +211,7 @@ io.on('connection', async (socket) => {
         let newPosition
         let delay = gameRooms[roomCode].gameSpeed;
 
-        io.to(data.RoomCode).emit("message", { message: (playerName + " Rolled " + diceRoll), data: { name: playerName, dice: diceRoll } })
+        io.to(data.RoomCode).emit("message", { message: (playerName + " Rolled " + diceRoll), data: { player: gameRooms[roomCode].gamePlayers.getPlayer(playerName), dice: diceRoll } })
 
         function renderLoop(i, isSnake) {
             if (i <= diceRoll) {
@@ -237,7 +239,7 @@ io.on('connection', async (socket) => {
                             io.to(data.RoomCode).emit("renderBoard", gameBoard)
                         } else if ((player.Position + diceRoll) > 100) {
 
-                            io.to(data.RoomCode).emit("message", { message: (diceRoll + " is higher than 100"), data: { name: playerName, dice: diceRoll } })
+                            io.to(data.RoomCode).emit("message", { message: (diceRoll + " is higher than 100"), data: { player: gameRooms[roomCode].gamePlayers.getPlayer(playerName), dice: diceRoll } })
 
                             gameRooms[roomCode].playerisMoving = false
                             break;
@@ -259,7 +261,7 @@ io.on('connection', async (socket) => {
 
                     changeTurn(roomCode)
 
-                    io.to(data.RoomCode).emit("message", gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn")
+                    io.to(data.RoomCode).emit("message", { message: (gameRooms[roomCode].gamePlayers.getPlayer(gameRooms[roomCode].playerTurn).Name + "'s turn"), data: { player: gameRooms[roomCode].gamePlayers.getPlayer(playerName), dice: diceRoll } })
                     io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
                     return
                 }
@@ -269,7 +271,7 @@ io.on('connection', async (socket) => {
                 if ((gameRooms[roomCode].gamePlayers.getPlayer(playerName).Position) === 100) {
                     gameRooms[roomCode].gameStarted = false
                     gameRooms[roomCode].Winner = gameRooms[roomCode].gamePlayers.getPlayer(playerName).Name
-                    io.to(data.RoomCode).emit("message", (gameRooms[roomCode].Winner + " Won the game🔥"))
+                    io.to(data.RoomCode).emit("message", { message: (gameRooms[roomCode].Winner + " Won the game🔥"), data: { player: gameRooms[roomCode].gamePlayers.getPlayer(playerName), dice: diceRoll } })
 
                     io.to(data.RoomCode).emit("playerWin", gameRooms[roomCode].Winner)
                     return
