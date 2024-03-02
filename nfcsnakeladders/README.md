@@ -7,6 +7,19 @@
 2. [Packages](#packages)
     1. [Frontend](#frontend-packages)
     2. [Backend](#backend-packages)
+3. [Developing](#developing)
+   1. [Server](#server-backend)
+      1. [Room Hosting](#room-hosting)
+      2. [Player Class](#player-class)
+      3. [Player joining](#player-joining)
+      4. [Game Logic](#game-logic)
+   2. [React App](#react-app-frontend)
+      1. [Host](#boardjs-hosting)
+      2. [Join](#player-joining)
+      3. [NFC Mode](#nfc-mode)
+         1. [NFC Data](#nfc-data)
+4. [Author](#author)
+5. [License](#license)
 
 ## Install
 ### You need to **Install** all the packages the react app is using and the server
@@ -36,6 +49,7 @@ node index.js
 | SocketIO (Client) | [https://github.com/socketio/socket.io-client](https://github.com/socketio/socket.io-client)     | 4.7.4 |
 | React Confetti Explosion | https://github.com/herrethan/react-confetti-explosion | 2.1.2 |
 | react-sound    | [https://github.com/leoasis/react-sound](https://github.com/leoasis/react-sound)    | 1.2.0 | 
+| React Router DOM | [https://github.com/remix-run/react-router](https://github.com/remix-run/react-router) | 6.22.0
 
 ### Backend Packages
 
@@ -46,7 +60,7 @@ node index.js
 
 # Developing
 
-## Server
+## Server (Backend)
 
 ### Room Hosting
 
@@ -56,7 +70,7 @@ Hosting a room is created by **GameRooms[data.RoomCode]** adds a new object insi
 
 Snakes and Ladders object are used to define the placement of snake and ladder tiles when a game board array is created using the function **setupGameBoard(snakes, ladders)**, you are able to costumize the placements by changing the key and value with no limit
 
-#### The frontend (Host) will send a list of data to the  **GameRooms**, that each is used to add values for settings
+#### The frontend (Host) will emit the event and send list of data to the  **GameRoom**, that each is used to add values for settings
 | Settings | Information | Type |
 | -------- | ------- | ------- |
 | gameboard  | contains the array of the board the game will use for its logic and frontend | array |
@@ -330,10 +344,10 @@ A message that all the clients will get in the frontend is built with a object
 io.to(data.RoomCode).emit("message", { message: (playerName + " Rolled " + diceRoll), data: { player: gameRooms[roomCode].gamePlayers.getPlayer(playerName), dice: diceRoll } })
 ```
 
-## Frontend
+## React App (Frontend)
 
-### Board.js
-#### Hosts the game and renders the board
+### Board.js (Hosting)
+Hosts the game and renders the board
 
 ![Host UI](src/Assets/HostPreview.png)
 
@@ -352,8 +366,8 @@ socket.on("message", (messagedata) => {
 })
 ```
 
-### Player.js
-#### The player that joins the room with code and allows to roll the dice
+### Player.js (Joining)
+The player that joins the room with code and allows to roll the dice
 
 ![Player UI](src/Assets/JoinPreview.png)
 
@@ -377,7 +391,7 @@ socket.on("clientMessage", (clientmessage) => handleClientMessage(clientmessage)
 socket.on("hostisgone", () => window.location.reload())
 ```
 
-#### Socket emits the player emits to the server
+#### Socket emits the player uses
 ```js
 const handleJoinButtonClick = () => {
 
@@ -397,3 +411,28 @@ const rollDice = () => {
     socket.emit("playerRoll", { Player: PlayerName, RoomCode: roomCode });
 }
 ```
+
+## NFC Mode
+The difference with NFC Mode that it will use params to roll a dice, used in a different file named **NFC.js**, It has to refresh or enter the site everytime you scan it.
+
+```js
+<Route path="/nfc/:PlayerName/:HostID" element={<NFC />} />
+```
+
+How the server handles this is by using a seperate game mode where it adds 2 players with their own names and starts the game immediately, in addition there can only be 1 room that can use the NFC mode because it has its own room code for it, it will set the room code in the server.
+
+#### NFC Data
+2 NFC tags with a link of params is required to play and needs to contain these datas
+| NFC Tag | Data |
+| ----- | ----- |
+| 1 | **sitelink/NFCPlayer1/NFCode** |
+| 2 | **sitelink/NFCPlayer2/NFCode** |
+There can only be 2 NFC players but you are freely to change that
+
+# Author
+| Person | Link |
+| ----- | ----- |
+| starkris51 | https://github.com/starkris51 |
+
+# License
+### MIT license
