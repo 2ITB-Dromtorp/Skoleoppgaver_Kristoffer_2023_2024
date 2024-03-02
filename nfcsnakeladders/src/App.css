@@ -411,8 +411,8 @@ h1 {
 .player-0 {
   background: #f44336;
   border-radius: 50%;
-  width: 30%;
-  height: 30%;
+  width: 40%;
+  height: 40%;
   margin: 5%;
   z-index: 2;
 }
@@ -427,8 +427,8 @@ h1 {
 .player-1 {
   background: #4caf50;
   border-radius: 50%;
-  width: 30%;
-  height: 30%;
+  width: 40%;
+  height: 40%;
   margin: 5%;
   z-index: 2;
 }
@@ -444,8 +444,8 @@ h1 {
 .player-2 {
   background: #2196f3;
   border-radius: 50%;
-  width: 30%;
-  height: 30%;
+  width: 40%;
+  height: 40%;
   margin: 5%;
   z-index: 2;
 
@@ -463,8 +463,8 @@ h1 {
 .player-3 {
   background: #ffeb3b;
   border-radius: 50%;
-  width: 30%;
-  height: 30%;
+  width: 40%;
+  height: 40%;
   margin: 5%;
   z-index: 2;
 
@@ -480,8 +480,8 @@ h1 {
 .player-4 {
   background: gray;
   border-radius: 50%;
-  width: 30%;
-  height: 30%;
+  width: 40%;
+  height: 40%;
   margin: 5%;
   z-index: 2;
 
@@ -497,8 +497,8 @@ h1 {
 .player-5 {
   background: #282c34;
   border-radius: 50%;
-  width: 30%;
-  height: 30%;
+  width: 40%;
+  height: 40%;
   margin: 5%;
   z-index: 2;
 
@@ -514,8 +514,8 @@ h1 {
 .player-6 {
   background: #b919c2;
   border-radius: 50%;
-  width: 30%;
-  height: 30%;
+  width: 40%;
+  height: 40%;
   margin: 5%;
   z-index: 2;
 
@@ -531,8 +531,8 @@ h1 {
 .player-7 {
   background: #c26819;
   border-radius: 50%;
-  width: 30%;
-  height: 30%;
+  width: 40%;
+  height: 40%;
   margin: 5%;
   z-index: 2;
 
@@ -548,8 +548,8 @@ h1 {
 .player-8 {
   background: brown;
   border-radius: 50%;
-  width: 30%;
-  height: 30%;
+  width: 40%;
+  height: 40%;
   margin: 5%;
   z-index: 2;
 
