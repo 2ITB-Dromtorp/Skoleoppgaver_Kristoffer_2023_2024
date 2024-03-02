@@ -182,18 +182,18 @@ io.on('connection', async (socket) => {
 
     socket.on("playerRoll", async (data) => {
 
-        if (gameRooms[roomCode].gameStarted == false) {
+        if (await gameRooms[roomCode].gameStarted == false) {
             console.log("not stared")
             socket.emit("clientMessage", "Not Started")
             return
         }
-        if (gameRooms[roomCode].playerisMoving == true) {
+        if (await gameRooms[roomCode].playerisMoving == true) {
             console.log("already moving")
 
             socket.emit("clientMessage", (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "is already moving"))
             return
         }
-        if (gameRooms[roomCode].playerTurn !== gameRooms[roomCode].gamePlayers.getPlayer(playerName).PlayerNumber) {
+        if (await gameRooms[roomCode].playerTurn !== gameRooms[roomCode].gamePlayers.getPlayer(playerName).PlayerNumber) {
             console.log("not turn")
             socket.emit("clientMessage", "Not your turn")
             return
@@ -337,10 +337,8 @@ io.on('connection', async (socket) => {
             socket.emit("clientMessage", "You cannot join this room")
             return
         }
-        else if (gameRooms[roomCode].maxPlayers < (gameRooms[roomCode].gamePlayers.numberOfPlayers() + 1)) {
+        else if (gameRooms[roomCode].maxPlayers < (gameRooms[roomCode].gamePlayers.numberOfPlayers() + 1 || gameRooms[roomCode].canJoin)) {
             console.log("Too many Players")
-            console.log(gameRooms[roomCode].maxPlayers)
-            console.log(gameRooms[roomCode].gamePlayers.numberOfPlayers())
             socket.emit("clientMessage", "Too many Players")
             return
         }

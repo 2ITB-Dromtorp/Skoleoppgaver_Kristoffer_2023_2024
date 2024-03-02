@@ -58,7 +58,7 @@ const Board = () => {
     const startGame = () => {
 
 
-        if (players.length < maxPlayers && !(gameMode === "NFCmode")) {
+        if ((players.length < maxPlayers || !canJoin) && !(gameMode === "NFCmode")) {
             setHostMessage("Not Enough Players")
             return
         }
