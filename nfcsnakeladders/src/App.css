@@ -143,6 +143,12 @@ input {
   justify-content: center;
   align-items: center;
 
+  background-image: url("./Assets/hostBoard.png");
+  background-position: center;
+  background-size: 100%, 100%;
+  background-repeat: no-repeat;
+  padding: 8vh;
+
 }
 
 .BoardContainer {

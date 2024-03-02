@@ -7,7 +7,6 @@ import Music from '../Assets/Kahoot.mp3'
 //import { useMemo } from 'react';
 import diceImg from '../Assets/dice.png';
 import ConfettiExplosion from 'react-confetti-explosion';
-import Confetti from 'react-confetti'
 import ladder from '../Assets/ladder.png'
 import snake from '../Assets/snake.png'
 import emptyDice from '../Assets/diceEmpty.png'
@@ -346,7 +345,6 @@ const Board = () => {
 
                 <div className='winscreen'>
                     {isExploding && <ConfettiExplosion particleCount={500} duration={5000} />}
-                    <Confetti />
                     <h1 className='player-win'>{playerwinName} is win</h1>
                 </div>
             }
