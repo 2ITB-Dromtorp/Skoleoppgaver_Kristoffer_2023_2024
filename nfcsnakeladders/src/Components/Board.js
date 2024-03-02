@@ -226,6 +226,8 @@ const Board = () => {
                 case 6:
                     setDiceDisplay(dice6)
                     break;
+                default:
+                        setDiceDisplay(emptyDice)
             }
         }
 

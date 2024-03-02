@@ -50,6 +50,8 @@ const NFC = () => {
                 case 6:
                     setDiceDisplay(dice6)
                     break;
+                    default:
+                        setDiceDisplay(emptyDice)
             }
         }
 
@@ -88,7 +90,7 @@ const NFC = () => {
     return (
         <div className='PlayerContainer'>
 
-                <h2>{gameStateMessage}</h2>
+                <h2 className={`name-${currentPlayer.PlayerNumber}`}>{gameStateMessage}</h2>
                 <img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
 
         </div>

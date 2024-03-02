@@ -93,6 +93,8 @@ const Player = () => {
                 case 6:
                     setDiceDisplay(dice6)
                     break;
+                default:
+                    setDiceDisplay(emptyDice)
             }
         }
 
@@ -139,7 +141,7 @@ const Player = () => {
                         <input type='text' onChange={e => setRoomCode(e.target.value)} />
 
                         <h1>Player Name</h1>
-                        <input type='text' pattern="[A-Za-z]{1,25}" maxlength="10" onChange={e => setPlayerName(e.target.value)} />
+                        <input type='text' pattern="[A-Za-z]{1,25}" maxLength="10" onChange={e => setPlayerName(e.target.value)} />
 
                         <button onClick={handleJoinButtonClick}>join</button>
 
@@ -160,7 +162,7 @@ const Player = () => {
             {clientGameRunning && (
                 <div className='JoinUI'>
                     <h1>Name: {PlayerName}</h1>
-                    <h2>{gameStateMessage}</h2>
+                    <h2 className={`name-${currentPlayer.PlayerNumber}`}>{gameStateMessage}</h2>
                     <button onClick={rollDice}>Roll Dice</button>
                     <img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
                     <button onClick={handleLeave}>Leave</button>
