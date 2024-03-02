@@ -11,7 +11,7 @@
    1. [Server](#server-backend)
       1. [Room Hosting](#room-hosting)
       2. [Player Class](#player-class)
-      3. [Player joining](#player-joining)
+      3. [Player Joining](#player-joining)
       4. [Game Logic](#game-logic)
    2. [React App](#react-app-frontend)
       1. [Host](#boardjs-hosting)
@@ -427,6 +427,7 @@ How the server handles this is by using a seperate game mode where it adds 2 pla
 | ----- | ----- |
 | 1 | **sitelink/NFCPlayer1/NFCode** |
 | 2 | **sitelink/NFCPlayer2/NFCode** |
+
 There can only be 2 NFC players but you are freely to change that
 
 # Author
