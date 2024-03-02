@@ -161,7 +161,8 @@ const Player = () => {
                 <div className='JoinUI'>
                     <h1>Name: {PlayerName}</h1>
                     <h2>{gameStateMessage}</h2>
-                    <button onClick={rollDice}><img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img></button>
+                    <button onClick={rollDice}>Roll Dice</button>
+                    <img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
                     <button onClick={handleLeave}>Leave</button>
                 </div>
             )}
