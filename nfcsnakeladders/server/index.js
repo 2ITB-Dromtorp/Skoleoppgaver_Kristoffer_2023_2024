@@ -127,7 +127,7 @@ function changeTurn(roomCode) {
 
     gameRoom.turnChanged = false;
 
-    io.to(roomCode).emit("message", { message: (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn"), player: { name: gameRoom.gamePlayers.getPlayerByTurn(gameRoom.playerTurn), dice: 0 } })
+    io.to(roomCode).emit("message", { message: (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn"), data: { player: gameRoom.gamePlayers.getPlayerByTurn(gameRoom.playerTurn), dice: 0 } })
     io.to(roomCode).emit("updatePlayers", players);
 }
 
