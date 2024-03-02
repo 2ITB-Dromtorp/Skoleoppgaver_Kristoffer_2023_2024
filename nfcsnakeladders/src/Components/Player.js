@@ -106,7 +106,7 @@ const Player = () => {
             }
 
             changeDiceDisplay(data.data.dice)
-            setCurrentPlayer(data.data.name)
+            setCurrentPlayer(data.data)
         })
         socket.on("clientStart", () => setclientGameRunning(true))
         socket.on("clientMessage", (clientmessage) => handleClientMessage(clientmessage))
@@ -157,7 +157,7 @@ const Player = () => {
 
             {clientGameRunning && (
                 <div className='JoinUI'>
-                    <h1 className=''>Name: {PlayerName}</h1>
+                    <h1>Name: {PlayerName}</h1>
                     <h2 className={`name-${currentPlayer.PlayerNumber}`}>{gameStateMessage}</h2>
                     <button onClick={rollDice}><img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img></button>
                     <button onClick={handleLeave}>Leave</button>

@@ -78,7 +78,7 @@ const NFC = () => {
                 }
     
                 changeDiceDisplay(data.data.dice)
-                setCurrentPlayer(data.data.name)
+                setCurrentPlayer(data.data)
             })
             //socket.off("clientResponse", clientResponse)
         }
