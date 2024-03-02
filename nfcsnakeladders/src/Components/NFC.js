@@ -15,7 +15,6 @@ const NFC = () => {
 
     const [gameStateMessage, setGameStateMessage] = useState(0)
     const [diceDisplay, setDiceDisplay] = useState()
-    const [currentPlayer, setCurrentPlayer] = useState()
     let { PlayerName, HostID } = useParams();
 
     useEffect(() => {
@@ -66,7 +65,6 @@ const NFC = () => {
             }
 
             changeDiceDisplay(data.data.dice)
-            setCurrentPlayer(data.data.name)
         })
         //socket.on("clientResponse", clientResponse)
         return () => {
@@ -82,7 +80,7 @@ const NFC = () => {
                 changeDiceDisplay(data.data.dice)
                 setCurrentPlayer(data.data.player)
             })
-            //socket.off("clientResponse", clientResponse)
+
         }
 
     }, [HostID, PlayerName, gameStateMessage])
@@ -90,7 +88,7 @@ const NFC = () => {
     return (
         <div className='PlayerContainer'>
 
-                <h2 className={`name-${currentPlayer.PlayerNumber}`}>{gameStateMessage}</h2>
+                <h2>{gameStateMessage}</h2>
                 <img alt='dice' style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
 
         </div>
