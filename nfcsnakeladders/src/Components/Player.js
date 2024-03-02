@@ -109,8 +109,6 @@ const Player = () => {
 
             changeDiceDisplay(data.data.dice)
             setCurrentPlayer(data.data.player)
-            console.log(data)
-            console.log(data.data.player)
         })
         socket.on("clientStart", () => setclientGameRunning(true))
         socket.on("clientMessage", (clientmessage) => handleClientMessage(clientmessage))

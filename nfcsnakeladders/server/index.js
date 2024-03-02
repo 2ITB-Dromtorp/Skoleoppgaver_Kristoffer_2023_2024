@@ -177,6 +177,9 @@ io.on('connection', async (socket) => {
 
     socket.on("playerRoll", async (data) => {
 
+        let playerName = data.Player
+        let roomCode = data.RoomCode
+
         if (await gameRooms[roomCode].gameStarted == false) {
             socket.emit("clientMessage", "Not Started")
             return
@@ -190,8 +193,6 @@ io.on('connection', async (socket) => {
             return
         }
 
-        let playerName = data.Player
-        let roomCode = data.RoomCode
 
         let diceRoll = Math.floor(Math.random() * 6) + 1
 

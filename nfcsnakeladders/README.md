@@ -237,7 +237,7 @@ if (!gameRooms[roomCode]) {
 
 
 ### Game Logic 
-#### Most of the game logic is handled in the server with **playerRoll**socket event, which is called every time a player rolls the dice
+#### Most of the game logic is handled in the server with **playerRoll** socket event, which is called every time a player rolls the dice
 #### The function called **renderLoop** inside the event contains most of the game's logic, uses setTimeout to wait each time a function is calling, it will be called based on what number of the dice.
 #### the gameboard array is changed and sends it to the host each time in the loop
 ```js
