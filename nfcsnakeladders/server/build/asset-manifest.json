@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.e398a6f4.css",
-    "main.js": "/static/js/main.586a1200.js",
+    "main.css": "/static/css/main.6a63205f.css",
+    "main.js": "/static/js/main.4978b440.js",
     "static/js/592.0d5c9e41.chunk.js": "/static/js/592.0d5c9e41.chunk.js",
     "static/media/Kahoot.mp3": "/static/media/Kahoot.7008d49f26181bca90ee.mp3",
     "static/media/testbackground.gif": "/static/media/testbackground.aca4a276e102d80d722c.gif",
     "static/media/dice.png": "/static/media/dice.e34fac72cf6ba8b8715a.png",
     "static/media/Daydream.ttf": "/static/media/Daydream.84eda7c4245e10bffa4b.ttf",
     "index.html": "/index.html",
-    "main.e398a6f4.css.map": "/static/css/main.e398a6f4.css.map",
-    "main.586a1200.js.map": "/static/js/main.586a1200.js.map",
+    "main.6a63205f.css.map": "/static/css/main.6a63205f.css.map",
+    "main.4978b440.js.map": "/static/js/main.4978b440.js.map",
     "592.0d5c9e41.chunk.js.map": "/static/js/592.0d5c9e41.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e398a6f4.css",
-    "static/js/main.586a1200.js"
+    "static/css/main.6a63205f.css",
+    "static/js/main.4978b440.js"
   ]
 }
