@@ -16,7 +16,7 @@ const Player = () => {
 
     const [gameStateMessage, setGameStateMessage] = useState(0)
     const [roomCode, setRoomCode] = useState("")
-    const [PlayerName, setPlayerName] = useState("Player Name")
+    const [PlayerName, setPlayerName] = useState("")
     const [showJoinRoomUI, setShowJoinRoomUI] = useState(true);
     const [waitForHost, setWaitForHost] = useState(false)
     const [clientGameRunning, setclientGameRunning] = useState(false);
@@ -134,7 +134,7 @@ const Player = () => {
             {showJoinRoomUI && (
                 <div className='JoinUI'>
 
-                    <img style={{ width: "40%" }} src={logo}></img>
+                    <img alt='logo' style={{ width: "40%" }} src={logo}></img>
 
                     <div className='JoinUInner'>
                         <h1>Room Code</h1>
@@ -164,7 +164,7 @@ const Player = () => {
                     <h1>Name: {PlayerName}</h1>
                     <h2 className={`name-${currentPlayer.PlayerNumber}`}>{gameStateMessage}</h2>
                     <button onClick={rollDice}>Roll Dice</button>
-                    <img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
+                    <img alt="Dice" style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
                     <button onClick={handleLeave}>Leave</button>
                 </div>
             )}

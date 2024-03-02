@@ -91,7 +91,7 @@ const NFC = () => {
         <div className='PlayerContainer'>
 
                 <h2 className={`name-${currentPlayer.PlayerNumber}`}>{gameStateMessage}</h2>
-                <img style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
+                <img alt='dice' style={{ width: "200px", height: "200px" }} src={diceDisplay}></img>
 
         </div>
     );

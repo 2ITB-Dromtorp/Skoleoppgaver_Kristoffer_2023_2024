@@ -243,9 +243,6 @@ const Board = () => {
             changeDiceDisplay(messagedata.data.dice)
         })
 
-        console.log(players)
-        console.log(gameBoard)
-
         const handleResize = () => {
             setWidth(window.innerWidth);
             connectSnakesAndLadders();
@@ -362,7 +359,7 @@ const Board = () => {
                     <div className='game-MessageBoard'>
                         <div className='eventBoard'>
                             <p>{gameStateMessage}</p>
-                            <img style={{ width: "25%" }} src={diceDisplay}></img>
+                            <img alt='dice' style={{ width: "25%" }} src={diceDisplay}></img>
                         </div>
 
                         <div className='PlayerMainText'>{roomCode}</div>
