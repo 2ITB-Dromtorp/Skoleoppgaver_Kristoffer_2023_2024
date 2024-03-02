@@ -17,7 +17,7 @@ app.get("*", (req, res) => {
 })
 
 server.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Server opened at ${port}`)
 })
 class Player {
     constructor(Name, position, playernumber) {
@@ -116,8 +116,6 @@ function changeTurn(roomCode) {
     const currentPlayer = players[gameRoom.playerTurn];
     const nextPlayerIndex = (gameRoom.playerTurn + 1) % players.length;
 
-    console.log(nextPlayerIndex)
-
     currentPlayer.Turn = false;
 
     const nextPlayer = players[nextPlayerIndex];
@@ -133,8 +131,6 @@ function changeTurn(roomCode) {
 }
 
 io.on('connection', async (socket) => {
-
-    console.log('a user connected');
 
     socket.on("host", async (data) => {
 
@@ -176,25 +172,19 @@ io.on('connection', async (socket) => {
         }
 
         socket.join(data.RoomCode)
-
-        console.log("room hosted at " + data.RoomCode)
     })
 
     socket.on("playerRoll", async (data) => {
 
         if (await gameRooms[roomCode].gameStarted == false) {
-            console.log("not stared")
             socket.emit("clientMessage", "Not Started")
             return
         }
         if (await gameRooms[roomCode].playerisMoving == true) {
-            console.log("already moving")
-
             socket.emit("clientMessage", (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "is already moving"))
             return
         }
         if (await gameRooms[roomCode].playerTurn !== gameRooms[roomCode].gamePlayers.getPlayer(playerName).PlayerNumber) {
-            console.log("not turn")
             socket.emit("clientMessage", "Not your turn")
             return
         }
@@ -233,8 +223,6 @@ io.on('connection', async (socket) => {
 
 
                             gameBoard[l][j].playerinTile.push(gameRooms[roomCode].gamePlayers.getPlayer(playerName));
-
-                            console.log(newPosition)
 
                             io.to(data.RoomCode).emit("renderBoard", gameBoard)
                         } else if ((player.Position + diceRoll) > 100) {
@@ -299,8 +287,6 @@ io.on('connection', async (socket) => {
 
     socket.on("startGame", async (data) => {
 
-        console.log("game started")
-
         let roomCode = data.RoomCode
 
         if (gameRooms[roomCode].gameMode == "NFCmode") {
@@ -327,18 +313,14 @@ io.on('connection', async (socket) => {
         let roomCode = data.RoomCode
 
         if (!gameRooms[roomCode]) {
-            console.log("room dosen't exist")
             socket.emit("clientMessage", "Room dosen't exist")
             return;
         }
         else if (gameRooms[roomCode].canJoin == false) {
-            console.log("Can't join room")
-
             socket.emit("clientMessage", "You cannot join this room")
             return
         }
         else if (gameRooms[roomCode].maxPlayers < (gameRooms[roomCode].gamePlayers.numberOfPlayers() + 1 || gameRooms[roomCode].canJoin)) {
-            console.log("Too many Players")
             socket.emit("clientMessage", "Too many Players")
             return
         }
