@@ -319,14 +319,12 @@ io.on('connection', async (socket) => {
         io.to(roomCode).emit("clientStart")
         io.to(roomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
         io.to(roomCode).emit("renderBoard", gameBoard)
-        io.to(data.RoomCode).emit("message", { message: (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn"), data: { name: "bruh", dice: 0 } })
+        io.to(data.RoomCode).emit("message", { message: (gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn).Name + "'s turn"), data: { player: gameRooms[roomCode].gamePlayers.getPlayerByTurn(gameRooms[roomCode].playerTurn), dice: 0 } })
     })
 
     socket.on("PlayerJoin", async (data) => {
 
         let roomCode = data.RoomCode
-
-        console.log(data)
 
         if (!gameRooms[roomCode]) {
             console.log("room dosen't exist")

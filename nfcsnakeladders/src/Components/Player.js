@@ -22,7 +22,7 @@ const Player = () => {
     const [clientGameRunning, setclientGameRunning] = useState(false);
     const [error, setError] = useState(false)
     const [diceDisplay, setDiceDisplay] = useState()
-    const [currentPlayer, setCurrentPlayer] = useState()
+    const [currentPlayer, setCurrentPlayer] = useState({})
 
     const navigate = useNavigate()
 
@@ -106,7 +106,7 @@ const Player = () => {
             }
 
             changeDiceDisplay(data.data.dice)
-            setCurrentPlayer(data.data)
+            setCurrentPlayer(data.data.player)
         })
         socket.on("clientStart", () => setclientGameRunning(true))
         socket.on("clientMessage", (clientmessage) => handleClientMessage(clientmessage))
