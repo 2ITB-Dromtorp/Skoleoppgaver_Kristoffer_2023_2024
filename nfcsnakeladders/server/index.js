@@ -295,7 +295,6 @@ io.on('connection', async (socket) => {
 
             gameRooms[roomCode].gamePlayers.newPlayer("NFCPlayer1", 1, 0);
             gameRooms[roomCode].gamePlayers.newPlayer("NFCPlayer2", 1, 1);
-            gameRooms[roomCode].roomCode = "NFCode"
 
         }
 

@@ -14,7 +14,7 @@ import dice6 from '../Assets/dice6.png'
 const NFC = () => {
 
     const [gameStateMessage, setGameStateMessage] = useState(0)
-    const [diceDisplay, setDiceDisplay] = useState()
+    const [diceDisplay, setDiceDisplay] = useState(emptyDice)
     let { PlayerName, HostID } = useParams();
 
     useEffect(() => {
