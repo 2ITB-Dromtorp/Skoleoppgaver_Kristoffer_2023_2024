@@ -50,11 +50,11 @@ node index.js
 
 ### Room Hosting
 
-#### The frontend for this is for Board.js in /host
+#### Board.js in /host will emit a event called **host** when you host a room with the given options
 
-#### Hosting a room is created by **GameRooms[data.RoomCode]** adds a new object inside the array that can be only be called with the room code, The socket will join the room code allowing clients connected to the room recive data from the host.
+Hosting a room is created by **GameRooms[data.RoomCode]** adds a new object inside the array that can be only be called with the room code, The socket will join the room code allowing clients connected to the room recive data from the host.
 
-#### Snakes and Ladders object are used to define the placement of snake and ladder tiles when a game board array is created using the function **setupGameBoard(snakes, ladders)**, you are able to costumize the placements by changing the key and value with no limit
+Snakes and Ladders object are used to define the placement of snake and ladder tiles when a game board array is created using the function **setupGameBoard(snakes, ladders)**, you are able to costumize the placements by changing the key and value with no limit
 
 #### The frontend (Host) will send a list of data to the  **GameRooms**, that each is used to add values for settings
 | Settings | Information | Type |
@@ -185,9 +185,9 @@ class Players {
 ```
 
 ### Player Joining
-#### this is where the Players class comes to use, adds a new player to the players array inside the **GameRoom** variable and joins the room with the code
+This is where the Players class comes to use, adds a new player to the players array inside the **GameRoom** variable and joins the room with the code
 
-#### Before a player gets added to the array and joins the room it has to go trough list of if statements to check if can join or not, this will prevent crashing the server by adding wrong data.
+Before a player gets added to the array and joins the room it has to go trough list of if statements to check if can join or not, this will prevent crashing the server by adding wrong data.
 
 ```js
 socket.on("PlayerJoin", async (data) => {
@@ -237,9 +237,9 @@ if (!gameRooms[roomCode]) {
 
 
 ### Game Logic 
-#### Most of the game logic is handled in the server with **playerRoll** socket event, which is called every time a player rolls the dice
-#### The function called **renderLoop** inside the event contains most of the game's logic, uses setTimeout to wait each time a function is calling, it will be called based on what number of the dice.
-#### the gameboard array is changed and sends it to the host each time in the loop
+Most of the game logic is handled in the server with **playerRoll** socket event, which is called every time a player rolls the dice
+The function called **renderLoop** inside the event contains most of the game's logic, uses setTimeout to wait each time a function is calling, it will be called based on what number of the dice.
+The gameboard array is changed and sends it to the host each time in the loop
 ```js
 function renderLoop(i, isSnake) {
     if (i <= diceRoll) {
@@ -322,7 +322,7 @@ function renderLoop(i, isSnake) {
 ```
 
 ### Messages to the clients
-#### A message that all the clients will get in the frontend is built with a object
+A message that all the clients will get in the frontend is built with a object
 
 {message: **Contains the message**, {player: **Player** (used to know what player rolled the dice), dice: **Dice number**}}
 
@@ -337,7 +337,7 @@ io.to(data.RoomCode).emit("message", { message: (playerName + " Rolled " + diceR
 
 ![Host UI](src/Assets/HostPreview.png)
 
-#### Events the frontend gets from the server
+#### Events on useEffect
 ```js
 socket.on("connect", onJoin)
 socket.on("playerWin", (winner) => handleWinner(winner))
@@ -353,3 +353,47 @@ socket.on("message", (messagedata) => {
 ```
 
 ### Player.js
+#### The player that joins the room with code and allows to roll the dice
+
+![Player UI](src/Assets/JoinPreview.png)
+
+
+#### Events on useEffect
+```js
+socket.on("connect", onJoin)
+socket.on("disconnect", onLeave)
+socket.on("message", (data) => {
+    if (data.data.name === PlayerName) {
+        setGameStateMessage("Your turn")
+    } else {
+        setGameStateMessage(data.message)
+    }
+
+    changeDiceDisplay(data.data.dice)
+    setCurrentPlayer(data.data.player)
+})
+socket.on("clientStart", () => setclientGameRunning(true))
+socket.on("clientMessage", (clientmessage) => handleClientMessage(clientmessage))
+socket.on("hostisgone", () => window.location.reload())
+```
+
+#### Socket emits the player emits to the server
+```js
+const handleJoinButtonClick = () => {
+
+    setShowJoinRoomUI(false);
+    setWaitForHost(true)
+    setError(false)
+
+    socket.emit("PlayerJoin", { Player: PlayerName, RoomCode: roomCode });
+};
+
+const handleLeave = () => {
+    socket.emit("LeaveGame", { Player: PlayerName, RoomCode: roomCode })
+    window.location.reload()
+}
+
+const rollDice = () => {
+    socket.emit("playerRoll", { Player: PlayerName, RoomCode: roomCode });
+}
+```

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { socket } from '../App';
-import { useNavigate } from 'react-router-dom';
 import logo from '../Assets/gameLogo.png'
 import emptyDice from '../Assets/diceEmpty.png'
 import dice1 from '../Assets/dice1.png'
@@ -23,9 +22,6 @@ const Player = () => {
     const [error, setError] = useState(false)
     const [diceDisplay, setDiceDisplay] = useState()
     const [currentPlayer, setCurrentPlayer] = useState({})
-
-    const navigate = useNavigate()
-
     const handleJoinButtonClick = () => {
 
         setShowJoinRoomUI(false); // Hide the JoinRoomUI component
@@ -37,7 +33,7 @@ const Player = () => {
 
     const handleLeave = () => {
         socket.emit("LeaveGame", { Player: PlayerName, RoomCode: roomCode })
-        navigate("/join")
+        window.location.reload()
     }
 
     const rollDice = () => {

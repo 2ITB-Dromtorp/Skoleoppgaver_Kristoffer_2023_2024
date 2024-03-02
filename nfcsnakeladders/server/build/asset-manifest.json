@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.6a63205f.css",
-    "main.js": "/static/js/main.e85d0fcf.js",
+    "main.js": "/static/js/main.7640892a.js",
     "static/js/592.0d5c9e41.chunk.js": "/static/js/592.0d5c9e41.chunk.js",
     "static/media/Kahoot.mp3": "/static/media/Kahoot.7008d49f26181bca90ee.mp3",
     "static/media/testbackground.gif": "/static/media/testbackground.aca4a276e102d80d722c.gif",
@@ -9,11 +9,11 @@
     "static/media/Daydream.ttf": "/static/media/Daydream.84eda7c4245e10bffa4b.ttf",
     "index.html": "/index.html",
     "main.6a63205f.css.map": "/static/css/main.6a63205f.css.map",
-    "main.e85d0fcf.js.map": "/static/js/main.e85d0fcf.js.map",
+    "main.7640892a.js.map": "/static/js/main.7640892a.js.map",
     "592.0d5c9e41.chunk.js.map": "/static/js/592.0d5c9e41.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.6a63205f.css",
-    "static/js/main.e85d0fcf.js"
+    "static/js/main.7640892a.js"
   ]
 }
