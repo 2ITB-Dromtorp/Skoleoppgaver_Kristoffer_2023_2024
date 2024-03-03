@@ -21,7 +21,7 @@ const Player = () => {
     const [clientGameRunning, setclientGameRunning] = useState(false);
     const [error, setError] = useState(false)
     const [diceDisplay, setDiceDisplay] = useState()
-    const [currentPlayer, setCurrentPlayer] = useState({playerNumber: 0})
+    const [currentPlayer, setCurrentPlayer] = useState({PlayerNumber: 0})
     const handleJoinButtonClick = () => {
 
         setShowJoinRoomUI(false); // Hide the JoinRoomUI component

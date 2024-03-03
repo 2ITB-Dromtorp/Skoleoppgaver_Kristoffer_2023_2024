@@ -319,7 +319,7 @@ const Board = () => {
                     <div className='PlayersWaiting'>
 
                         {players.length > 0 && players.map((ekte) => {
-                            return <p>{ekte.Name}</p>
+                            return <p className={`name-${ekte.PlayerNumber}`}>{ekte.Name}</p>
                         })}
                     </div>
 

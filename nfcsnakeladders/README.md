@@ -420,14 +420,14 @@ The difference with NFC Mode that it will use params to roll a dice, used in a d
 <Route path="/nfc/:PlayerName/:HostID" element={<NFC />} />
 ```
 
-How the server handles this is by using a seperate game mode where it adds 2 players with their own names and starts the game immediately, in addition there can only be 1 room that can use the NFC mode because it has its own room code for it, it will set the room code in the server.
+How the server handles this is by using a seperate game mode where it adds 2 players with their own names and starts the game immediately.
 
 #### NFC Data
 2 NFC tags with a link of params is required to play and needs to contain these datas
 | NFC Tag | Data |
 | ----- | ----- |
-| 1 | **sitelink/NFCPlayer1/NFCode** |
-| 2 | **sitelink/NFCPlayer2/NFCode** |
+| 1 | **sitelink/NFCPlayer1/roomcode** |
+| 2 | **sitelink/NFCPlayer2/roomcode** |
 
 There can only be 2 NFC players but you are freely to change that
 
