@@ -1,5 +1,6 @@
 # Snakes And Ladders NFC Edition
 #### Snakes and Ladders game made in React using Socket.io
+![Game UI](src/Assets/GamePreview.png)
 
 ## Table of contents
 
@@ -370,7 +371,7 @@ socket.on("message", (messagedata) => {
 The player that joins the room with code and allows to roll the dice
 
 ![Player UI](src/Assets/JoinPreview.png)
-
+![ClientGaming UI](src/Assets/ClientPreview.png)
 
 #### Events on useEffect
 ```js

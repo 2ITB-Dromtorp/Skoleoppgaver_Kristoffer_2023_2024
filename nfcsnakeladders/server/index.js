@@ -180,6 +180,10 @@ io.on('connection', async (socket) => {
         let playerName = data.Player
         let roomCode = data.RoomCode
 
+        if (!gameRooms[roomCode]) {
+            return
+        }
+
         if (await gameRooms[roomCode].gameStarted == false) {
             socket.emit("clientMessage", "Not Started")
             return

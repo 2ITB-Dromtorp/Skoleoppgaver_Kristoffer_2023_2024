@@ -253,13 +253,10 @@ const Board = () => {
 
         connectSnakesAndLadders();
 
-
-
         return () => {
             //socket.off("disconnect", onDisconnect);
             socket.off("connect", onJoin)
             window.removeEventListener('resize', handleResize);
-
         }
 
     }, [players, gameBoard, diceDisplay, gameStateMessage, roomCode, GameRunning, width, hostMessage, gameMode, maxPlayers, gameSpeed])
