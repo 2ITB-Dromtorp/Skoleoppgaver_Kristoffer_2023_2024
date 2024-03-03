@@ -529,23 +529,6 @@ h1 {
 }
 
 .player-7 {
-  background: #c26819;
-  border-radius: 50%;
-  width: 40%;
-  height: 40%;
-  margin: 5%;
-  z-index: 2;
-
-}
-
-.name-7 {
-  color: #b919c2;
-
-  text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
-
-}
-
-.player-8 {
   background: brown;
   border-radius: 50%;
   width: 40%;
@@ -555,7 +538,7 @@ h1 {
 
 }
 
-.name-8 {
+.name-7 {
   color: brown;
 
   text-shadow: 0 1px 3px whitesmoke, 0 1px 0px whitesmoke;
