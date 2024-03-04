@@ -21,7 +21,7 @@ const Player = () => {
     const [clientGameRunning, setclientGameRunning] = useState(false);
     const [error, setError] = useState(false)
     const [diceDisplay, setDiceDisplay] = useState()
-    const [currentPlayer, setCurrentPlayer] = useState({PlayerNumber: 0})
+    const [currentPlayer, setCurrentPlayer] = useState({ PlayerNumber: 0 })
     const handleJoinButtonClick = () => {
 
         setShowJoinRoomUI(false); // Hide the JoinRoomUI component
@@ -43,13 +43,8 @@ const Player = () => {
 
     useEffect(() => {
 
-        function onJoin() {
-            console.log("konnekted")
-        }
-
         function onLeave() {
             socket.emit("LeaveGame", { Player: PlayerName, RoomCode: roomCode })
-            window.location.reload()
         }
 
         function handleClientMessage(message) {
@@ -94,7 +89,6 @@ const Player = () => {
             }
         }
 
-        socket.on("connect", onJoin)
         socket.on("disconnect", onLeave)
         socket.on("message", (data) => {
             if (data.data.name === PlayerName) {
@@ -111,7 +105,6 @@ const Player = () => {
         socket.on("hostisgone", () => window.location.reload())
 
         return () => {
-            socket.off("connect", onJoin)
             socket.off("disconnect", onLeave)
             socket.off("message", (message) => setGameStateMessage(message))
             socket.off("clientStart", () => setclientGameRunning(true))

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useEffect } from 'react';
 import { socket } from '../App';
 
@@ -13,16 +12,9 @@ const NFC = () => {
         function onJoin() {
             socket.emit("playerRoll", { Player: PlayerName, RoomCode: HostID });
         }
-        function onDisconnect() {
-            console.log("kisonnected")
-        }
-
         socket.on("connect", onJoin)
-        socket.on("disconnect", onDisconnect)
-        //socket.on("clientResponse", clientResponse)
         return () => {
             socket.off("connect", onJoin)
-            socket.off("disconnect", onDisconnect)
         }
 
     }, [HostID, PlayerName])
