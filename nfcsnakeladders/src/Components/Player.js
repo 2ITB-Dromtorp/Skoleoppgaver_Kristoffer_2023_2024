@@ -128,7 +128,7 @@ const Player = () => {
                         <input type='text' onChange={e => setRoomCode(e.target.value)} />
 
                         <h1>Player Name</h1>
-                        <input type='text' pattern="[A-Za-z]{1,25}" maxLength="10" onChange={e => setPlayerName(e.target.value)} />
+                        <input type='text' maxLength="10" onChange={e => setPlayerName(e.target.value)} />
 
                         <button onClick={handleJoinButtonClick}>join</button>
 

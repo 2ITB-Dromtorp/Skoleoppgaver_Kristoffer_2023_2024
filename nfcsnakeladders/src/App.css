@@ -1,11 +1,11 @@
-/*@font-face {
+@font-face {
   font-family: pixelfont;
   src: url(Assets/Daydream.ttf);
 }
 
 body {
   font-family: pixelfont;
-}*/
+}
 
 .Home {
   display: flex;
