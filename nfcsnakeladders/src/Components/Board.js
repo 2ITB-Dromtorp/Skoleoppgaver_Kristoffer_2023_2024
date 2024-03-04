@@ -127,10 +127,6 @@ const Board = () => {
     }
 
     useEffect(() => {
-        function onJoin() {
-            console.log("connected")
-        }
-
         const getOffset = (el) => {
             const rect = el.getBoundingClientRect();
             return {
@@ -227,11 +223,10 @@ const Board = () => {
                     setDiceDisplay(dice6)
                     break;
                 default:
-                        setDiceDisplay(emptyDice)
+                    setDiceDisplay(emptyDice)
             }
         }
 
-        socket.on("connect", onJoin)
         socket.on("playerWin", (winner) => handleWinner(winner))
         socket.on("updatePlayers", (player) => setPlayers(player))
         socket.on("renderBoard", (map) => {
@@ -250,12 +245,10 @@ const Board = () => {
 
         window.addEventListener('resize', handleResize);
 
-
         connectSnakesAndLadders();
 
         return () => {
-            //socket.off("disconnect", onDisconnect);
-            socket.off("connect", onJoin)
+
             window.removeEventListener('resize', handleResize);
         }
 

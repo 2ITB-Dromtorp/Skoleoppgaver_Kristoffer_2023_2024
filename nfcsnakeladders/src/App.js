@@ -4,7 +4,6 @@ import Board from './Components/Board';
 import { io } from 'socket.io-client';
 import NFC from './Components/NFC';
 import Home from './Components/Home';
-
 import Player from './Components/Player';
 
 function App() {
