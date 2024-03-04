@@ -353,6 +353,7 @@ Hosts the game and renders the board
 ![Host UI](src/Assets/HostPreview.png)
 
 #### Events on useEffect
+**renderBoard** and **updatePlayers** sockets are the most important to update, everytime the server emits to Board.js with **renderBoard** it will change the array value of the board and renders it again, **message** socket is used to change both values of message and dice to display.
 ```js
 socket.on("connect", onJoin)
 socket.on("playerWin", (winner) => handleWinner(winner))
@@ -374,6 +375,7 @@ The player that joins the room with code and allows to roll the dice
 ![ClientGaming UI](src/Assets/ClientPreview.png)
 
 #### Events on useEffect
+**clientStart** is used to let the player know that the host has started to game is the player will switch to page with roll dice button. **message** is for to display the message of the game that is running, but it will change to Your turn if its the players turn.
 ```js
 socket.on("connect", onJoin)
 socket.on("disconnect", onLeave)
@@ -392,7 +394,8 @@ socket.on("clientMessage", (clientmessage) => handleClientMessage(clientmessage)
 socket.on("hostisgone", () => window.location.reload())
 ```
 
-#### Socket emits the player uses
+#### Socket emits Player.js uses 
+
 ```js
 const handleJoinButtonClick = () => {
 
