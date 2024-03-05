@@ -43,10 +43,6 @@ const Player = () => {
 
     useEffect(() => {
 
-        function onLeave() {
-            socket.emit("LeaveGame", { Player: PlayerName, RoomCode: roomCode })
-        }
-
         function handleClientMessage(message) {
 
             if (message === "Room dosen't exist" || message === "Player already has that name") {
@@ -89,7 +85,6 @@ const Player = () => {
             }
         }
 
-        socket.on("disconnect", onLeave)
         socket.on("message", (data) => {
             if (data.data.name === PlayerName) {
                 setGameStateMessage("Your turn")
@@ -105,7 +100,6 @@ const Player = () => {
         socket.on("hostisgone", () => window.location.reload())
 
         return () => {
-            socket.off("disconnect", onLeave)
             socket.off("message", (message) => setGameStateMessage(message))
             socket.off("clientStart", () => setclientGameRunning(true))
 
