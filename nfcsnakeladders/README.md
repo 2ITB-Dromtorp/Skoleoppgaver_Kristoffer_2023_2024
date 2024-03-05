@@ -60,6 +60,7 @@ node index.js
 | Express | [https://expressjs.com](https://expressjs.com) | 4.18.2 |
 
 # Developing
+For the developers who want to develop further with this react app
 
 ## Server (Backend)
 
@@ -67,7 +68,7 @@ node index.js
 
 #### Board.js in /host will emit a event called **host** when you host a room with the given options
 
-Hosting a room is created by **GameRooms[data.RoomCode]** adds a new object inside the array that can be only be called with the room code, The socket will join the room code allowing clients connected to the room recive data from the host.
+Hosting a room is created by **GameRooms[data.RoomCode]** adds a new object inside the array that can be only be accessed with the room code, The socket will join the room code allowing clients connected to the room recive data from the host.
 
 Snakes and Ladders object are used to define the placement of snake and ladder tiles when a game board array is created using the function **setupGameBoard(snakes, ladders)**, you are able to costumize the placements by changing the key and value with no limit
 
@@ -211,42 +212,42 @@ let roomCode = data.RoomCode
 
 if (!gameRooms[roomCode]) {
     socket.emit("clientMessage", "Room dosen't exist")
-        return;
-    }
+    return;
+}
 
-    else if (gameRooms[roomCode].canJoin == false) {
-        socket.emit("clientMessage", "You cannot join this room")
+else if (gameRooms[roomCode].canJoin == false) {
+    socket.emit("clientMessage", "You cannot join this room")
+    return
+}
+
+else if (gameRooms[roomCode].maxPlayers < (gameRooms[roomCode].gamePlayers.numberOfPlayers() + 1 || gameRooms[roomCode].canJoin)) {
+    socket.emit("clientMessage", "Too many Players")
+    return
+ }
+
+for (i = 0; i < gameRooms[roomCode].gamePlayers.allPlayers().length; i++) {
+    if (gameRooms[roomCode].gamePlayers.allPlayers()[i].Name === data.Player) {
+        socket.emit("clientMessage", "Player already has that name")
         return
     }
+}
 
-    else if (gameRooms[roomCode].maxPlayers < (gameRooms[roomCode].gamePlayers.numberOfPlayers() + 1 || gameRooms[roomCode].canJoin)) {
-        socket.emit("clientMessage", "Too many Players")
-        return
-    }
+socket.join(data.RoomCode)
 
-    for (i = 0; i < gameRooms[roomCode].gamePlayers.allPlayers().length; i++) {
-        if (gameRooms[roomCode].gamePlayers.allPlayers()[i].Name === data.Player) {
-            socket.emit("clientMessage", "Player already has that name")
-            return
-        }
-    }
+if (gameRooms[roomCode].gameStarted) {
+    socket.emit("clientStart")
+}
 
-    socket.join(data.RoomCode)
+let playernumber = gameRooms[roomCode].gamePlayers.numberOfPlayers()
 
-    if (gameRooms[roomCode].gameStarted) {
-        socket.emit("clientStart")
-    }
+gameRooms[roomCode].gamePlayers.newPlayer(data.Player, 1, playernumber);
 
-    let playernumber = gameRooms[roomCode].gamePlayers.numberOfPlayers()
+if (gameRooms[roomCode].gameStarted == true) {
+    gameRooms[roomCode].gameboard[0][0].playerinTile.push(gameRooms[roomCode].gamePlayers.getPlayer(data.Player))
+    io.to(data.RoomCode).emit("renderBoard", gameRooms[roomCode].gameboard)
+}
 
-    gameRooms[roomCode].gamePlayers.newPlayer(data.Player, 1, playernumber);
-
-    if (gameRooms[roomCode].gameStarted == true) {
-        gameRooms[roomCode].gameboard[0][0].playerinTile.push(gameRooms[roomCode].gamePlayers.getPlayer(data.Player))
-        io.to(data.RoomCode).emit("renderBoard", gameRooms[roomCode].gameboard)
-    }
-
-    io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
+io.to(data.RoomCode).emit("updatePlayers", gameRooms[roomCode].gamePlayers.allPlayers())
 })
 ```
 
