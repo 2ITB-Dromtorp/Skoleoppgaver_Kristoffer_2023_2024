@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './firebase';
+import { getAuth } from 'firebase/auth';
 
 export function Signup() {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    //const [confirmPassword, setConfirmPassword] = useState('');
 
+    const auth = getAuth();
 
     const onSubmit = async (e) => {
         e.preventDefault()
@@ -78,7 +79,7 @@ export function Signup() {
                                 className='sm:text-sm rounded-lg  block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500'
                                 required
                                 placeholder="Confirm Password"
-                                onChange={(e) => setConfirmPassword(e.target.value)}
+                            //onChange={(e) => setConfirmPassword(e.target.value)}
                             />
                         </div>
 
