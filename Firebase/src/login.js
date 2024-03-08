@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { NavLink, useNavigate } from 'react-router-dom'
-import { getAuth } from 'firebase/auth';
+import { auth } from './firebase';
 
 export function Login() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-
-    const auth = getAuth();
 
     const onLogin = async (e) => {
         e.preventDefault();

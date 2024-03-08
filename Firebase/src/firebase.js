@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-/*import { getAuth } from "firebase/auth";
-import { initializeAuth } from "firebase/auth";
+import { getAuth } from "firebase/auth";
+/*import { initializeAuth } from "firebase/auth";
 import { browserSessionPersistence } from "firebase/auth";*/
 //import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -30,6 +30,6 @@ const app = initializeApp(firebaseConfig);
 });*/
 
 
-//export const auth = initializeAuth(app, { persistence: browserSessionPersistence });
+export const auth = getAuth(app);
 
 export default app;
