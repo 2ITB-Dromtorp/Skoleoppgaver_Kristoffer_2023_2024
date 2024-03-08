@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-//import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { auth } from './firebase';
 
 export function Login() {
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -17,9 +17,10 @@ export function Login() {
             .then(() => {
 
                 //const user = userCredential.user;
-                //navigate("/home")
-                // Signed in
                 console.log("user logged inn")
+                navigate("/home")
+                // Signed in
+
             })
             .catch((error) => {
                 const errorCode = error.code;
