@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from "firebase/auth";
-import { useState } from "react";
+//import { useState } from "react";
 import { useEffect } from "react";
 import { auth } from './firebase';
 import { signOut } from "firebase/auth";
@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 export function Home() {
 
-    const [user, setUser] = useState()
+    //const [user, setUser] = useState()
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,7 +16,7 @@ export function Home() {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 const uid = user.uid;
-                setUser(user)
+                //setUser(user)
                 // ...
                 console.log("uid", uid)
                 console.log("user is logged in")
@@ -42,7 +42,7 @@ export function Home() {
     return (
         <>
             <p className="text-3xl font-bold underline">
-                Welcome Home {user}
+                Welcome Home
             </p>
 
             <div>
