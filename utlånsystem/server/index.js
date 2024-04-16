@@ -24,7 +24,8 @@ server.listen(port, async () => {
     console.log("Connected to MongoDB");
 
     const databaseName = "Skoleoppgave";
-    const collectionName = "Users";
+    const UserCollection = "Users";
+    const EquipmentCollection = "Equipment"
 
     const databaseList = await mongodb.db().admin().listDatabases();
     const databaseExists = databaseList.databases.some(db => db.name === databaseName);
@@ -34,14 +35,15 @@ server.listen(port, async () => {
     }
 
     const collectionList = await mongodb.db(databaseName).listCollections().toArray();
-    const collectionExists = collectionList.some(col => col.name === collectionName);
+    const collectionExists = collectionList.some(col => col.name === UserCollection);
     if (!collectionExists) {
-      console.error("Collection does not exist:", collectionName);
+      console.error("Collection does not exist:", UserCollection);
       return;
     }
 
     const database = mongodb.db(databaseName);
-    const Users = database.collection(collectionName);
+    const Users = database.collection(UserCollection);
+    const Equipments = database.collection(EquipmentCollection)
     
     app.get('/api/get-user-data', async (req, res) => {
       try {
@@ -54,16 +56,44 @@ server.listen(port, async () => {
       }
     })
 
-    app.post('/api/login', async (req, res) => {
+    app.get('/api/get-multiple-user-data', async (req, res) => {
       try {
-        const userId = await req.body.id;
-        const user = await Users.findOne({ _id: ObjectId(userId) });
+        const user = await Users.find({});
         res.send(user);
       } catch (error) {
         console.error("Error fetching documents:", error);
         res.status(500).send(error);
       }
     })
+
+    app.post('/api/login', async (req, res) => {
+
+    })
+
+    app.post('/api/create-user', async (req, res) => {
+
+    })
+
+    app.post('/api/add-equipments', async (req, res) => {
+
+    }) 
+
+    app.get('/api/get-equipments', async (req, res) => {
+
+    })
+
+    app.post('/api/borrow-request', async (req, res) => {
+
+    })
+
+    app.post('/api/borrow-deny', async (req, res) => {
+
+    })
+
+    app.post('/api/borrow-accept', async (req, res) => {
+
+    })
+
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
   }

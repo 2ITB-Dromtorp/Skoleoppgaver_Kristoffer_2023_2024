@@ -17,10 +17,16 @@ export const UserSchema = Joi.object({
 
 export const EquipmentSchema = Joi.object({
     _id: Joi.string().alphanum().min(5).max(20).required(), //serial number
-    username: Joi.string().min(3).max(12).required(),
-
+    Type: Joi.string().max(20).required(),
+    Model: Joi.string().max(20).required(),
+    Specs: Joi.array(),
+    BorrowStatus: Joi.object({
+        currentStatus: Joi.string().valid('borrowed', 'available'),
+        studentsborrowing: Joi.array()
+    })
 });
   
 export const BorrowRequestSchema = Joi.object({
-    
+    EquipmentID: Joi.string().alphanum().min(5).max(20).required(),
+    studentsborrowing: Joi.array(),
 })
