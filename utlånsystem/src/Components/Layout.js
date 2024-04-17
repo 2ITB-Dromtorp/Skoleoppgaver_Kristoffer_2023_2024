@@ -1,18 +1,31 @@
-import {Outlet} from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import React from 'react';
+import CheckAuth from '../Functions/CheckAuth';
 
 export default function Layout() {
+  const { isLoggedIn, logout } = CheckAuth();
 
-    return (
-      <div className='layout-container'>
+  const handleLogout = () => {
+    logout();
+  };
 
-        <div className='navbar-content'>
-        Test
-        </div>
+  return (
+    <div className='layout-container'>
 
-        <div className='layout-outlet'>
-            <Outlet/>
-        </div>
+      <div className='navbar-content'>
+        {isLoggedIn ? (
+          <>
+            <p>Welcome, user</p>
+            <button onClick={handleLogout}>Logout</button>
+          </>
+        ) : (
+          <p>Please login</p>
+        )}
       </div>
-    );
+
+      <div className='layout-outlet'>
+        <Outlet />
+      </div>
+    </div>
+  );
 }

@@ -1,32 +1,41 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const Login = async () => {
-        
+    const navigate = useNavigate();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const loginData = {
+                email: email,
+                password: password
+            };
+            const response = await axios.post("http://localhost:8080/api/login", loginData);
+            const token = response.data.token;
+            localStorage.setItem("token", "Bearer " + token);
+            navigate("/");
+        } catch (error) {
+            console.error("Login failed:", error.response.data);
+        }
     }
 
     return (
-        <div className="flex flex-col justify-center items-center h-screen bg-gray-100 gap-3">
+        <div>
+            <h2>Login</h2>
+            <form onSubmit={handleLogin}>
+                <label>Email:</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
-                <form className="login max-w-md w-full  bg-white gap-3 rounded p-6 space-y-4">
-                    <label>
-                        <p>Username</p>
-                        <input type="text" className="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600" onChange={e => setUsername(e.target.value)} />
-                    </label>
-                    <label>
-                        <p>Password</p>
-                        <input type="text" className="w-full p-4 text-sm bg-gray-50 focus:outline-none border border-gray-200 rounded text-gray-600" onChange={e => setPassword(e.target.value)} />
-                    </label>
+                <label>Password:</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
-                    <button type="submit" onClick={Login} className="w-full py-4 bg-gray-400 hover:bg-gray-500 rounded text-sm font-bold text-gray-50 transition duration-200">
-                        Submit </button>
-
-                </form>
-
+                <button type="submit">Login</button>
+            </form>
         </div>
-    )
+    );
 }
