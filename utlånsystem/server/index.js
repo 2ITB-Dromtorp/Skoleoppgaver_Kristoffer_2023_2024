@@ -57,7 +57,7 @@ const EquipmentSchema = Joi.object({
 });
   
 const BorrowRequestSchema = Joi.object({
-    EquipmentID: Joi.string().alphanum().min(5).max(20).required(),
+    _id: Joi.string().alphanum().min(5).max(20).required(),
     studentsborrowing: Joi.array(),
 })
 
@@ -74,6 +74,7 @@ server.listen(port, async () => {
     const databaseName = "Skoleoppgave";
     const UserCollection = "Users";
     const EquipmentCollection = "Equipment"
+    const BorrowRequest = "BorrowRequest"
 
     const databaseList = await mongodb.db().admin().listDatabases();
     const databaseExists = databaseList.databases.some(db => db.name === databaseName);
@@ -93,6 +94,7 @@ server.listen(port, async () => {
     const database = mongodb.db(databaseName);
     const Users = database.collection(UserCollection);
     const Equipments = database.collection(EquipmentCollection)
+    const Borrow = database.collection(BorrowRequest)
     
     app.get('/api/get-user-data', authenticateToken, async (req, res) => {
       try {
@@ -162,21 +164,58 @@ server.listen(port, async () => {
     }) 
 
     app.get('/api/get-equipments', authenticateToken, async (req, res) => {
-
+      try {
+        const Equipment = Equipments.find();
+        res.send(Equipment);
+      } catch (error) {
+        console.error("Error getting equipment:", error);
+        res.status(500).send(error);
+      }
     })
 
-    app.post('/api/borrow-request', authenticateToken,async (req, res) => {
+    app.post('/api/borrow-request', authenticateToken, async (req, res) => {
+      try {
+        const { equipmentId, studentId } = req.body;
 
-    })
+        const existingRequest = await Borrow.findOne({ _id: equipmentId });
+        if (existingRequest) {
+          return res.status(400).json({ error: "Borrow request already exists for this equipment." });
+        }
 
-    app.post('/api/borrow-deny', authenticateToken,async (req, res) => {
+        const newRequest = { _id: equipmentId, studentsborrowing: [studentId] };
+        await Borrow.insertOne(newRequest);
+        res.json("sucess");
+      } catch (error) {
+        console.error("Error creating borrow request:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
+    
+    app.post('/api/borrow-deny', authenticateToken, async (req, res) => {
+      try {
+        const { equipmentId } = req.body;
+        await Borrow.deleteOne({ _id: equipmentId });
+        res.json({ success: true, message: "Borrow request denied successfully." });
+      } catch (error) {
+        console.error("Error denying borrow request:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
 
-    })
-
-    app.post('/api/borrow-accept', authenticateToken,async (req, res) => {
-
-    })
-
+    app.post('/api/borrow-accept', authenticateToken, async (req, res) => {
+      try {
+        const { equipmentId, studentId } = req.body;
+        await Equipments.updateOne(
+          { _id: equipmentId },
+          { $set: { "BorrowStatus.currentStatus": "borrowed" }, $push: { "BorrowStatus.studentsborrowing": studentId } }
+        );
+        await Borrow.deleteOne({ _id: equipmentId });
+        res.json({ success: true, message: "Borrow request accepted successfully." });
+      } catch (error) {
+        console.error("Error accepting borrow request:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
   }
