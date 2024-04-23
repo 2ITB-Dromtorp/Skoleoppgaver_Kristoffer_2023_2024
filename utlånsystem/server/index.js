@@ -99,7 +99,7 @@ server.listen(port, async () => {
     const Equipments = database.collection(EquipmentCollection)
     const Borrow = database.collection(BorrowRequest)
     
-    app.get('/api/get-user-data', authenticateToken, async (req, res) => {
+    /*app.get('/api/get-user-data', authenticateToken, async (req, res) => {
       try {
         const userId = await req.body.id;
         const user = await Users.findOne({ email: userId });
@@ -108,7 +108,7 @@ server.listen(port, async () => {
         console.error("Error fetching documents:", error);
         res.status(500).send(error);
       }
-    })
+    })*/
 
     app.post('/api/login', async (req, res) => {
       try {
@@ -127,8 +127,10 @@ server.listen(port, async () => {
           return res.status(401).json({ error: "Invalid email or password." });
         }
 
+        const fornavn = user.contact_info && user.contact_info.firstname ? user.contact_info.firstname : null;
+
         const tokenPayload = {
-          userId: user._id,
+          fornavn: fornavn,
           email: email
         };
 
@@ -196,13 +198,13 @@ server.listen(port, async () => {
     app.post('/api/borrow-request', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
-        const userId = req.userId;
+        const fornavn = req.user.fornavn;
 
         const existingRequest = await Borrow.findOne({ _id: equipmentId });
         if (existingRequest) {
           return res.status(400).json({ error: "Borrow request already exists for this equipment." });
         }
-        const newRequest = { _id: equipmentId, studentsborrowing: [userId] };
+        const newRequest = { _id: equipmentId, studentsborrowing: [fornavn] };
 
         const validationResult = BorrowRequestSchema.validate(newRequest);
         if (validationResult.error) {

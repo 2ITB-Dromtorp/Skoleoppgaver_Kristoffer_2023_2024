@@ -51,7 +51,6 @@ export default function Equipment() {
                         <p>Serial Number: {equipment._id}</p>
                         <p>Type: {equipment.Type}</p>
                         <p>Model: {equipment.Model}</p>
-                        {/* Add more fields as needed */}
                         <button onClick={() => handleBorrowRequest(equipment._id)}>Borrow</button>
                     </div>
                 ))}
