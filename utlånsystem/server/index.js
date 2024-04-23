@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 const express = require('express')
+const bcrypt = require('bcrypt');
 const app = express()
 const port = process.env.PORT || 8080
 var cors = require("cors");
@@ -146,6 +147,10 @@ server.listen(port, async () => {
     app.post('/api/signup', async (req, res) => {
       try {
         const userData = await req.body;
+
+        const salt = bcrypt.genSaltSync(15);
+        const hash = bcrypt.hashSync(userData.password, salt);
+
         const validationResult = UserSchema.validate(userData);
         if (validationResult.error) {
           return res.status(400).send(validationResult.error.details[0].message);
