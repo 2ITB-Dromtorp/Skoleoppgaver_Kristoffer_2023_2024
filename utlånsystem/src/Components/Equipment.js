@@ -38,6 +38,7 @@ export default function Equipment() {
                 }
             };
             await axios.post('http://localhost:8080/api/borrow-request', { equipmentId }, config);
+            getEquipments();
         } catch (error) {
             console.error('Error borrowing equipment:', error.message);
         }
@@ -45,15 +46,27 @@ export default function Equipment() {
 
     return (
         <>
-            {equipmentData.length > 0 &&
-                equipmentData.map((equipment) => (
-                    <div key={equipment._id}>
-                        <p>Serial Number: {equipment._id}</p>
-                        <p>Type: {equipment.Type}</p>
-                        <p>Model: {equipment.Model}</p>
-                        <button onClick={() => handleBorrowRequest(equipment._id)}>Borrow</button>
-                    </div>
-                ))}
+            <div className='grid grid-cols-4 gap-4 p-5 text-center w-max '>
+                {equipmentData.length > 0 &&
+                    equipmentData.map((equipment) => (
+                        <div className={equipment.BorrowStatus.currentStatus !== "borrowed" ? (equipment.BorrowStatus.currentStatus === "available" ? "bg-green-600 shadow-md" : "bg-yellow-600 shadow-lg")  : "bg-red-600 shadow-lg"} key={equipment._id}>
+                            <p>Serial Number: {equipment._id}</p>
+                            <p>Type: {equipment.Type}</p>
+                            <p>Model: {equipment.Model}</p>
+                            <div className='flex flex-row gap-3 justify-center'>
+                                {equipment.Specs.map((spec) => {
+                                    return (<p className='bg-gray-200 w-max'>{spec}</p>)
+                                })}
+                            </div>
+                            {equipment.BorrowStatus.currentStatus === "pending" ? <p>someone is requesting</p> : <span></span>}
+                            {equipment.BorrowStatus.currentStatus !== "borrowed" ? equipment.BorrowStatus.currentStatus === "available" ? <button className='border-4 border-sky-500' onClick={() => handleBorrowRequest(equipment._id)}>Borrow</button> : <span></span> : <div>
+                        
+                                <p>Borrowed by {equipment.BorrowStatus.studentsborrowing[0]}</p>
+
+                                </div>}
+                        </div>
+                    ))}
+            </div>
         </>
     );
 }

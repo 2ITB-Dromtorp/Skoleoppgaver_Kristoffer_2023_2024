@@ -55,7 +55,7 @@ const EquipmentSchema = Joi.object({
     Model: Joi.string().max(20).required(),
     Specs: Joi.array(),
     BorrowStatus: Joi.object({
-        currentStatus: Joi.string().valid('borrowed', 'available'),
+        currentStatus: Joi.string().valid('borrowed', 'available', 'pending'),
         studentsborrowing: Joi.array()
     })
 });
@@ -219,6 +219,11 @@ server.listen(port, async () => {
         const { equipmentId } = req.body;
         const fornavn = req.user.fornavn;
 
+        await Equipments.updateOne(
+          { _id: equipmentId },
+          { $set: { "BorrowStatus.currentStatus": "pending" } }
+        );
+
         const existingRequest = await Borrow.findOne({ _id: equipmentId });
         if (existingRequest) {
           return res.status(400).json({ error: "Borrow request already exists for this equipment." });
@@ -241,6 +246,10 @@ server.listen(port, async () => {
       try {
         const { equipmentId } = req.body;
         await Borrow.deleteOne({ _id: equipmentId });
+        await Equipments.updateOne(
+          { _id: equipmentId },
+          { $set: { "BorrowStatus.currentStatus": "available" } }
+        );
         res.json({ success: true, message: "Borrow request denied successfully." });
       } catch (error) {
         console.error("Error denying borrow request:", error);

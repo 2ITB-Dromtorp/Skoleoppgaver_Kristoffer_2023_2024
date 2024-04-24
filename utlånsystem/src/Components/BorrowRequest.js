@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 export default function BorrowRequest() {
   const [borrowRequests, setBorrowRequests] = useState([]);
 
-  // Function to get all borrow requests
   const fetchBorrowRequests = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -23,7 +22,6 @@ export default function BorrowRequest() {
     }
   };
 
-  // Function to handle borrowing requests
   const handleBorrowRequest = async (action, equipmentId, studentId) => {
     try {
       const token = localStorage.getItem("token");
@@ -50,7 +48,6 @@ export default function BorrowRequest() {
         );
       }
 
-      // Refetch borrow requests after processing one
       fetchBorrowRequests();
     } catch (error) {
       console.error(`Error processing borrow request (${action}):`, error.message);
@@ -58,11 +55,11 @@ export default function BorrowRequest() {
   };
 
   useEffect(() => {
-    fetchBorrowRequests(); // Fetch the borrow requests on component mount
+    fetchBorrowRequests();
   }, []);
 
   return (
-    <div>
+    <div className='grid grid-cols-4 gap-4'>
       <h2>Borrow Requests</h2>
       {borrowRequests.length === 0 ? (
         <p>No borrow requests</p>
@@ -74,16 +71,18 @@ export default function BorrowRequest() {
               {request.studentsborrowing.map((student) => (
                 <p key={student}>Request by: {student}</p>
               ))}
-              <button
-                onClick={() => handleBorrowRequest("accept", request._id, request.studentsborrowing[0])}
-              >
-                Accept
-              </button>
-              <button
-                onClick={() => handleBorrowRequest("deny", request._id, request.studentsborrowing[0])}
-              >
-                Deny
-              </button>
+              <div className='flex flex-row'>
+                <button className='bg-green-600'
+                  onClick={() => handleBorrowRequest("accept", request._id, request.studentsborrowing[0])}
+                >
+                  Accept
+                </button>
+                <button className='bg-red-600'
+                  onClick={() => handleBorrowRequest("deny", request._id, request.studentsborrowing[0])}
+                >
+                  Deny
+                </button>
+              </div>
             </li>
           ))}
         </ul>
