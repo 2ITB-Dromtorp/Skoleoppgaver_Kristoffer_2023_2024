@@ -124,7 +124,7 @@ server.listen(port, async () => {
           return res.status(401).json({ error: "User dosen't exist" });
         }
 
-        if (password !== user.password) {
+        if (!bcrypt.compareSync(password, user.password)) {
           return res.status(401).json({ error: "Invalid email or password." });
         }
 
@@ -147,15 +147,29 @@ server.listen(port, async () => {
     app.post('/api/signup', async (req, res) => {
       try {
         const userData = await req.body;
-
+        
         const salt = bcrypt.genSaltSync(15);
         const hash = bcrypt.hashSync(userData.password, salt);
 
-        const validationResult = UserSchema.validate(userData);
+        let newUserData = {
+          email: userData.email,
+          password: hash,
+          class_id: userData.class_id,
+          role: userData.role,
+          contact_info: {
+            firstname: userData.contact_info.firstname,
+            lastname: userData.contact_info.lastname,
+            phone: userData.contact_info.phone,
+            adress: userData.contact_info.adress,
+            city: userData.contact_info.city,
+          }
+        }
+
+        const validationResult = UserSchema.validate(newUserData);
         if (validationResult.error) {
           return res.status(400).send(validationResult.error.details[0].message);
         }
-        await Users.insertOne(userData);
+        await Users.insertOne(newUserData);
         res.send("sucess");
       } catch (error) {
         console.error("Error adding user:", error);

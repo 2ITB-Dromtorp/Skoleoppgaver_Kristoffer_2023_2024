@@ -1,70 +1,45 @@
-# Getting Started with Create React App
+# Database Dokumentasjon
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Samlinger
 
-## Available Scripts
+Denne databasen består av tre hovedsamlinger: `Users`, `Equipment`, og `BorrowRequest`. Under beskrives strukturen til hver av disse samlingene.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Users
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Denne samlingen lagrer informasjon om brukere. Hver bruker har følgende felter:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **email** (string): Brukerens e-postadresse. Dette er en obligatorisk og unik verdi.
+- **password** (string): Brukerens passord (bør alltid være hashet). Dette feltet er obligatorisk.
+- **class_id** (string): ID for klassen som brukeren tilhører. Dette feltet er obligatorisk.
+- **role** (string): Brukerens rolle (f.eks. student, lærer). Dette feltet er obligatorisk.
+- **contact_info** (object): Brukerens kontaktinformasjon, som inneholder følgende:
+  - **firstname** (string): Brukerens fornavn. Dette er obligatorisk.
+  - **lastname** (string): Brukerens etternavn. Dette er obligatorisk.
+  - **phone** (string): Brukerens telefonnummer. Dette er valgfritt.
+  - **adress** (string): Brukerens adresse. Dette er valgfritt.
+  - **city** (string): Byen brukeren bor i. Dette er valgfritt.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Equipment
 
-### `npm run build`
+Denne samlingen inneholder informasjon om utstyr som er tilgjengelig for lån. Hver utstyrsenhet har følgende felter:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **\_id** (string): Serienummeret til utstyret. Dette er en unik og obligatorisk verdi.
+- **Type** (string): Type utstyr (f.eks. datamaskin, kamera). Dette er obligatorisk.
+- **Model** (string): Modell av utstyret. Dette er obligatorisk.
+- **Specs** (array): En liste over spesifikasjoner for utstyret. Dette er valgfritt.
+- **BorrowStatus** (object): Statusen for lån, som inneholder følgende:
+  - **currentStatus** (string): Gjeldende status for utstyret. Dette kan være enten "borrowed" eller "available".
+  - **studentsborrowing** (array): En liste over studenter som låner eller ønsker å låne utstyret.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## BorrowRequest
 
-### `npm run eject`
+Denne samlingen inneholder forespørsler om å låne utstyr. Hver forespørsel har følgende felter:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **\_id** (string): ID for låneforespørselen, vanligvis samme som utstyrets serienummer. Dette er en unik og obligatorisk verdi.
+- **studentsborrowing** (array): En liste over studenter som ønsker å låne dette utstyret.
