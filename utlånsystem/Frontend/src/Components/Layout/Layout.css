@@ -1,0 +1,23 @@
+.navbar-content {
+    @apply flex justify-between items-center p-4 bg-white; 
+}
+
+.navbar-links {
+    @apply flex gap-4;
+}
+
+.user-info {
+    @apply flex items-center gap-2; 
+}
+
+.layout-container {
+    @apply font-sans;
+}
+
+.layout-outlet {
+    @apply p-4; 
+}
+
+.avatar-button {
+    @apply text-white;
+}

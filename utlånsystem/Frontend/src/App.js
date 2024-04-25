@@ -5,7 +5,7 @@ import HomePage from './Components/Layout/HomePage';
 import Login from './Components/Login';
 import Signup from './Components/Signup';
 import AddEquipment from './Components/AddEquipment';
-import Equipment from './Components/Equipment';
+import Equipment from './Equipment/Equipment';
 import BorrowRequest from './Components/BorrowRequest';
 
 function App() {

@@ -1,0 +1,11 @@
+.equipment-container {
+    @apply mx-auto w-1/2; 
+  }
+  
+  .equipment-table {
+    @apply bg-white shadow-md rounded-md overflow-hidden;
+  }
+
+  .pagination-container {
+    @apply flex justify-center mt-4;
+  }

@@ -18,6 +18,7 @@ export default function Login() {
             const response = await axios.post("http://localhost:8080/api/login", loginData);
             const token = response.data.token;
             localStorage.setItem("token", "Bearer " + token);
+            console.log("logged in")
             navigate("/");
         } catch (error) {
             console.error("Login failed:", error.response.data);

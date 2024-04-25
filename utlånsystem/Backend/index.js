@@ -86,14 +86,6 @@ server.listen(port, async () => {
       return;
     }
 
-    const collectionList = await mongodb.db(databaseName).listCollections().toArray();
-    const collectionExists = collectionList.some(col => col.name === UserCollection);
-    if (!collectionExists) {
-      console.error("Collection does not exist:", UserCollection);
-
-      return;
-    }
-
     const database = mongodb.db(databaseName);
     const Users = database.collection(UserCollection);
     const Equipments = database.collection(EquipmentCollection)
@@ -127,16 +119,11 @@ server.listen(port, async () => {
           return res.status(401).json({ error: "Invalid email or password." });
         }
 
-        const fornavn = user.contact_info && user.contact_info.firstname ? user.contact_info.firstname : null;
-        const role = user.role ? user.role : null;
-
         const tokenPayload = {
-          role: role,
-          fornavn: fornavn,
-          email: email
+          userdata: user
         };
 
-        const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '2d' });
+        const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '2h' });
 
         res.json({ auth: true, token: token });
       } catch (error) {
@@ -218,58 +205,124 @@ server.listen(port, async () => {
     app.post('/api/borrow-request', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
-        const fornavn = req.user.email;
+        const user = req.user.userdata;
+    
+        const existingRequest = await Borrow.findOne({ _id: equipmentId });
+    
+        if (existingRequest) {
+          const alreadyRequested = existingRequest.studentsborrowing.some(
+            (student) => student.email === user.email
+          );
+    
+          if (alreadyRequested) {
+            return res.status(400).json({ error: "You have already requested to borrow this equipment." });
+          }
+    
+          await Borrow.updateOne(
+            { _id: equipmentId },
+            { $push: { studentsborrowing: { email: user.email, firstname: user.contact_info.firstname, lastname: user.contact_info.lastname } } }
+          );
+        } else {
 
+          const newRequest = {
+            _id: equipmentId,
+            studentsborrowing: [
+              {
+                email: user.email,
+                firstname: user.contact_info.firstname,
+                lastname: user.contact_info.lastname,
+              },
+            ],
+          };
+
+          const validationResult = BorrowRequestSchema.validate(newRequest);
+          if (validationResult.error) {
+            return res.status(400).send(validationResult.error.details[0].message);
+          }    
+    
+          await Borrow.insertOne(newRequest);
+        }
+    
         await Equipments.updateOne(
           { _id: equipmentId },
-          { $set: { "BorrowStatus.currentStatus": "pending" } }
+          {
+            $set: { "BorrowStatus.currentStatus": "pending" },
+          }
         );
-
-        const existingRequest = await Borrow.findOne({ _id: equipmentId });
-        if (existingRequest) {
-          return res.status(400).json({ error: "Borrow request already exists for this equipment." });
-        }
-        const newRequest = { _id: equipmentId, studentsborrowing: [fornavn] };
-
-        const validationResult = BorrowRequestSchema.validate(newRequest);
-        if (validationResult.error) {
-          return res.status(400).send(validationResult.error.details[0].message);
-        }
-        await Borrow.insertOne(newRequest);
-        res.json("sucess");
+    
+        res.json({ success: true, message: 'Borrow request successfully created or updated.' });
       } catch (error) {
         console.error("Error creating borrow request:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: "Internal Server Error." });
       }
     });
 
     app.post('/api/borrow-deny', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
+        const user = req.user.userdata;
+    
+        if (user.role !== 'teacher') {
+          return res.status(403).json({ error: 'Only teachers can accept borrow requests.' });
+        }
+    
+        const existingRequest = await Borrow.findOne({ _id: equipmentId });
+    
+        if (!existingRequest) {
+          return res.status(404).json({ error: 'No borrow request found for the given equipment.' });
+        }
+    
         await Borrow.deleteOne({ _id: equipmentId });
         await Equipments.updateOne(
           { _id: equipmentId },
-          { $set: { "BorrowStatus.currentStatus": "available" } }
+          {
+            $set: {
+              "BorrowStatus.currentStatus": "available",
+              "BorrowStatus.studentsborrowing": [],
+            },
+          }
         );
+    
         res.json({ success: true, message: "Borrow request denied successfully." });
       } catch (error) {
         console.error("Error denying borrow request:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: "Internal Server Error." });
       }
     });
 
     app.post('/api/borrow-accept', authenticateToken, async (req, res) => {
       try {
-        const { equipmentId, studentId } = req.body;
+        const { equipmentId } = req.body;
+        const user = req.user.userdata;
+    
+        if (user.role !== 'teacher') {
+          return res.status(403).json({ error: 'Only teachers can accept borrow requests.' });
+        }
+    
+        const existingRequest = await Borrow.findOne({ _id: equipmentId });
+    
+        if (!existingRequest) {
+          return res.status(404).json({ error: 'No borrow request found for the given equipment.' });
+        }
+    
         await Equipments.updateOne(
           { _id: equipmentId },
-          { $set: { "BorrowStatus.currentStatus": "borrowed" }, $push: { "BorrowStatus.studentsborrowing": studentId } }
+          {
+            $set: { "BorrowStatus.currentStatus": "borrowed" },
+            $push: {
+              "BorrowStatus.studentsborrowing": {
+                $each: existingRequest.studentsborrowing,
+              },
+            },
+          }
         );
+    
         await Borrow.deleteOne({ _id: equipmentId });
+    
         res.json({ success: true, message: "Borrow request accepted successfully." });
       } catch (error) {
         console.error("Error accepting borrow request:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: "Internal Server Error." });
       }
     });
 
