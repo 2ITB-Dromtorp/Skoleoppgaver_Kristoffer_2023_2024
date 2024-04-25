@@ -35,33 +35,33 @@ function authenticateToken(req, res, next) {
 }
 
 const UserSchema = Joi.object({
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-    class_id: Joi.string().required(),
-    role: Joi.string().required(),
-    contact_info: Joi.object({
-      firstname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
-      lastname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
-      phone: Joi.string(),
-      adress: Joi.string(),
-      city: Joi.string(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  class_id: Joi.string().required(),
+  role: Joi.string().required(),
+  contact_info: Joi.object({
+    firstname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
+    lastname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
+    phone: Joi.string(),
+    adress: Joi.string(),
+    city: Joi.string(),
   }),
 });
 
 const EquipmentSchema = Joi.object({
-    _id: Joi.string().alphanum().min(5).max(20).required(), //serial number null cap
-    Type: Joi.string().max(20).required(),
-    Model: Joi.string().max(20).required(),
-    Specs: Joi.array(),
-    BorrowStatus: Joi.object({
-        currentStatus: Joi.string().valid('borrowed', 'available', 'pending'),
-        studentsborrowing: Joi.array()
-    })
+  _id: Joi.string().alphanum().min(5).max(20).required(), //serial number null cap
+  Type: Joi.string().max(20).required(),
+  Model: Joi.string().max(20).required(),
+  Specs: Joi.array(),
+  BorrowStatus: Joi.object({
+    currentStatus: Joi.string().valid('borrowed', 'available', 'pending'),
+    studentsborrowing: Joi.array()
+  })
 });
-  
+
 const BorrowRequestSchema = Joi.object({
-    _id: Joi.string().alphanum().min(5).max(20).required(),
-    studentsborrowing: Joi.array(),
+  _id: Joi.string().alphanum().min(5).max(20).required(),
+  studentsborrowing: Joi.array(),
 })
 
 app.use(cors())
@@ -98,7 +98,7 @@ server.listen(port, async () => {
     const Users = database.collection(UserCollection);
     const Equipments = database.collection(EquipmentCollection)
     const Borrow = database.collection(BorrowRequest)
-    
+
     app.get('/api/get-user-data', authenticateToken, async (req, res) => {
       try {
         const userId = await req.body.id;
@@ -113,7 +113,7 @@ server.listen(port, async () => {
     app.post('/api/login', async (req, res) => {
       try {
         const { email, password } = req.body;
-    
+
         if (!email || !password) {
           return res.status(400).json({ error: "Email and password are required." });
         }
@@ -136,8 +136,8 @@ server.listen(port, async () => {
 
         const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '2d' });
 
-        res.json({auth: true, token: token });
-        } catch (error) {
+        res.json({ auth: true, token: token });
+      } catch (error) {
         console.error("Login failed:", error);
         res.status(500).json({ error: error });
       }
@@ -146,7 +146,7 @@ server.listen(port, async () => {
     app.post('/api/signup', async (req, res) => {
       try {
         const userData = await req.body;
-        
+
         const salt = bcrypt.genSaltSync(15);
         const hash = bcrypt.hashSync(userData.password, salt);
 
@@ -189,7 +189,7 @@ server.listen(port, async () => {
         console.error("Error adding equipment:", error);
         res.status(500).send(error);
       }
-    }) 
+    })
 
     app.get('/api/get-equipments', authenticateToken, async (req, res) => {
       try {
@@ -216,7 +216,7 @@ server.listen(port, async () => {
     app.post('/api/borrow-request', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
-        const fornavn = req.user.fornavn;
+        const fornavn = req.user.email;
 
         await Equipments.updateOne(
           { _id: equipmentId },
@@ -240,7 +240,7 @@ server.listen(port, async () => {
         res.status(500).json({ error: "Internal Server Error" });
       }
     });
-    
+
     app.post('/api/borrow-deny', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;

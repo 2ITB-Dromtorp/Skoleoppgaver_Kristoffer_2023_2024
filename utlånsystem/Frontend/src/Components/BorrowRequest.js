@@ -16,7 +16,7 @@ export default function BorrowRequest() {
         },
       };
       const response = await axios.get("http://localhost:8080/api/get-borrow-requests", config);
-      setBorrowRequests(response.data); 
+      setBorrowRequests(response.data);
     } catch (error) {
       console.error("Error fetching borrow requests:", error.message);
     }
