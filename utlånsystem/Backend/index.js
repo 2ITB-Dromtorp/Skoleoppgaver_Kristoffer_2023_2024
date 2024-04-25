@@ -8,7 +8,6 @@ var cors = require("cors");
 const http = require("http");
 app.use(express.json())
 const { MongoClient } = require('mongodb');
-const { ObjectId } = require('mongodb');
 const url = process.env.TEST
 const server = http.createServer(app);
 
@@ -100,7 +99,7 @@ server.listen(port, async () => {
     const Equipments = database.collection(EquipmentCollection)
     const Borrow = database.collection(BorrowRequest)
     
-    /*app.get('/api/get-user-data', authenticateToken, async (req, res) => {
+    app.get('/api/get-user-data', authenticateToken, async (req, res) => {
       try {
         const userId = await req.body.id;
         const user = await Users.findOne({ email: userId });
@@ -109,7 +108,7 @@ server.listen(port, async () => {
         console.error("Error fetching documents:", error);
         res.status(500).send(error);
       }
-    })*/
+    })
 
     app.post('/api/login', async (req, res) => {
       try {

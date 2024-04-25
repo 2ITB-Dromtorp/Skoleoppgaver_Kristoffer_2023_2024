@@ -1,0 +1,15 @@
+.layout {
+  @apply h-screen flex flex-col justify-between
+}
+
+.navbar-container {
+  @apply bg-slate-400 h-12 py-2 px-3 flex justify-around
+}
+
+.footer {
+    @apply h-12 bg-slate-400
+}
+
+.content-container {
+    @apply w-max 
+}
