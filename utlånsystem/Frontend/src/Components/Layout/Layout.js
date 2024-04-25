@@ -7,7 +7,7 @@ export default function Layout() {
     <div className='layout-container'>
 
       <div className='navbar-content'>
-        navbar
+
       </div>
 
       <div className='layout-outlet'>

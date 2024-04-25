@@ -128,8 +128,10 @@ server.listen(port, async () => {
         }
 
         const fornavn = user.contact_info && user.contact_info.firstname ? user.contact_info.firstname : null;
+        const role = user.role ? user.role : null;
 
         const tokenPayload = {
+          role: role,
           fornavn: fornavn,
           email: email
         };
@@ -267,6 +269,20 @@ server.listen(port, async () => {
         res.json({ success: true, message: "Borrow request accepted successfully." });
       } catch (error) {
         console.error("Error accepting borrow request:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
+
+    app.post('/api/remove-borrowed-equipment', authenticateToken, async (req, res) => {
+      try {
+        const { equipmentId } = req.body;
+        await Equipments.updateOne(
+          { _id: equipmentId },
+          { $set: { "BorrowStatus.currentStatus": "available" } }, { $set: { "BorrowStatus.studentsborrowing": [] } }
+        );
+        res.json({ success: true, message: "removed borrowed equipment" });
+      } catch (error) {
+        console.error("Error removing borrowed equipment", error);
         res.status(500).json({ error: "Internal Server Error" });
       }
     });
