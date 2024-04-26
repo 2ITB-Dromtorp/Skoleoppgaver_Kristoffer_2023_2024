@@ -1,42 +1,77 @@
-import { useState } from "react"
+import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link  } from "react-router-dom";
+import { TextField, Button, Typography } from "@mui/material";
+import "./Login.css";
+  
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             const loginData = {
-                email: email,
-                password: password
+                email,
+                password,
             };
+
             const response = await axios.post("http://localhost:8080/api/login", loginData);
             const token = response.data.token;
-            localStorage.setItem("token", "Bearer " + token);
-            console.log("logged in")
+
+            localStorage.setItem("token", 'Bearer ' + token);
+
             navigate("/");
         } catch (error) {
-            console.error("Login failed:", error.response.data);
+            console.log(error)
         }
-    }
+    };
 
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
-                <label>Email:</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <div className="login-container">
+            <Typography variant="h4" align="center">
+                Login
+            </Typography>
 
-                <label>Password:</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
-                <button type="submit">Login</button>
+            <form className="login-form" onSubmit={handleLogin}>
+                <TextField
+                    label="Email"
+                    type="email"
+                    fullWidth
+                    variant="outlined"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <TextField
+                    label="Password"
+                    type="password"
+                    fullWidth
+                    variant="outlined"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                >
+                    Login
+                </Button>
             </form>
+
+            <div className="signup-link">
+                <Typography variant="body1" align="center">
+                    Har du ikke en konto? <Link to="/signup">Lag konto</Link>
+                </Typography>
+            </div>
         </div>
     );
 }

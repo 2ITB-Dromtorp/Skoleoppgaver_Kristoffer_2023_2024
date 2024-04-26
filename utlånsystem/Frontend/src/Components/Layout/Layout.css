@@ -17,7 +17,3 @@
 .layout-outlet {
     @apply p-4; 
 }
-
-.avatar-button {
-    @apply text-white;
-}

@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 
-const checkUserRole = (expectedRole) => {
-  const navigate = useNavigate();
+const CheckUserRole = (expectedRole, navigate) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token'); 
@@ -26,4 +24,4 @@ const checkUserRole = (expectedRole) => {
     }
   }, [expectedRole, navigate]);
 }
-export default checkUserRole;
+export default CheckUserRole;

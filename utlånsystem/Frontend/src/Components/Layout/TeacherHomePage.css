@@ -1,0 +1,3 @@
+.equipment-table {
+    @apply bg-white shadow-md rounded-md overflow-hidden;
+  }

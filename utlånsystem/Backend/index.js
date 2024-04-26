@@ -158,7 +158,19 @@ server.listen(port, async () => {
           return res.status(400).send(validationResult.error.details[0].message);
         }
         await Users.insertOne(newUserData);
-        res.send("sucess");
+
+        const user = await Users.findOne({ email: userData.email });
+        if (!user) {
+          return res.status(401).json({ error: "User dosen't exist" });
+        }
+
+        const tokenPayload = {
+          userdata: user
+        };
+
+        const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '2h' });
+
+        res.json({ auth: true, token: token });
       } catch (error) {
         console.error("Error adding user:", error);
         res.status(500).send(error);
@@ -316,7 +328,7 @@ server.listen(port, async () => {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
 
-        if (user.role !== 'teacher') {
+        if (user.role !== 'Teacher') {
           return res.status(403).json({ error: 'Only teachers can accept borrow requests.' });
         }
 
@@ -349,7 +361,7 @@ server.listen(port, async () => {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
 
-        if (user.role !== 'teacher') {
+        if (user.role !== 'Teacher') {
           return res.status(403).json({ error: 'Only teachers can accept borrow requests.' });
         }
 
@@ -383,7 +395,6 @@ server.listen(port, async () => {
     app.post('/api/remove-borrowed-equipment', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
-        const userEmail = req.user.userdata.email;
         const equipment = await Equipments.findOne({ _id: equipmentId });
 
         let currentStatus = equipment.BorrowStatus.currentStatus;
@@ -394,20 +405,12 @@ server.listen(port, async () => {
           return res.status(404).json({ error: 'Equipment not found.' });
         }
 
-        const updatedStudentsBorrowing = equipment.BorrowStatus.studentsborrowing.filter(
-          (student) => student.email !== userEmail
-        );
-
-        if (updatedStudentsBorrowing.length === 0) {
-          currentStatus = "available";
-        }
-
         await Equipments.updateOne(
           { _id: equipmentId },
           {
             $set: {
-              "BorrowStatus.studentsborrowing": updatedStudentsBorrowing,
-              "BorrowStatus.currentStatus": currentStatus,
+              "BorrowStatus.studentsborrowing": [],
+              "BorrowStatus.currentStatus": "available",
             },
           }
         );

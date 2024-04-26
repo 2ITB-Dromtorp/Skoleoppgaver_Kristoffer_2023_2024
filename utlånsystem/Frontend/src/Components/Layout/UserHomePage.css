@@ -1,0 +1,19 @@
+.grid-container {
+    @apply gap-[50%] p-4 flex flex-row justify-center; 
+  }
+  
+  .borrowed-equipment > h5 {
+    @apply font-semibold mb-4;
+  }
+  
+  .pending-equipment > h5 {
+    @apply font-semibold mb-4;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-md p-4;
+  }
+
+  .card-content {
+  @apply flex flex-col gap-1;
+}

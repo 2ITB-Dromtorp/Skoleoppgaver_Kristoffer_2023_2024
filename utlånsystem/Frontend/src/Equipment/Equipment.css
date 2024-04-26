@@ -1,9 +1,9 @@
 .equipment-container {
-  @apply mx-auto h-1/2 flex flex-row gap-x-32 justify-center items-center;
+  @apply flex flex-row gap-x-48 justify-center items-center;
 }
 
 .table-container {
-  @apply flex flex-col gap-3 w-full
+  @apply flex flex-col gap-3 w-full 
 }
 
 .equipment-table {

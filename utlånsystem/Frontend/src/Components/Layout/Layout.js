@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { GetUserData } from '../../utils/GetUserData';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/dromtorplogo.png'
@@ -15,6 +15,8 @@ export default function Layout() {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -30,23 +32,6 @@ export default function Layout() {
     navigate('/login'); 
   };
 
-  const handleTabs = (event, newValue) => {
-    setActiveTab(newValue); 
-
-    console.log(newValue)
-
-    switch (newValue) {
-      case 0:
-        navigate('/');
-        break;
-      case 1:
-        navigate('/equipments');
-        break;
-      default:
-        navigate('/');
-    }
-  };
-
   useEffect(() => {
     const fetchUserData = async () => {
       const data = await GetUserData(navigate);
@@ -58,20 +43,58 @@ export default function Layout() {
 
   const userRole = userdata ? userdata.role : null; 
 
+  const handleTabs = (_event, newValue) => {
+    setActiveTab(newValue); 
+
+    console.log(newValue)
+
+    if (userdata?.role === 'Student') {
+      switch (newValue) {
+        case 0:
+          navigate('/');
+          break;
+        case 1:
+          navigate('/equipments');
+          break;
+        default:
+          navigate('/');
+      }
+    } else if (userdata?.role === 'Teacher') {
+      switch (newValue) {
+        case 0:
+          navigate('/');
+          break;
+        case 1:
+          navigate('/addEquip');
+          break;
+        case 2:
+          navigate('/equipments');
+          break;
+        case 3:
+          navigate('/borrow');
+          break;
+        default:
+          navigate('/');
+      }
+    }
+
+  };
+
+
   return (
     <div className='layout-container'>
       <div className='navbar-content'>
 
-      <img src={logo}></img>
+      <img alt='mekk' src={logo}></img>
 
       <div className="navbar-links">
           {userRole === 'Teacher' && (
-            <>
-              <Link to="/addEquip">Add Equipment</Link>
-              <Link to="/equipments">Equipment</Link>
-              <Link to="/borrow">Borrow</Link>
-              <Link to="/">Home</Link>
-            </>
+            <Tabs value={activeTab} onChange={handleTabs}>
+              <Tab label="Hjem" />
+              <Tab label="Legg til Utstyr" />
+              <Tab label="Utstyr" />
+              <Tab label="Forespørsel" />
+            </Tabs>
           )}
           {userRole === 'Student' && (
             <Tabs value={activeTab} onChange={handleTabs}>

@@ -1,0 +1,7 @@
+.login-container {
+    @apply w-full flex flex-col justify-center items-center h-full p-6
+}
+
+.login-form {
+    @apply flex flex-col gap-2
+}

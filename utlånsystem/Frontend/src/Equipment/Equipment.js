@@ -13,7 +13,8 @@ import {
     Select,
     FormControl,
     InputLabel,
-    MenuItem
+    MenuItem,
+    Typography
 } from '@mui/material';
 
 import './Equipment.css';
@@ -106,13 +107,11 @@ export default function Equipment() {
         <div className='equipment-container'>
 
             <div className='status-summary'>
-
-                <label>Status</label>
-
-                <p>Totalt: {statusCounts.total}</p>
-                <p>Tilgjengelig: {statusCounts.available}</p>
-                <p>Venter på forespørsel: {statusCounts.pending}</p>
-                <p>Lånt: {statusCounts.borrowed}</p>
+                <Typography variant="h4">Status</Typography>
+                <Typography variant="h5">Totalt: {statusCounts.total}</Typography>
+                <Typography variant="h5">Tilgjengelig: {statusCounts.available}</Typography>
+                <Typography variant='h5'>Venter på forespørsel: {statusCounts.pending}</Typography>
+                <Typography variant='h5'>Lånt: {statusCounts.borrowed}</Typography>
 
             </div>
 

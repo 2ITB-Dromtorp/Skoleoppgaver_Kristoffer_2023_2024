@@ -1,29 +1,39 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Grid, CardContent, Typography, Card, Button } from '@mui/material';
+import { FetchProtectedData } from '../utils/FetchProtectedData';
+import CheckUserRole from '../utils/CheckUserRole';
+import { useNavigate } from 'react-router-dom';
+
+import './BorrowRequest.css'
 
 export default function BorrowRequest() {
   const [borrowRequests, setBorrowRequests] = useState([]);
+  const [equipmentData, setEquipmentData] = useState([])
+  const [borrowRequestNumber, setborrowRequestNumber] = useState(0);
+
+  const navigate = useNavigate();
 
   const fetchBorrowRequests = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Token not found");
-      }
-      const config = {
-        headers: {
-          Authorization: token,
-        },
-      };
-      const response = await axios.get("http://localhost:8080/api/get-borrow-requests", config);
-      setBorrowRequests(response.data);
+      const data = await FetchProtectedData("http://localhost:8080/api/get-borrow-requests");
+      setBorrowRequests(data);
+      setborrowRequestNumber(data.length > 0 ? (data.length) : 0 )
     } catch (error) {
       console.error("Error fetching borrow requests:", error.message);
     }
   };
 
-  const handleBorrowRequest = async (action, equipmentId, studentId) => {
+  const fetchEquipments = async () => {
+    try {
+        const data = await FetchProtectedData('http://localhost:8080/api/get-equipments');
+        setEquipmentData(data);
+    } catch (error) {
+        console.error('Error fetching equipment data:', error.message);
+    }
+};
+
+  const handleBorrowRequest = async (action, equipmentId) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -38,7 +48,7 @@ export default function BorrowRequest() {
       if (action === "accept") {
         await axios.post(
           "http://localhost:8080/api/borrow-accept",
-          { equipmentId, studentId },
+          { equipmentId },
           config
         );
       } else if (action === "deny") {
@@ -57,26 +67,66 @@ export default function BorrowRequest() {
 
   useEffect(() => {
     fetchBorrowRequests();
+    fetchEquipments();
   }, []);
 
+  CheckUserRole("Teacher", navigate)
+
+  const detailedBorrowRequests = borrowRequests.map((request) => {
+    const equipment = equipmentData.find((eq) => eq._id === request._id);
+    return {
+      requestId: request._id,
+      equipment,
+      students: request.studentsborrowing,
+    };
+  });
+
   return (
-    <div>
-      {borrowRequests && <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h5">Borrow Request</Typography>
-        </Grid>
-        {borrowRequests.map((request) => (
-          <Grid item xs={12} sm={6} md={4} key={request._id}>
+    <div className='borrow-container'>
+        {borrowRequestNumber > 0 ? (
+          <Typography variant="h5">
+            {borrowRequestNumber} vil låne utstyr
+          </Typography>
+        ) : (
+          <Typography variant="h5">Ingen forespørseler</Typography>
+        )}
+
+      <Grid container spacing={2}>
+        {detailedBorrowRequests.map((request) => (
+          <Grid item xs={12} sm={8} md={4} key={request.requestId}>
             <Card>
               <CardContent>
-                <Typography variant="h6">{request._id}</Typography>
-                <Button>Decline</Button>
-                <Button>Accept</Button>
+                <Typography variant="h6">Serial Number: {request.requestId}</Typography>
+                {request.equipment && (
+                  <>
+                    <Typography>Model: {request.equipment.Model}</Typography>
+                    <Typography>Type: {request.equipment.Type}</Typography>
+                    <Typography>Specs: {request.equipment.Specs.join(', ')}</Typography>
+                    <Typography>Requested by: {request.students.map((student) => student.firstname).join(', ')}</Typography>
+                  </>
+                )}
+                <div className='button-container'>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleBorrowRequest("deny", request.requestId)}
+                  >
+                    Deny
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleBorrowRequest("accept", request.requestId)}
+                  >
+                    Accept
+                  </Button>
+                </div>
+
               </CardContent>
             </Card>
           </Grid>
         ))}
-      </Grid>}
+      </Grid>
     </div>
   );
 }

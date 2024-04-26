@@ -1,0 +1,8 @@
+.signup-container {
+    @apply w-full flex flex-col justify-center items-center h-full p-6
+
+}
+
+.signup-form {
+    @apply flex flex-col
+}

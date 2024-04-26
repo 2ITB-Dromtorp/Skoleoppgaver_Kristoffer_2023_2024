@@ -1,0 +1,7 @@
+.button-container {
+    @apply flex flex-row gap-4
+}
+
+.borrow-container {
+    @apply w-full flex flex-col justify-center items-center
+}

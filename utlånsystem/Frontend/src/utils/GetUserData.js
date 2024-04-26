@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 
-export function GetUserData(navigate) {
+export function GetUserData() {
     const token = localStorage.getItem('token');
     if (!token) {
         return null;
