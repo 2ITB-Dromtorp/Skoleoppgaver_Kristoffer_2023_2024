@@ -9,8 +9,6 @@ import Equipment from './Equipment/Equipment';
 import BorrowRequest from './Components/BorrowRequest';
 
 function App() {
-
-
   return (
     <BrowserRouter>
       <Routes>

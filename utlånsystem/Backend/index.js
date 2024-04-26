@@ -4,8 +4,8 @@ const express = require('express')
 const bcrypt = require('bcrypt');
 const app = express()
 const port = process.env.PORT || 8080
-var cors = require("cors");
 const http = require("http");
+var cors = require("cors")
 app.use(express.json())
 const { MongoClient } = require('mongodb');
 const url = process.env.TEST
@@ -14,6 +14,8 @@ const server = http.createServer(app);
 const jwt = require('jsonwebtoken')
 
 const Joi = require('joi');
+
+app.use(cors())
 
 function authenticateToken(req, res, next) {
   const token = req.headers['authorization'];
@@ -63,8 +65,6 @@ const BorrowRequestSchema = Joi.object({
   _id: Joi.string().alphanum().min(5).max(20).required(),
   studentsborrowing: Joi.array(),
 })
-
-app.use(cors())
 
 server.listen(port, async () => {
   console.log(`Example app listening on port ${port}`)
@@ -191,6 +191,58 @@ server.listen(port, async () => {
       }
     })
 
+    app.get('/api/get-user-equipments', authenticateToken, async (req, res) => {
+      try {
+        const userEmail = req.user.userdata.email;
+
+        const borrowedEquipments = await Equipments.find({
+          "BorrowStatus.currentStatus": "borrowed",
+          "BorrowStatus.studentsborrowing.email": userEmail,
+        }).toArray();
+
+        const pendingBorrowRequests = await Borrow.find({
+          "studentsborrowing.email": userEmail,
+        }).toArray();
+
+        const pendingEquipments = await Promise.all(
+          pendingBorrowRequests.map(async (request) => {
+            const equipment = await Equipments.findOne({ _id: request._id });
+
+            if (equipment) {
+              const existingBorrowing = equipment.BorrowStatus.studentsborrowing || [];
+
+              const updatedBorrowing = [
+                ...existingBorrowing,
+                ...request.studentsborrowing.filter(
+                  (student) =>
+                    !existingBorrowing.some(
+                      (existing) => existing.email === student.email
+                    )
+                ),
+              ];
+
+              return {
+                ...equipment,
+                BorrowStatus: {
+                  ...equipment.BorrowStatus,
+                  studentsborrowing: updatedBorrowing,
+                },
+              };
+            }
+
+          })
+        );
+
+        res.json({
+          borrowed: borrowedEquipments,
+          pending: pendingEquipments.filter((item) => item !== null),
+        });
+      } catch (error) {
+        console.error("Error getting user equipment:", error);
+        res.status(500).send(error);
+      }
+    })
+
     app.get('/api/get-borrow-requests', authenticateToken, async (req, res) => {
       try {
         const borrowCursor = Borrow.find();
@@ -206,18 +258,20 @@ server.listen(port, async () => {
       try {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
-    
+
+        console.log(user)
+
         const existingRequest = await Borrow.findOne({ _id: equipmentId });
-    
+
         if (existingRequest) {
           const alreadyRequested = existingRequest.studentsborrowing.some(
             (student) => student.email === user.email
           );
-    
+
           if (alreadyRequested) {
             return res.status(400).json({ error: "You have already requested to borrow this equipment." });
           }
-    
+
           await Borrow.updateOne(
             { _id: equipmentId },
             { $push: { studentsborrowing: { email: user.email, firstname: user.contact_info.firstname, lastname: user.contact_info.lastname } } }
@@ -238,18 +292,18 @@ server.listen(port, async () => {
           const validationResult = BorrowRequestSchema.validate(newRequest);
           if (validationResult.error) {
             return res.status(400).send(validationResult.error.details[0].message);
-          }    
-    
+          }
+
           await Borrow.insertOne(newRequest);
         }
-    
+
         await Equipments.updateOne(
           { _id: equipmentId },
           {
             $set: { "BorrowStatus.currentStatus": "pending" },
           }
         );
-    
+
         res.json({ success: true, message: 'Borrow request successfully created or updated.' });
       } catch (error) {
         console.error("Error creating borrow request:", error);
@@ -261,17 +315,17 @@ server.listen(port, async () => {
       try {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
-    
+
         if (user.role !== 'teacher') {
           return res.status(403).json({ error: 'Only teachers can accept borrow requests.' });
         }
-    
+
         const existingRequest = await Borrow.findOne({ _id: equipmentId });
-    
+
         if (!existingRequest) {
           return res.status(404).json({ error: 'No borrow request found for the given equipment.' });
         }
-    
+
         await Borrow.deleteOne({ _id: equipmentId });
         await Equipments.updateOne(
           { _id: equipmentId },
@@ -282,7 +336,7 @@ server.listen(port, async () => {
             },
           }
         );
-    
+
         res.json({ success: true, message: "Borrow request denied successfully." });
       } catch (error) {
         console.error("Error denying borrow request:", error);
@@ -294,17 +348,17 @@ server.listen(port, async () => {
       try {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
-    
+
         if (user.role !== 'teacher') {
           return res.status(403).json({ error: 'Only teachers can accept borrow requests.' });
         }
-    
+
         const existingRequest = await Borrow.findOne({ _id: equipmentId });
-    
+
         if (!existingRequest) {
           return res.status(404).json({ error: 'No borrow request found for the given equipment.' });
         }
-    
+
         await Equipments.updateOne(
           { _id: equipmentId },
           {
@@ -316,9 +370,9 @@ server.listen(port, async () => {
             },
           }
         );
-    
+
         await Borrow.deleteOne({ _id: equipmentId });
-    
+
         res.json({ success: true, message: "Borrow request accepted successfully." });
       } catch (error) {
         console.error("Error accepting borrow request:", error);
@@ -329,17 +383,46 @@ server.listen(port, async () => {
     app.post('/api/remove-borrowed-equipment', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
+        const userEmail = req.user.userdata.email;
+        const equipment = await Equipments.findOne({ _id: equipmentId });
+
+        let currentStatus = equipment.BorrowStatus.currentStatus;
+
+        console.log(currentStatus)
+
+        if (!equipment) {
+          return res.status(404).json({ error: 'Equipment not found.' });
+        }
+
+        const updatedStudentsBorrowing = equipment.BorrowStatus.studentsborrowing.filter(
+          (student) => student.email !== userEmail
+        );
+
+        if (updatedStudentsBorrowing.length === 0) {
+          currentStatus = "available";
+        }
+
         await Equipments.updateOne(
           { _id: equipmentId },
-          { $set: { "BorrowStatus.currentStatus": "available" } }, { $set: { "BorrowStatus.studentsborrowing": [] } }
+          {
+            $set: {
+              "BorrowStatus.studentsborrowing": updatedStudentsBorrowing,
+              "BorrowStatus.currentStatus": currentStatus,
+            },
+          }
         );
-        res.json({ success: true, message: "removed borrowed equipment" });
+
+        await Borrow.deleteOne(
+          { _id: equipmentId }
+        )
+
+        res.json({ success: true, message: 'Borrow removed successfully.' });
+
       } catch (error) {
-        console.error("Error removing borrowed equipment", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("Error removing borrowed equipment:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
       }
     });
-
     //used to test token :)
     app.get('/api/protected-route', authenticateToken, (req, res) => {
       res.json({ message: 'Access granted!' });

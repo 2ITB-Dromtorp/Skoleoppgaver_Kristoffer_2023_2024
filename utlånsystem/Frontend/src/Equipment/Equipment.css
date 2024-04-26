@@ -1,11 +1,35 @@
 .equipment-container {
-    @apply mx-auto w-1/2; 
-  }
-  
-  .equipment-table {
-    @apply bg-white shadow-md rounded-md overflow-hidden;
-  }
+  @apply mx-auto h-1/2 flex flex-row gap-x-32 justify-center items-center;
+}
 
-  .pagination-container {
-    @apply flex justify-center mt-4;
-  }
+.table-container {
+  @apply flex flex-col gap-3 w-full
+}
+
+.equipment-table {
+  @apply bg-white shadow-md rounded-md overflow-hidden;
+}
+
+.pagination-container {
+  @apply flex justify-center mt-4;
+}
+
+.available {
+  @apply p-1 border-lime-500 border-4
+}
+
+.borrowed {
+  @apply p-1 border-red-500 border-4
+}
+
+.pending {
+  @apply p-1 border-orange-500 border-4
+}
+
+.status-summary {
+  @apply flex flex-col gap-3 w-3/4 my-4 p-4 bg-gray-100 rounded-md shadow-md;
+}
+
+.searchandfilter {
+  @apply flex flex-row
+}

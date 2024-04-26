@@ -1,17 +1,28 @@
 import { jwtDecode } from "jwt-decode";
 
 export function GetUserData(navigate) {
-    
     const token = localStorage.getItem('token');
     if (!token) {
-        navigate('/login');
-        return null; 
+        return null;
     }
+    try {
+        const decodedToken = jwtDecode(token);
 
-    const decodedToken = jwtDecode(token)
-    const userdata = decodedToken.userdata;
+        if (!decodedToken.userdata) {
+            localStorage.removeItem('token');
+            return null
+        }
 
-    console.log(userdata)
+        if (Date.now() >= decodedToken.exp * 1000) {
+            localStorage.removeItem('token');
+            return null
+        }
 
-    return userdata;
+        const userdata = decodedToken.userdata;
+        return userdata;
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        localStorage.removeItem('token');
+        return null;
+    }
 }

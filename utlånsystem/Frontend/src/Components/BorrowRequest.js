@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Grid, CardContent, Typography, Card, Button } from '@mui/material';
 
 export default function BorrowRequest() {
   const [borrowRequests, setBorrowRequests] = useState([]);
@@ -59,34 +60,23 @@ export default function BorrowRequest() {
   }, []);
 
   return (
-    <div className='grid grid-cols-4 gap-4'>
-      <h2>Borrow Requests</h2>
-      {borrowRequests.length === 0 ? (
-        <p>No borrow requests</p>
-      ) : (
-        <ul>
-          {borrowRequests.map((request) => (
-            <li key={request._id}>
-              <p>Equipment ID: {request._id}</p>
-              {request.studentsborrowing.map((student) => (
-                <p key={student}>Request by: {student}</p>
-              ))}
-              <div className='flex flex-row'>
-                <button className='bg-green-600'
-                  onClick={() => handleBorrowRequest("accept", request._id, request.studentsborrowing[0])}
-                >
-                  Accept
-                </button>
-                <button className='bg-red-600'
-                  onClick={() => handleBorrowRequest("deny", request._id, request.studentsborrowing[0])}
-                >
-                  Deny
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div>
+      {borrowRequests && <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h5">Borrow Request</Typography>
+        </Grid>
+        {borrowRequests.map((request) => (
+          <Grid item xs={12} sm={6} md={4} key={request._id}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">{request._id}</Typography>
+                <Button>Decline</Button>
+                <Button>Accept</Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>}
     </div>
   );
 }

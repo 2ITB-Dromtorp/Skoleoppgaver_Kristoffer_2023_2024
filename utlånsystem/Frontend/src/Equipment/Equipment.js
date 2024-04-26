@@ -10,17 +10,27 @@ import {
     Button,
     Pagination,
     TextField,
-    Alert,
-  } from '@mui/material';
+    Select,
+    FormControl,
+    InputLabel,
+    MenuItem
+} from '@mui/material';
 
-
-  
 import './Equipment.css';
 
 export default function Equipment() {
     const [equipmentData, setEquipmentData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(8);
+    const [itemsPerPage] = useState(3);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filter, setFilter] = useState('');
+
+    const [statusCounts, setStatusCounts] = useState({
+        total: 0,
+        available: 0,
+        pending: 0,
+        borrowed: 0,
+    });
 
     useEffect(() => {
         fetchEquipments()
@@ -30,6 +40,14 @@ export default function Equipment() {
         try {
             const data = await FetchProtectedData('http://localhost:8080/api/get-equipments');
             setEquipmentData(data);
+
+            const total = data.length;
+            const available = data.filter(equipment => equipment.BorrowStatus.currentStatus === 'available').length;
+            const pending = data.filter(equipment => equipment.BorrowStatus.currentStatus === 'pending').length;
+            const borrowed = data.filter(equipment => equipment.BorrowStatus.currentStatus === 'borrowed').length;
+
+            setStatusCounts({ total, available, pending, borrowed });
+
 
         } catch (error) {
             console.error('Error fetching equipment data:', error.message);
@@ -54,9 +72,28 @@ export default function Equipment() {
         }
     };
 
-    const totalPages = Math.ceil(equipmentData.length / itemsPerPage);
 
-    const currentData = equipmentData.slice(
+    const filteredData = equipmentData.filter((equipment) => {
+        if (filter && equipment.BorrowStatus.currentStatus !== filter) {
+            return false;
+        }
+        if (
+            searchQuery &&
+            !(
+                equipment._id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                equipment.Model.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                equipment.Type.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+        ) {
+            return false;
+        }
+        return true;
+    });
+
+
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+    const currentData = filteredData.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
@@ -64,69 +101,117 @@ export default function Equipment() {
     const handlePageChange = (_event, page) => {
         setCurrentPage(page);
     };
-    
 
     return (
         <div className='equipment-container'>
 
-            <TextField id="outlined-basic" label="Søk" variant="outlined" />
+            <div className='status-summary'>
 
-            <Table className='equipment-table'>
-                <TableHead>
-                <TableRow>
-                    <TableCell>Serial Number</TableCell>
-                    <TableCell>Model</TableCell>
-                    <TableCell>Type</TableCell>
-                    <TableCell>Specs</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell>Actions</TableCell>
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                {currentData.map((equipment) => (
-                    <TableRow key={equipment._id}>
-                    <TableCell>{equipment._id}</TableCell>
-                    <TableCell>{equipment.Model}</TableCell>
-                    <TableCell>{equipment.Type}</TableCell>
-                    <TableCell>{equipment.Specs}</TableCell> 
-                    <TableCell>{equipment.BorrowStatus.currentStatus}</TableCell>
-                    <TableCell>
-                        {equipment.BorrowStatus.currentStatus === "available" && <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleBorrowRequest(equipment._id)}
-                        >
-                        Borrow
-                        </Button>}
-                        {equipment.BorrowStatus.currentStatus === "borrowed" && <Button
-                        variant="contained"
-                        disabled
-                        color="primary"
-                        onClick={() => handleBorrowRequest(equipment._id)}
-                        >
-                        Borrow
-                        </Button>}
-                        {equipment.BorrowStatus.currentStatus === "pending" && <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleBorrowRequest(equipment._id)}
-                        >
-                        Borrow
-                        </Button>}
-                    </TableCell>
-                    </TableRow>
-                ))}
-                </TableBody>
-            </Table>
+                <label>Status</label>
 
-            <div className="pagination-container">
-                <Pagination
-                    count={totalPages}
-                    page={currentPage}
-                    onChange={handlePageChange}
-                    color="primary"
-                />
+                <p>Totalt: {statusCounts.total}</p>
+                <p>Tilgjengelig: {statusCounts.available}</p>
+                <p>Venter på forespørsel: {statusCounts.pending}</p>
+                <p>Lånt: {statusCounts.borrowed}</p>
+
             </div>
+
+
+            <div className='table-container'>
+
+                <div className='searchandfilter'>
+
+                    <FormControl fullWidth>
+                        <InputLabel>Status Filter</InputLabel>
+                        <Select
+                            label="Status Filter"
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
+                        >
+                            <MenuItem value="">Alle</MenuItem>
+                            <MenuItem value="available">Tilgjengelig</MenuItem>
+                            <MenuItem value="borrowed">Lånt</MenuItem>
+                            <MenuItem value="pending">Venter på forespørsel</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <TextField
+                        id="outlined-basic"
+                        label="Search"
+                        variant="outlined"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+
+                </div>
+
+
+                <Table className='equipment-table'>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Serial Number</TableCell>
+                            <TableCell>Model</TableCell>
+                            <TableCell>Type</TableCell>
+                            <TableCell>Specs</TableCell>
+                            <TableCell>Status</TableCell>
+                            <TableCell>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {currentData.map((equipment) => (
+                            <TableRow key={equipment._id}>
+                                <TableCell>{equipment._id}</TableCell>
+                                <TableCell>{equipment.Model}</TableCell>
+                                <TableCell>{equipment.Type}</TableCell>
+                                <TableCell>{equipment.Specs.join(', ')}</TableCell>
+                                <TableCell>
+
+                                    {equipment.BorrowStatus.currentStatus === "pending" && (<p className='pending'> Eleven har spørt om forespørsel </p>)}
+
+                                    {equipment.BorrowStatus.currentStatus === "available" && (<p className='available'>Tilgjengelig</p>)}
+
+                                    {equipment.BorrowStatus.currentStatus === "borrowed" && (<p className='borrowed'>Lånt</p>)}
+
+                                </TableCell>
+                                <TableCell>
+                                    {equipment.BorrowStatus.currentStatus === "available" && <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => handleBorrowRequest(equipment._id)}
+                                    >
+                                        Borrow
+                                    </Button>}
+                                    {equipment.BorrowStatus.currentStatus === "borrowed" && <Button
+                                        variant="contained"
+                                        disabled
+                                        color="primary"
+                                        onClick={() => handleBorrowRequest(equipment._id)}
+                                    >
+                                        Borrow
+                                    </Button>}
+                                    {equipment.BorrowStatus.currentStatus === "pending" && <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => handleBorrowRequest(equipment._id)}
+                                    >
+                                        Borrow
+                                    </Button>}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+
+                <div className="pagination-container">
+                    <Pagination
+                        count={totalPages}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        color="primary"
+                    />
+                </div>
+            </div>
+
         </div>
     );
 }
