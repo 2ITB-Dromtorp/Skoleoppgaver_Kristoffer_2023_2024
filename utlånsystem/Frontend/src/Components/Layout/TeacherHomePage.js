@@ -34,7 +34,7 @@ export default function TeacherHomePage() {
                     Authorization: token
                 }
             };
-            await axios.post('http://localhost:8080/api/remove-borrowed-equipment', { equipmentId }, config);
+            await axios.put('http://localhost:8080/api/remove-borrowed-equipment', { equipmentId }, config);
             fetchEquipments()
         } catch (error) {
             console.error('Error removing data', error.message);

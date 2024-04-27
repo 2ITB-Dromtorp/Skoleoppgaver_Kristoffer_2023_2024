@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Grid, CardContent, Typography, Card, Button } from '@mui/material';
-import { FetchProtectedData } from '../utils/FetchProtectedData';
-import CheckUserRole from '../utils/CheckUserRole';
+import { FetchProtectedData } from '../../utils/FetchProtectedData';
+import CheckUserRole from '../../utils/CheckUserRole';
 import { useNavigate } from 'react-router-dom';
 
 import './BorrowRequest.css'
@@ -46,13 +46,13 @@ export default function BorrowRequest() {
       };
 
       if (action === "accept") {
-        await axios.post(
+        await axios.put(
           "http://localhost:8080/api/borrow-accept",
           { equipmentId },
           config
         );
       } else if (action === "deny") {
-        await axios.post(
+        await axios.put(
           "http://localhost:8080/api/borrow-deny",
           { equipmentId },
           config
@@ -96,10 +96,10 @@ export default function BorrowRequest() {
           <Grid item xs={12} sm={8} md={4} key={request.requestId}>
             <Card>
               <CardContent>
-                <Typography variant="h6">Serial Number: {request.requestId}</Typography>
                 {request.equipment && (
                   <>
-                    <Typography>Model: {request.equipment.Model}</Typography>
+                    <Typography variant="h6">{request.equipment.Model}</Typography>
+                    <Typography>Serial Number: {request.requestId}</Typography>
                     <Typography>Type: {request.equipment.Type}</Typography>
                     <Typography>Specs: {request.equipment.Specs.join(', ')}</Typography>
                     <Typography>Requested by: {request.students.map((student) => student.firstname).join(', ')}</Typography>

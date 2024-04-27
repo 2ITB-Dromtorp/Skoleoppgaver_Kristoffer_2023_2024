@@ -38,33 +38,45 @@ function authenticateToken(req, res, next) {
 
 const UserSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().required(),
-  class_id: Joi.string().required(),
-  role: Joi.string().required(),
+  password: Joi.string().min(8).required(),
+  class_id: Joi.string().valid("2ITB", "2ITA", "IM").required(),
+  role: Joi.string().valid("Student", "Teacher").required(),
   contact_info: Joi.object({
     firstname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
     lastname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
-    phone: Joi.string(),
-    adress: Joi.string(),
-    city: Joi.string(),
-  }),
+    phone: Joi.string().min(7).max(15),
+    adress: Joi.string().max(50),
+    city: Joi.string().max(30),
+  }).required()
 });
 
 const EquipmentSchema = Joi.object({
-  _id: Joi.string().alphanum().min(5).max(20).required(), //serial number null cap
+  _id: Joi.string().alphanum().min(5).max(20).required(), 
   Type: Joi.string().max(20).required(),
   Model: Joi.string().max(20).required(),
-  Specs: Joi.array(),
+  Specs: Joi.array().items(Joi.string().max(50)),
   BorrowStatus: Joi.object({
-    currentStatus: Joi.string().valid('borrowed', 'available', 'pending'),
-    studentsborrowing: Joi.array()
-  })
+    currentStatus: Joi.string().valid("borrowed", "available", "pending").required(),
+    studentsborrowing: Joi.array().items(
+      Joi.object({
+        email: Joi.string().email().required(),
+        firstname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
+        lastname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
+      })
+    )
+  }).required()
 });
 
 const BorrowRequestSchema = Joi.object({
   _id: Joi.string().alphanum().min(5).max(20).required(),
-  studentsborrowing: Joi.array(),
-})
+  studentsborrowing: Joi.array().items(
+    Joi.object({
+      email: Joi.string().email().required(),
+      firstname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
+      lastname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
+    })
+  ).required()
+});
 
 server.listen(port, async () => {
   console.log(`Example app listening on port ${port}`)
@@ -180,6 +192,12 @@ server.listen(port, async () => {
     app.post('/api/add-equipment', async (req, res) => {
       try {
         const equipmentData = await req.body;
+        const user = req.user.userdata;
+
+        if (user.role !== 'Teacher') {
+          return res.status(403).json({ error: 'Only teachers can add equipments.' });
+        }
+
         const validationResult = EquipmentSchema.validate(equipmentData);
         if (validationResult.error) {
           return res.status(400).send(validationResult.error.details[0].message);
@@ -271,8 +289,6 @@ server.listen(port, async () => {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
 
-        console.log(user)
-
         const existingRequest = await Borrow.findOne({ _id: equipmentId });
 
         if (existingRequest) {
@@ -323,7 +339,7 @@ server.listen(port, async () => {
       }
     });
 
-    app.post('/api/borrow-deny', authenticateToken, async (req, res) => {
+    app.put('/api/borrow-deny', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
@@ -356,7 +372,7 @@ server.listen(port, async () => {
       }
     });
 
-    app.post('/api/borrow-accept', authenticateToken, async (req, res) => {
+    app.put('/api/borrow-accept', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
@@ -392,7 +408,7 @@ server.listen(port, async () => {
       }
     });
 
-    app.post('/api/remove-borrowed-equipment', authenticateToken, async (req, res) => {
+    app.put('/api/remove-borrowed-equipment', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
         const equipment = await Equipments.findOne({ _id: equipmentId });
@@ -426,6 +442,28 @@ server.listen(port, async () => {
         res.status(500).json({ error: 'Internal Server Error' });
       }
     });
+
+    app.put('/api/remove-equipment', authenticateToken,async (req, res) => {
+      try {
+        const { equipmentId } = req.body;
+        const equipment = await Equipments.findOne({ _id: equipmentId });
+
+        const user = req.user.userdata;
+
+        if (user.role !== 'Teacher') {
+          return res.status(403).json({ error: 'Only teachers can accept borrow requests.' });
+        }
+
+        await Equipments.deleteOne({_id: equipmentId})
+
+        res.send("deleted")
+
+      } catch (error) {
+        console.error("Error removing equipment:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    })
+
     //used to test token :)
     app.get('/api/protected-route', authenticateToken, (req, res) => {
       res.json({ message: 'Access granted!' });

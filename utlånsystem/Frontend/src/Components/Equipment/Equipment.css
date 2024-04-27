@@ -33,3 +33,7 @@
 .searchandfilter {
   @apply flex flex-row
 }
+
+.button-container {
+  @apply flex flex-row
+}

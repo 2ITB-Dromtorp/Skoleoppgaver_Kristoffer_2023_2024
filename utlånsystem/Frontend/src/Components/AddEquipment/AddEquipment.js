@@ -5,7 +5,7 @@ import { Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 import "./AddEquipment.css"
-import CheckUserRole from '../utils/CheckUserRole';
+import CheckUserRole from '../../utils/CheckUserRole';
 
 export default function AddEquipment() {
   const [formData, setFormData] = useState({

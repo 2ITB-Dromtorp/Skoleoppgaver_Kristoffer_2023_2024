@@ -2,11 +2,11 @@ import './App.css';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import Layout from './Components/Layout/Layout';
 import HomePage from './Components/Layout/HomePage';
-import Login from './Components/Login';
-import Signup from './Components/Signup';
-import AddEquipment from './Components/AddEquipment';
-import Equipment from './Equipment/Equipment';
-import BorrowRequest from './Components/BorrowRequest';
+import Login from './Components/Login/Login';
+import Signup from './Components/Signup/Signup';
+import AddEquipment from './Components/AddEquipment/AddEquipment';
+import Equipment from './Components/Equipment/Equipment';
+import BorrowRequest from './Components/BorrowRequest/BorrowRequest';
 
 function App() {
   return (

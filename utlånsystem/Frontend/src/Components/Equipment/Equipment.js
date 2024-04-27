@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { FetchProtectedData } from '../utils/FetchProtectedData';
+import { FetchProtectedData } from '../../utils/FetchProtectedData';
 import {
     Table,
     TableHead,
@@ -14,8 +14,15 @@ import {
     FormControl,
     InputLabel,
     MenuItem,
-    Typography
+    Typography,
+    CircularProgress,
+    IconButton
 } from '@mui/material';
+
+import { Delete } from '@mui/icons-material';
+
+
+import { GetUserData } from '../../utils/GetUserData';
 
 import './Equipment.css';
 
@@ -25,6 +32,7 @@ export default function Equipment() {
     const [itemsPerPage] = useState(3);
     const [searchQuery, setSearchQuery] = useState('');
     const [filter, setFilter] = useState('');
+    const [userdata, setUserData] = useState()
 
     const [statusCounts, setStatusCounts] = useState({
         total: 0,
@@ -34,6 +42,14 @@ export default function Equipment() {
     });
 
     useEffect(() => {
+        const fetchUserData = async () => {
+            const data = await GetUserData();
+            setUserData(data);
+        };
+
+        fetchUserData();
+
+
         fetchEquipments()
     }, []);
 
@@ -73,6 +89,23 @@ export default function Equipment() {
         }
     };
 
+    const handleRemoveEquipment = async (equipmentId) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token not found');
+            }
+            const config = {
+                headers: {
+                    Authorization: token
+                }
+            };
+            await axios.put('http://localhost:8080/api/remove-equipment', { equipmentId }, config);
+            fetchEquipments();
+        } catch (error) {
+            console.error('Error borrowing equipment:', error.message);
+        }
+    }
 
     const filteredData = equipmentData.filter((equipment) => {
         if (filter && equipment.BorrowStatus.currentStatus !== filter) {
@@ -90,7 +123,6 @@ export default function Equipment() {
         }
         return true;
     });
-
 
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -165,7 +197,7 @@ export default function Equipment() {
                                 <TableCell>{equipment.Specs.join(', ')}</TableCell>
                                 <TableCell>
 
-                                    {equipment.BorrowStatus.currentStatus === "pending" && (<p className='pending'> Eleven har spørt om forespørsel </p>)}
+                                    {equipment.BorrowStatus.currentStatus === "pending" && (<p className='pending'> Noen har spørt om forespørsel </p>)}
 
                                     {equipment.BorrowStatus.currentStatus === "available" && (<p className='available'>Tilgjengelig</p>)}
 
@@ -173,28 +205,40 @@ export default function Equipment() {
 
                                 </TableCell>
                                 <TableCell>
-                                    {equipment.BorrowStatus.currentStatus === "available" && <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() => handleBorrowRequest(equipment._id)}
-                                    >
-                                        Borrow
-                                    </Button>}
-                                    {equipment.BorrowStatus.currentStatus === "borrowed" && <Button
-                                        variant="contained"
-                                        disabled
-                                        color="primary"
-                                        onClick={() => handleBorrowRequest(equipment._id)}
-                                    >
-                                        Borrow
-                                    </Button>}
-                                    {equipment.BorrowStatus.currentStatus === "pending" && <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() => handleBorrowRequest(equipment._id)}
-                                    >
-                                        Borrow
-                                    </Button>}
+                                    <div className='button-container'> 
+                                        {equipment.BorrowStatus.currentStatus === "available" && <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => handleBorrowRequest(equipment._id)}
+                                        >
+                                            Borrow
+                                        </Button>}
+                                        {equipment.BorrowStatus.currentStatus === "borrowed" && <Button
+                                            variant="contained"
+                                            disabled
+                                            color="primary"
+                                            onClick={() => handleBorrowRequest(equipment._id)}
+                                        >
+                                            Borrow
+                                        </Button>}
+                                        {equipment.BorrowStatus.currentStatus === "pending" && <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => handleBorrowRequest(equipment._id)}
+                                        >
+                                            Borrow
+                                        </Button>
+                                        }
+                                        {userdata ? (
+                                            <>
+                                             {userdata.role === "Teacher" && <IconButton onClick={() => handleRemoveEquipment(equipment._id)} edge="end">
+                                                <Delete />
+                                            </IconButton>}
+                                            </>
+                                         ) : (
+                                         <CircularProgress />
+                                        )}
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

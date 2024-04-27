@@ -16,7 +16,7 @@ export const FetchProtectedData = async (endpoint) => {
         const response = await axios.get(endpoint, config);
         return response.data
     } catch (error) {
-        console.error('Error fetching protected data:', error.message);
+        console.error('Error fetching data:', error.message);
         throw error; 
     }
 };
