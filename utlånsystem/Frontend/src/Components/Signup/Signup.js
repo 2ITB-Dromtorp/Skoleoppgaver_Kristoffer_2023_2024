@@ -15,7 +15,7 @@ export default function Signup() {
   const [adress, setAdress] = useState("");
   const [city, setCity] = useState("");
   const [schoolclass, setSchoolClass] = useState("None");
-  
+
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
@@ -34,7 +34,7 @@ export default function Signup() {
           city,
         },
       };
-      
+
       const response = await axios.post("/api/signup", userData);
 
       if (response.status === 200) {
@@ -50,7 +50,7 @@ export default function Signup() {
       <Typography variant="h4" align="center">
         Sign Up
       </Typography>
-      
+
       <form className="signup-form" onSubmit={handleSignup}>
         <TextField
           label="Email"
@@ -61,7 +61,7 @@ export default function Signup() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        
+
         <TextField
           label="Password"
           type="password"
@@ -72,7 +72,7 @@ export default function Signup() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        
+
         <TextField
           label="First Name"
           variant="outlined"
@@ -82,7 +82,7 @@ export default function Signup() {
           value={firstname}
           onChange={(e) => setFirstname(e.target.value)}
         />
-        
+
         <TextField
           label="Last Name"
           variant="outlined"
@@ -92,7 +92,7 @@ export default function Signup() {
           value={lastname}
           onChange={(e) => setLastname(e.target.value)}
         />
-        
+
         <TextField
           label="Phone Number"
           variant="outlined"
@@ -102,7 +102,7 @@ export default function Signup() {
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
-        
+
         <TextField
           label="Address"
           variant="outlined"
@@ -112,7 +112,7 @@ export default function Signup() {
           value={adress}
           onChange={(e) => setAdress(e.target.value)}
         />
-        
+
         <TextField
           label="City"
           variant="outlined"
@@ -122,7 +122,7 @@ export default function Signup() {
           value={city}
           onChange={(e) => setCity(e.target.value)}
         />
-        
+
         <FormControl fullWidth margin="normal">
           <InputLabel>Role</InputLabel>
           <Select
@@ -135,7 +135,7 @@ export default function Signup() {
             <MenuItem value="Student">Student</MenuItem>
           </Select>
         </FormControl>
-        
+
         <FormControl fullWidth margin="normal">
           <InputLabel>School Class</InputLabel>
           <Select
@@ -149,7 +149,7 @@ export default function Signup() {
             <MenuItem value="IM">IM</MenuItem>
           </Select>
         </FormControl>
-        
+
         <Button
           type="submit"
           variant="contained"

@@ -205,7 +205,7 @@ export default function Equipment() {
 
                                 </TableCell>
                                 <TableCell>
-                                    <div className='button-container'> 
+                                    <div className='button-container'>
                                         {equipment.BorrowStatus.currentStatus === "available" && <Button
                                             variant="contained"
                                             color="primary"
@@ -231,12 +231,12 @@ export default function Equipment() {
                                         }
                                         {userdata ? (
                                             <>
-                                             {userdata.role === "Teacher" && <IconButton onClick={() => handleRemoveEquipment(equipment._id)} edge="end">
-                                                <Delete />
-                                            </IconButton>}
+                                                {userdata.role === "Teacher" && <IconButton onClick={() => handleRemoveEquipment(equipment._id)} edge="end">
+                                                    <Delete />
+                                                </IconButton>}
                                             </>
-                                         ) : (
-                                         <CircularProgress />
+                                        ) : (
+                                            <CircularProgress />
                                         )}
                                     </div>
                                 </TableCell>
