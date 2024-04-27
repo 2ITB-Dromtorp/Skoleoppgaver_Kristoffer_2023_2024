@@ -7,11 +7,13 @@
     1. [Frontend](#Frontend-packages)
     2. [Backend](#Backend-packages)
 3. [Setup](#Setup)
-4. [Database Modelling](#Database)
+4. [Database Modelling](#database)
 5. [Developing](#developing)
-    1. [Frontend](#Frontend)
-    2. [Backend](#Backend)
-6. [Running on 2 laptops]()
+    1. [Frontend](#frontend)
+    2. [Backend](#backend)
+6. [Running on 2 computers with Ethernet](#running-on-2-computers-with-ethernet)
+   1. [Prerequisites](#prerequisites)
+   2. [Setup](#setup-1)
 7. [Author](#author)
 8. [License](#license)
 
@@ -99,7 +101,7 @@ The database is modelled with JOI in the backend
 
 ### Collection Schemas
 
-### User Schema (UserSchema)
+### User Schema
 
 - **email**: (string, required) Must be a valid email address.
 - **password**: (string, required) Must be at least 8 characters long.
@@ -112,7 +114,7 @@ The database is modelled with JOI in the backend
   - **adress**: (string) Maximum 50 characters.
   - **city**: (string) Maximum 30 characters.
 
-### Equipment Schema (EquipmentSchema)
+### Equipment Schema
 
 - **_id**: (string, required) Alphanumeric, between 5 and 20 characters.
 - **Type**: (string, required) Maximum 20 characters.
@@ -125,7 +127,7 @@ The database is modelled with JOI in the backend
     - **firstname**: (string, required) Between 3 and 20 characters.
     - **lastname**: (string, required) Between 3 and 20 characters.
 
-### Borrow Request Schema (BorrowRequestSchema)
+### Borrow Request Schema
 
 - **_id**: (string, required) Alphanumeric, between 5 and 20 characters.
 - **studentsborrowing**: (array of objects) Contains objects with the following fields:
@@ -206,6 +208,67 @@ function App() {
   );
 }
 ```
+
+## Running on 2 computers with Ethernet
+
+This guide will help you set up a React application running on two separate computers connected via Ethernet. One computer will run the backend (server), and the other will run the frontend (React app). Both computers need to be connected to the same local network (LAN).
+
+
+![ethernet](./2laptops.png)
+
+### Prerequisites
+
+1. **GitHub Repository**: Ensure that both computers have the required GitHub repository cloned.
+2. **Node.js and npm**: Both computers should have Node.js and npm installed.
+3. **MongoDB Connection**: The backend computer should be able to connect to MongoDB. Ensure the Wi-Fi is enabled for this connection.
+4. **Environment File**: The backend computer must have a `.env` file with the necessary environment variables, such as JWT_SECRET and the MongoDB connection URL.
+
+### Setup
+
+#### Ethernet Connection
+
+1. Connect the two computers with an Ethernet cable.
+2. Change the Ethernet settings to use static IP addresses:
+
+   - **Laptop 1 (Frontend)**
+     - IP Address: `192.168.0.1`
+     - Subnet Mask: `255.255.255.0`
+   
+   - **Laptop 2 (Backend)**
+     - IP Address: `192.168.0.2`
+     - Subnet Mask: `255.255.255.0`
+3. try ping both computers to test if they both can communicate
+
+#### Running the Backend
+
+1. Open a terminal on Laptop 2 (backend).
+2. Navigate to the backend folder of the project.
+3. Start the server with the following command:
+   ```bash
+   node index.js
+   ```
+
+#### Running the Frontend
+  1. Open a terminal on Laptop 1 (frontend).
+  2. Navigate to the frontend folder of the project.
+   3. Change the proxy server IP address to match the backend's IP. Edit the proxy configuration file to example below
+
+```js
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+module.exports = function(app) {
+  app.use(
+    '/api',
+    createProxyMiddleware({
+      target: 'http://192.168.0.2:8080',
+      changeOrigin: true,
+    })
+  );
+};
+```
+
+### Final Step
+Once both the backend and frontend are running, your setup should be complete. 
 
 # Author
 | Person | Link |
