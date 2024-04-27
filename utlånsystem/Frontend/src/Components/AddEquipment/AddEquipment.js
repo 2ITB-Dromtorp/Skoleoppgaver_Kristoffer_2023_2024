@@ -55,7 +55,7 @@ export default function AddEquipment() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/api/add-equipment', formData);
+      const response = await axios.post('/api/add-equipment', formData);
       if (response.status === 200) {
         console.log('Equipment added successfully');
         setFormData({

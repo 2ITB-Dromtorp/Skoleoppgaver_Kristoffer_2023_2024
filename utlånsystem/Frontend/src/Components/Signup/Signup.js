@@ -35,7 +35,7 @@ export default function Signup() {
         },
       };
       
-      const response = await axios.post("http://localhost:8080/api/signup", userData);
+      const response = await axios.post("/api/signup", userData);
 
       if (response.status === 200) {
         navigate("/");

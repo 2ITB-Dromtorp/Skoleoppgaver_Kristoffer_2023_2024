@@ -55,7 +55,7 @@ export default function Equipment() {
 
     const fetchEquipments = async () => {
         try {
-            const data = await FetchProtectedData('http://localhost:8080/api/get-equipments');
+            const data = await FetchProtectedData('/api/get-equipments');
             setEquipmentData(data);
 
             const total = data.length;
@@ -82,7 +82,7 @@ export default function Equipment() {
                     Authorization: token
                 }
             };
-            await axios.post('http://localhost:8080/api/borrow-request', { equipmentId }, config);
+            await axios.post('/api/borrow-request', { equipmentId }, config);
             fetchEquipments();
         } catch (error) {
             console.error('Error borrowing equipment:', error.message);
@@ -100,7 +100,7 @@ export default function Equipment() {
                     Authorization: token
                 }
             };
-            await axios.put('http://localhost:8080/api/remove-equipment', { equipmentId }, config);
+            await axios.put('/api/remove-equipment', { equipmentId }, config);
             fetchEquipments();
         } catch (error) {
             console.error('Error borrowing equipment:', error.message);

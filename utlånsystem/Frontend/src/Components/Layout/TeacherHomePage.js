@@ -13,7 +13,7 @@ export default function TeacherHomePage() {
 
     const fetchEquipments = async () => {
         try {
-            const data = await FetchProtectedData('http://localhost:8080/api/get-equipments');
+            const data = await FetchProtectedData('/api/get-equipments');
             const borrowed = data.filter(
                 (equipment) => equipment.BorrowStatus.currentStatus === "borrowed"
               );
@@ -34,7 +34,7 @@ export default function TeacherHomePage() {
                     Authorization: token
                 }
             };
-            await axios.put('http://localhost:8080/api/remove-borrowed-equipment', { equipmentId }, config);
+            await axios.put('/api/remove-borrowed-equipment', { equipmentId }, config);
             fetchEquipments()
         } catch (error) {
             console.error('Error removing data', error.message);

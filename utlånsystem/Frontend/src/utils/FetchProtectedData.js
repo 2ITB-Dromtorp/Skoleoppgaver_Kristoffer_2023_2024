@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const FetchProtectedData = async (endpoint) => {
+export const FetchProtectedData = async (url) => {
     try {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -13,7 +13,7 @@ export const FetchProtectedData = async (endpoint) => {
             }
         };
 
-        const response = await axios.get(endpoint, config);
+        const response = await axios.get(url, config);
         return response.data
     } catch (error) {
         console.error('Error fetching data:', error.message);

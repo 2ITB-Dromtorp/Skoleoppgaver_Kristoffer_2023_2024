@@ -22,7 +22,7 @@ export default function UserHomePage() {
                     Authorization: token
                 }
             };
-            await axios.post('http://localhost:8080/api/remove-borrowed-equipment', { equipmentId }, config);
+            await axios.put('/api/remove-borrowed-equipment', { equipmentId }, config);
             fetchEquipments()
         } catch (error) {
             console.error('Error removing data', error.message);
@@ -31,7 +31,7 @@ export default function UserHomePage() {
 
         const fetchEquipments = async () => {
         try {
-            const data = await FetchProtectedData('http://localhost:8080/api/get-user-equipments');
+            const data = await FetchProtectedData('/api/get-user-equipments');
             setUserEquipmentData(data);
         } catch (error) {
             console.error('Error fetching equipment data:', error.message);

@@ -8,7 +8,7 @@ const http = require("http");
 var cors = require("cors")
 app.use(express.json())
 const { MongoClient } = require('mongodb');
-const url = process.env.TEST
+const url = process.env.URL
 const server = http.createServer(app);
 
 const jwt = require('jsonwebtoken')
@@ -103,18 +103,7 @@ server.listen(port, async () => {
     const Equipments = database.collection(EquipmentCollection)
     const Borrow = database.collection(BorrowRequest)
 
-    app.get('/api/get-user-data', authenticateToken, async (req, res) => {
-      try {
-        const userId = await req.body.id;
-        const user = await Users.findOne({ email: userId });
-        res.send(user);
-      } catch (error) {
-        console.error("Error fetching documents:", error);
-        res.status(500).send(error);
-      }
-    })
-
-    app.post('/api/login', async (req, res) => {
+    app.post('/login', async (req, res) => {
       try {
         const { email, password } = req.body;
 
@@ -144,7 +133,7 @@ server.listen(port, async () => {
       }
     })
 
-    app.post('/api/signup', async (req, res) => {
+    app.post('/signup', async (req, res) => {
       try {
         const userData = await req.body;
 
@@ -189,7 +178,7 @@ server.listen(port, async () => {
       }
     })
 
-    app.post('/api/add-equipment', async (req, res) => {
+    app.post('/add-equipment', async (req, res) => {
       try {
         const equipmentData = await req.body;
         const user = req.user.userdata;
@@ -210,7 +199,7 @@ server.listen(port, async () => {
       }
     })
 
-    app.get('/api/get-equipments', authenticateToken, async (req, res) => {
+    app.get('/get-equipments', authenticateToken, async (req, res) => {
       try {
         const equipmentCursor = Equipments.find();
         const equipments = await equipmentCursor.toArray();
@@ -221,7 +210,7 @@ server.listen(port, async () => {
       }
     })
 
-    app.get('/api/get-user-equipments', authenticateToken, async (req, res) => {
+    app.get('/get-user-equipments', authenticateToken, async (req, res) => {
       try {
         const userEmail = req.user.userdata.email;
 
@@ -273,7 +262,7 @@ server.listen(port, async () => {
       }
     })
 
-    app.get('/api/get-borrow-requests', authenticateToken, async (req, res) => {
+    app.get('/get-borrow-requests', authenticateToken, async (req, res) => {
       try {
         const borrowCursor = Borrow.find();
         const borrowrequestlist = await borrowCursor.toArray();
@@ -284,7 +273,7 @@ server.listen(port, async () => {
       }
     })
 
-    app.post('/api/borrow-request', authenticateToken, async (req, res) => {
+    app.post('/borrow-request', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
@@ -339,7 +328,7 @@ server.listen(port, async () => {
       }
     });
 
-    app.put('/api/borrow-deny', authenticateToken, async (req, res) => {
+    app.put('/borrow-deny', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
@@ -372,7 +361,7 @@ server.listen(port, async () => {
       }
     });
 
-    app.put('/api/borrow-accept', authenticateToken, async (req, res) => {
+    app.put('/borrow-accept', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
         const user = req.user.userdata;
@@ -408,7 +397,7 @@ server.listen(port, async () => {
       }
     });
 
-    app.put('/api/remove-borrowed-equipment', authenticateToken, async (req, res) => {
+    app.put('/remove-borrowed-equipment', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
         const equipment = await Equipments.findOne({ _id: equipmentId });
@@ -443,10 +432,9 @@ server.listen(port, async () => {
       }
     });
 
-    app.put('/api/remove-equipment', authenticateToken,async (req, res) => {
+    app.put('/remove-equipment', authenticateToken,async (req, res) => {
       try {
         const { equipmentId } = req.body;
-        const equipment = await Equipments.findOne({ _id: equipmentId });
 
         const user = req.user.userdata;
 
@@ -465,7 +453,7 @@ server.listen(port, async () => {
     })
 
     //used to test token :)
-    app.get('/api/protected-route', authenticateToken, (req, res) => {
+    app.get('/protected-route', authenticateToken, (req, res) => {
       res.json({ message: 'Access granted!' });
     });
 

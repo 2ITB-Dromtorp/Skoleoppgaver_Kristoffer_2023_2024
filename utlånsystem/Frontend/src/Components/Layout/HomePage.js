@@ -3,20 +3,31 @@ import { GetUserData } from "../../utils/GetUserData";
 import UserHomePage from "./UserHomePage";
 import './HomePage.css'
 import {Typography, CircularProgress} from '@mui/material'
+import { useNavigate } from "react-router-dom";
 import TeacherHomePage from "./TeacherHomePage";
 
 export default function HomePage() {
     const [userdata, setUserData] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const data = await GetUserData();
-            setUserData(data);
-        };
+            try {
+              const data = await GetUserData();
+              setUserData(data);
+      
+              if (!data || !["Student", "Teacher"].includes(data.role)) {
+                navigate("/login");
+              }
+            } catch (error) {
+              console.error("Error fetching user data:", error);
+              navigate("/login");
+            }
+          };
 
         fetchUserData();
 
-    }, []);
+    }, [navigate]);
 
     return (
         <div className="home-container">

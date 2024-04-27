@@ -16,7 +16,7 @@ export default function BorrowRequest() {
 
   const fetchBorrowRequests = async () => {
     try {
-      const data = await FetchProtectedData("http://localhost:8080/api/get-borrow-requests");
+      const data = await FetchProtectedData("/api/get-borrow-requests");
       setBorrowRequests(data);
       setborrowRequestNumber(data.length > 0 ? (data.length) : 0 )
     } catch (error) {
@@ -26,7 +26,7 @@ export default function BorrowRequest() {
 
   const fetchEquipments = async () => {
     try {
-        const data = await FetchProtectedData('http://localhost:8080/api/get-equipments');
+        const data = await FetchProtectedData('/api/get-equipments');
         setEquipmentData(data);
     } catch (error) {
         console.error('Error fetching equipment data:', error.message);
@@ -47,13 +47,13 @@ export default function BorrowRequest() {
 
       if (action === "accept") {
         await axios.put(
-          "http://localhost:8080/api/borrow-accept",
+          "/api/borrow-accept",
           { equipmentId },
           config
         );
       } else if (action === "deny") {
         await axios.put(
-          "http://localhost:8080/api/borrow-deny",
+          "/api/borrow-deny",
           { equipmentId },
           config
         );

@@ -1,36 +1,32 @@
 # Dokumentasjon for Utlånssystem
 
-## Innholdsfortegnelse 
+## Table of contents 
 
-1. [Installasjon](#Installasjon)
+1. [Install](#Install)
 2. [Packages](#packages)
-    1. [Frontend](#Frontend-pakker)
-    2. [Backend](#Backend-pakker)
-3. [Developing](#developing)
-   1. [Server](#server-backend)
+    1. [Frontend](#Frontend-packages)
+    2. [Backend](#Backend-packages)
+3. [Setup](#Setup)
+4. [Database Modelling](#Database)
+5. [Developing](#developing)
+    1. [Frontend](#Frontend)
+    2. [Backend](#Backend)
+6. [Running on 2 laptops]()
+7. [Author](#author)
+8. [License](#license)
 
-   2. [React App](#react-app-frontend)
 
-4. [Author](#author)
-5. [License](#license)
-
-
-## Installasjon
-### Du må installere alle pakkene som React-appen og serveren bruker.
-#### Bruk denne kommandoen i **Terminalen**. Kjør den både i backend-mappen og i React-mappen.
+## Install
+### You need to install all packages used by the React app and the backend server.
+#### Use this command in the **Terminal**. Run it in both the backend folder and the React folder.
 
 ```
 npm install
 ```
 
-### Bygg React-prosjektet
-```
-npm run build
-```
-
 ## Packages
 
-### Frontend-pakker
+### Frontend-packages
 
 | Pakke                  | Lenke                                             | Versjon  |
 | ----------------------|---------------------------------------------------|----------|
@@ -43,13 +39,9 @@ npm run build
 | http-proxy-middleware  | [Proxy Middleware](https://www.npmjs.com/package/http-proxy-middleware) | 3.0.0 |
 | jwt-decode             | [JWT Decode](https://github.com/auth0/jwt-decode) | 4.0.0    |
 | @fontsource/roboto     | [FontSource Roboto](https://fontsource.org/fonts/roboto) | 5.0.13  |
-| @testing-library/jest-dom | [Jest DOM](https://testing-library.com/docs/jest-dom/intro) | 5.17.0  |
-| @testing-library/react | [Testing Library React](https://testing-library.com/docs/react-testing-library/intro) | 13.4.0  |
-| @testing-library/user-event | [Testing User Event](https://testing-library.com/docs/user-event/intro) | 13.5.0  |
 | react-scripts           | [React Scripts](https://www.npmjs.com/package/react-scripts) | 5.0.1   |
-| web-vitals              | [Web Vitals](https://web.dev/vitals/)            | 2.1.4    |
 
-### Backend-pakker
+### Backend-packages
 
 | Pakke    | Lenke                                      | Versjon  |
 | --------|-------------------------------------------|----------|
@@ -62,43 +54,158 @@ npm run build
 | JsonWebToken | [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) | 9.0.2  |
 | MongoDB   | [MongoDB](https://www.mongodb.com/)          | 6.5     |
 
-## Database Modellering
+## Setup
 
-Databasen er modellert fra backenden
+### Setting Up the Backend
 
-### Bruker Schema (UserSchema)
+To set up the backend, you need to ensure that certain steps are followed. This guide will help you understand how to configure the backend environment, connect to MongoDB Atlas.
 
-- **email**: (string, kreves) Må være en gyldig e-postadresse.
-- **password**: (string, kreves) Må være minst 8 tegn langt.
-- **class_id**: (string, kreves) Begrenset til "2ITB", "2ITA", "IM".
-- **role**: (string, kreves) Begrenset til "Student" eller "Teacher".
+### Configuration File (.env)
+In the root directory of the backend project, you need a `.env` file that contains environment variables for configuration. The following are essential:
+
+- **JWT_SECRET**: This is the secret key used for signing JSON Web Tokens (JWT). It should be a secure, random string.
+- **URL**: This is the MongoDB connection string, typically provided by MongoDB Atlas. It usually starts with `mongodb+srv://` and includes your username, password, and cluster details.
+
+Ensure your `.env` file is secure and not shared publicly.
+
+### Connecting to MongoDB Atlas
+To run the backend, you need a MongoDB database. You can set up a free database cluster on [MongoDB Atlas](https://www.mongodb.com/atlas). Once you have your cluster, obtain the connection string (also known as the URI) and add it to your `.env` file under `URL`.
+
+```env
+URL=your-mongodb-connection-string
+JWT_SECRET=your-secure-jwt-secret
+```
+
+### Frontend Proxy Server
+Make sure the target is the same as the backend
+
+```js 
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+module.exports = function(app) {
+  app.use(
+    '/api',
+    createProxyMiddleware({
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+    })
+  );
+};
+```
+
+## Database
+
+The database is modelled with JOI in the backend
+
+### Collection Schemas
+
+### User Schema (UserSchema)
+
+- **email**: (string, required) Must be a valid email address.
+- **password**: (string, required) Must be at least 8 characters long.
+- **class_id**: (string, required) Restricted to "2ITB", "2ITA", "IM".
+- **role**: (string, required) Restricted to "Student" or "Teacher".
 - **contact_info**:
-  - **firstname**: (string, kreves) Mellom 3 og 20 tegn. Bare bokstaver tillatt.
-  - **lastname**: (string, kreves) Mellom 3 og 20 tegn. Bare bokstaver tillatt.
-  - **phone**: (string) Mellom 7 og 15 tegn.
-  - **adress**: (string) Maks 50 tegn.
-  - **city**: (string) Maks 30 tegn.
+  - **firstname**: (string, required) Between 3 and 20 characters. Only letters allowed.
+  - **lastname**: (string, required) Between 3 and 20 characters. Only letters allowed.
+  - **phone**: (string) Between 7 and 15 characters.
+  - **adress**: (string) Maximum 50 characters.
+  - **city**: (string) Maximum 30 characters.
 
-### Utstyr Schema (EquipmentSchema)
+### Equipment Schema (EquipmentSchema)
 
-- **_id**: (string, kreves) Alfanumerisk, mellom 5 og 20 tegn.
-- **Type**: (string, kreves) Maks 20 tegn.
-- **Model**: (string, kreves) Maks 20 tegn.
-- **Specs**: (array av string) Hver element kan ha opptil 50 tegn.
+- **_id**: (string, required) Alphanumeric, between 5 and 20 characters.
+- **Type**: (string, required) Maximum 20 characters.
+- **Model**: (string, required) Maximum 20 characters.
+- **Specs**: (array of strings) Each item can have up to 50 characters.
 - **BorrowStatus**:
-  - **currentStatus**: (string, kreves) Tillatte verdier er "borrowed", "available", eller "pending".
-  - **studentsborrowing**: (array av objekter) Inneholder objekter med følgende:
-    - **email**: (string, kreves) Gyldig e-post.
-    - **firstname**: (string, kreves) Mellom 3 og 20 tegn.
-    - **lastname**: (string, kreves) Mellom 3 og 20 tegn.
+  - **currentStatus**: (string, required) Allowed values are "borrowed", "available", or "pending".
+  - **studentsborrowing**: (array of objects) Contains objects with the following fields:
+    - **email**: (string, required) Valid email.
+    - **firstname**: (string, required) Between 3 and 20 characters.
+    - **lastname**: (string, required) Between 3 and 20 characters.
 
-### Utlånsforespørsel Schema (BorrowRequestSchema)
+### Borrow Request Schema (BorrowRequestSchema)
 
-- **_id**: (string, kreves) Alfanumerisk, mellom 5 og 20 tegn.
-- **studentsborrowing**: (array av objekter) Inneholder objekter med følgende:
-  - **email**: (string, kreves) Gyldig e-post.
-  - **firstname**: (string, kreves) Mellom 3 og 20 tegn.
-  - **lastname**: (string, kreves) Mellom 3 og 20 tegn.
+- **_id**: (string, required) Alphanumeric, between 5 and 20 characters.
+- **studentsborrowing**: (array of objects) Contains objects with the following fields:
+  - **email**: (string, required) Valid email.
+  - **firstname**: (string, required) Between 3 and 20 characters.
+  - **lastname**: (string, required) Between 3 and 20 characters.
+
+## Developing
+
+## Backend 
+
+
+### API
+
+If you want to further develop and make improvements to the Endspoints here's a table to describe each of them
+
+| Endpoint               | HTTP Method | Description                                                                                                        |
+|-----------------------|-------------|--------------------------------------------------------------------------------------------------------------------|
+| /login                 | POST        | Logs in a user by checking their email and password. Returns a JWT token upon successful login.                    |
+| /signup                | POST        | Signs up a new user with the provided email, password, role, class, and contact info. Returns a JWT token.          |
+| /add-equipment         | POST        | Adds new equipment. Requires teacher role.                                        |
+| /get-equipments        | GET         | Fetches all equipment data from the database. Requires a valid token for authentication.                           |
+| /get-user-equipments   | GET         | Fetches the borrowed and pending equipment for the authenticated user.                                             |
+| /get-borrow-requests   | GET         | Fetches all borrow requests. Requires authentication.                                                              |
+| /borrow-request        | POST        | Creates or updates a borrow request. Requires a valid token.                                                        |
+| /borrow-deny           | PUT         | Denies a borrow request. Requires teacher role and the equipment ID to be provided in the request body.            |
+| /borrow-accept         | PUT         | Accepts a borrow request. Requires teacher role.                                                                   |
+| /remove-borrowed-equipment | PUT     | Removes borrowed equipment from the borrowing list. If it's the last request, it sets status to available.          |
+| /remove-equipment       | PUT         | Deletes equipment by its ID. Requires teacher role.                                                               |
+| /protected-route       | GET         | A simple endpoint to test token-based authentication. Returns a success message upon valid token authentication.  |
+
+### Token
+
+Each endpoint uses JSON Web Token as a middleware, the payload contains the whole user data.
+
+```js 
+function authenticateToken(req, res, next) {
+  const token = req.headers['authorization'];
+
+  if (!token) {
+    return res.status(401).json({ error: 'No token' });
+  }
+
+  jwt.verify(token.split(' ')[1], process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({ error: 'Token expired' });
+      }
+      return res.status(403).json({ error: err });
+    }
+    req.user = user;
+    next();
+  });
+}
+```
+
+## Frontend
+
+### Routing
+
+Add equip and borrow is restriced only for the users with Teacher role which is used with CheckUserRole function from /utils
+
+```js 
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
+          <Route path="addEquip" element={<AddEquipment />} />
+          <Route path="equipments" element={<Equipment />} />
+          <Route path='borrow' element={<BorrowRequest />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
 
 # Author
 | Person | Link |
