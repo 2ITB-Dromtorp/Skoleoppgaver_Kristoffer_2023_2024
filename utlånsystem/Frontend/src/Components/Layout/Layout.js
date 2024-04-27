@@ -6,7 +6,7 @@ import logo from '../../assets/dromtorplogo.png'
 
 import './Layout.css'
 
-import {Button, Avatar, Menu, MenuItem, Fade, Tabs, Tab} from '@mui/material'
+import { Button, Avatar, Menu, MenuItem, Fade, Tabs, Tab } from '@mui/material'
 
 
 export default function Layout() {
@@ -29,7 +29,7 @@ export default function Layout() {
 
   const logout = () => {
     localStorage.removeItem('token');
-    navigate('/login'); 
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -41,10 +41,10 @@ export default function Layout() {
     fetchUserData();
   }, [navigate]);
 
-  const userRole = userdata ? userdata.role : null; 
+  const userRole = userdata ? userdata.role : null;
 
   const handleTabs = (_event, newValue) => {
-    setActiveTab(newValue); 
+    setActiveTab(newValue);
 
     console.log(newValue)
 
@@ -85,9 +85,9 @@ export default function Layout() {
     <div className='layout-container'>
       <div className='navbar-content'>
 
-      <img alt='mekk' src={logo}></img>
+        <img alt='mekk' src={logo}></img>
 
-      <div className="navbar-links">
+        <div className="navbar-links">
           {userRole === 'Teacher' && (
             <Tabs value={activeTab} onChange={handleTabs}>
               <Tab label="Hjem" />
@@ -116,20 +116,20 @@ export default function Layout() {
               onClick={handleClick}
             >
               {userdata.contact_info.firstname}
-          </Button>
-          <Menu
-            id="fade-menu"
-            MenuListProps={{
-              'aria-labelledby': 'fade-button',
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            TransitionComponent={Fade}
-            className="avatar-button"
-          >
-            <MenuItem onClick={logout}>Logout</MenuItem>
-          </Menu>
+            </Button>
+            <Menu
+              id="fade-menu"
+              MenuListProps={{
+                'aria-labelledby': 'fade-button',
+              }}
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              TransitionComponent={Fade}
+              className="avatar-button"
+            >
+              <MenuItem onClick={logout}>Logout</MenuItem>
+            </Menu>
           </div>
         )}
       </div>

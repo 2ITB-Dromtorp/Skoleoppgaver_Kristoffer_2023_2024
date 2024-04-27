@@ -16,8 +16,8 @@ export default function TeacherHomePage() {
             const data = await FetchProtectedData('/api/get-equipments');
             const borrowed = data.filter(
                 (equipment) => equipment.BorrowStatus.currentStatus === "borrowed"
-              );
-              setBorrowedEquipments(borrowed);
+            );
+            setBorrowedEquipments(borrowed);
         } catch (error) {
             console.error('Error fetching equipment data:', error.message);
         }
@@ -44,43 +44,43 @@ export default function TeacherHomePage() {
     return (
         <div>
             {borrowedEquipments &&
-            <Table className="equipment-table">
-            <TableHead>
-            <TableRow>
-                <TableCell>Serial Number</TableCell>
-                <TableCell>Model</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell>Borrowed By</TableCell>
-                <TableCell>Actions</TableCell>
-            </TableRow>
-            </TableHead>
-            
-            <TableBody>
-            {borrowedEquipments.map((equipment) => (
-                <TableRow key={equipment._id}>
-                <TableCell>{equipment._id}</TableCell>
-                <TableCell>{equipment.Model}</TableCell>
-                <TableCell>{equipment.Type}</TableCell>
-                <TableCell>
-                    {equipment.BorrowStatus.studentsborrowing.map((student) => (
-                    <span key={student.email}>{student.firstname} {student.lastname}</span>
-                    ))}
-                </TableCell>
-                <TableCell>
-                    <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleRemoveBorrow(equipment._id)}
-                    >
-                    Remove
-                    </Button>
-                </TableCell>
-                </TableRow>
-            ))}
-            </TableBody>
-            </Table>
+                <Table className="equipment-table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Serial Number</TableCell>
+                            <TableCell>Model</TableCell>
+                            <TableCell>Type</TableCell>
+                            <TableCell>Borrowed By</TableCell>
+                            <TableCell>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                        {borrowedEquipments.map((equipment) => (
+                            <TableRow key={equipment._id}>
+                                <TableCell>{equipment._id}</TableCell>
+                                <TableCell>{equipment.Model}</TableCell>
+                                <TableCell>{equipment.Type}</TableCell>
+                                <TableCell>
+                                    {equipment.BorrowStatus.studentsborrowing.map((student) => (
+                                        <span key={student.email}>{student.firstname} {student.lastname}</span>
+                                    ))}
+                                </TableCell>
+                                <TableCell>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={() => handleRemoveBorrow(equipment._id)}
+                                    >
+                                        Remove
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             }
-            
+
         </div>
     )
 }

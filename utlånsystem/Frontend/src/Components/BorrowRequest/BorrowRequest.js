@@ -18,7 +18,7 @@ export default function BorrowRequest() {
     try {
       const data = await FetchProtectedData("/api/get-borrow-requests");
       setBorrowRequests(data);
-      setborrowRequestNumber(data.length > 0 ? (data.length) : 0 )
+      setborrowRequestNumber(data.length > 0 ? (data.length) : 0)
     } catch (error) {
       console.error("Error fetching borrow requests:", error.message);
     }
@@ -26,12 +26,12 @@ export default function BorrowRequest() {
 
   const fetchEquipments = async () => {
     try {
-        const data = await FetchProtectedData('/api/get-equipments');
-        setEquipmentData(data);
+      const data = await FetchProtectedData('/api/get-equipments');
+      setEquipmentData(data);
     } catch (error) {
-        console.error('Error fetching equipment data:', error.message);
+      console.error('Error fetching equipment data:', error.message);
     }
-};
+  };
 
   const handleBorrowRequest = async (action, equipmentId) => {
     try {
@@ -83,13 +83,13 @@ export default function BorrowRequest() {
 
   return (
     <div className='borrow-container'>
-        {borrowRequestNumber > 0 ? (
-          <Typography variant="h5">
-            {borrowRequestNumber} vil låne utstyr
-          </Typography>
-        ) : (
-          <Typography variant="h5">Ingen forespørseler</Typography>
-        )}
+      {borrowRequestNumber > 0 ? (
+        <Typography variant="h5">
+          {borrowRequestNumber} vil låne utstyr
+        </Typography>
+      ) : (
+        <Typography variant="h5">Ingen forespørseler</Typography>
+      )}
 
       <Grid container spacing={2}>
         {detailedBorrowRequests.map((request) => (
