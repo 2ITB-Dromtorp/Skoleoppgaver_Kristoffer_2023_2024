@@ -1,21 +1,33 @@
 require('dotenv').config()
 
 const express = require('express')
-const bcrypt = require('bcrypt');
 const app = express()
+const bcrypt = require('bcrypt');
 const port = process.env.PORT || 8080
 const http = require("http");
 var cors = require("cors")
-app.use(express.json())
 const { MongoClient } = require('mongodb');
 const url = process.env.URL
 const server = http.createServer(app);
+const limit = require('express-rate-limit')
 
 const jwt = require('jsonwebtoken')
 
 const Joi = require('joi');
 
+
+app.use(express.json())
+
 app.use(cors())
+
+app.use(limit({
+  windowMs: 5000,
+  max: 10,
+  message: {
+    code: 429,
+    message: "Too many requests"
+  },
+}))
 
 function authenticateToken(req, res, next) {
   const token = req.headers['authorization'];
@@ -403,8 +415,6 @@ server.listen(port, async () => {
         const equipment = await Equipments.findOne({ _id: equipmentId });
 
         let currentStatus = equipment.BorrowStatus.currentStatus;
-
-        console.log(currentStatus)
 
         if (!equipment) {
           return res.status(404).json({ error: 'Equipment not found.' });

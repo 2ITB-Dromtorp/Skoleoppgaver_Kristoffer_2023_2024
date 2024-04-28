@@ -55,6 +55,7 @@ npm install
 | Joi       | [Joi](https://joi.dev/)                     | 17.12.3 |
 | JsonWebToken | [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) | 9.0.2  |
 | MongoDB   | [MongoDB](https://www.mongodb.com/)          | 6.5     |
+| Express Rate Limit | [Express Rate Limit](https://www.npmjs.com/package/express-rate-limit) | 6.7.0  |
 
 ## Setup
 
