@@ -3,33 +3,23 @@ import axios from 'axios';
 import { TextField, Button, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useAlert } from '../../utils/useAlert';
+
 
 import "./AddEquipment.css"
 import CheckUserRole from '../../utils/CheckUserRole';
 
 export default function AddEquipment() {
-  const [formData, setFormData] = useState({
-    _id: '',
-    Type: '',
-    Model: '',
-    Specs: [],
-    BorrowStatus: {
-      currentStatus: 'available',
-      studentsborrowing: [],
-    },
-  });
+  const [Serial, setSerial] = useState("")
+  const [Type, setType] = useState("")
+  const [Model, setModel] = useState("")
+  const [Specs, setSpecs] = useState([])
 
   const [newSpec, setNewSpec] = useState('');
 
-  const navigate = useNavigate()
+  const {setAlert} = useAlert()
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const navigate = useNavigate()
 
   const handleSpecChange = (e) => {
     setNewSpec(e.target.value);
@@ -37,41 +27,47 @@ export default function AddEquipment() {
 
   const handleAddSpec = () => {
     if (newSpec.trim() !== '') {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        Specs: [...prevFormData.Specs, newSpec.trim()],
-      }));
+      setSpecs([...Specs, newSpec])
       setNewSpec('');
     }
   };
 
   const handleRemoveSpec = (spec) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      Specs: prevFormData.Specs.filter((s) => s !== spec),
-    }));
+    setSpecs(Specs.filter((s) => s !== spec))
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/add-equipment', formData);
-      if (response.status === 200) {
-        console.log('Equipment added successfully');
-        setFormData({
-          _id: '',
-          Type: '',
-          Model: '',
-          Specs: [],
-          BorrowStatus: {
-            currentStatus: 'available',
-            studentsborrowing: [],
-          },
-        });
+      const token = localStorage.getItem('token');
+      if (!token) {
+          throw new Error('Token not found');
       }
+      
+      const config = {
+          headers: {
+              Authorization: token
+          }
+      };
+
+      const formdata = {
+        _id: Serial,
+        Type: Type,
+        Model: Model,
+        Specs: Specs,
+        BorrowStatus: {
+          currentStatus: "available",
+          studentsborrowing: []
+        }
+      }
+
+      const response = await axios.post('/api/add-equipment', formdata, config);
+
+      setAlert({ message: response.data.message || '', type: 'success'})
+
     } catch (error) {
-      console.error('Error adding equipment:', error.response?.data?.error || error.message);
-    }
+      const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+      setAlert({ message: errorMessage, type: 'error'})    }
   };
 
   CheckUserRole("Teacher", navigate)
@@ -86,24 +82,24 @@ export default function AddEquipment() {
           <TextField
             label="Serial Number"
             name="_id"
-            value={formData._id}
-            onChange={handleChange}
+            value={Serial}
+            onChange={(e) => setSerial(e.target.value)}
           />
         </div>
         <div>
           <TextField
             label="Type"
             name="Type"
-            value={formData.Type}
-            onChange={handleChange}
+            value={Type}
+            onChange={(e) => setType(e.target.value)}
           />
         </div>
         <div>
           <TextField
             label="Model"
             name="Model"
-            value={formData.Model}
-            onChange={handleChange}
+            value={Model}
+            onChange={(e) => setModel(e.target.value)}
           />
         </div>
         <div>
@@ -117,7 +113,7 @@ export default function AddEquipment() {
           </Button>
         </div>
         <List>
-          {formData.Specs.map((spec, index) => (
+          {Specs.map((spec, index) => (
             <ListItem key={index}>
               <ListItemText primary={spec} />
               <IconButton edge="end" onClick={() => handleRemoveSpec(spec)}>

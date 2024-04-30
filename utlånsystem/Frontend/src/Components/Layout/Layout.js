@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import { GetUserData } from '../../utils/GetUserData';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/dromtorplogo.png'
+import { useAlert } from '../../utils/useAlert';
 
 import './Layout.css'
 
@@ -16,6 +17,7 @@ export default function Layout() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
+  const { setAlert } = useAlert();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -30,6 +32,7 @@ export default function Layout() {
   const logout = () => {
     localStorage.removeItem('token');
     navigate('/login');
+    setAlert({ message: 'You have been logged out', type: 'info' });
   };
 
   useEffect(() => {
@@ -45,8 +48,6 @@ export default function Layout() {
 
   const handleTabs = (_event, newValue) => {
     setActiveTab(newValue);
-
-    console.log(newValue)
 
     if (userdata?.role === 'Student') {
       switch (newValue) {
@@ -85,7 +86,9 @@ export default function Layout() {
     <div className='layout-container'>
       <div className='navbar-content'>
 
-        <img alt='mekk' src={logo}></img>
+        <Link to=".." relative="path">
+          <img alt='mekk' src={logo}></img>
+        </Link>
 
         <div className="navbar-links">
           {userRole === 'Teacher' && (

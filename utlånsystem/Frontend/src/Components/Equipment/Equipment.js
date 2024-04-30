@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback  } from 'react';
 import { FetchProtectedData } from '../../utils/FetchProtectedData';
 import {
     Table,
@@ -18,6 +18,7 @@ import {
     CircularProgress,
     IconButton
 } from '@mui/material';
+import { useAlert } from "../../utils/useAlert";
 
 import { Delete } from '@mui/icons-material';
 
@@ -26,6 +27,7 @@ import { GetUserData } from '../../utils/GetUserData';
 
 import './Equipment.css';
 
+
 export default function Equipment() {
     const [equipmentData, setEquipmentData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -33,6 +35,7 @@ export default function Equipment() {
     const [searchQuery, setSearchQuery] = useState('');
     const [filter, setFilter] = useState('');
     const [userdata, setUserData] = useState()
+    const { setAlert } = useAlert();
 
     const [statusCounts, setStatusCounts] = useState({
         total: 0,
@@ -40,6 +43,23 @@ export default function Equipment() {
         pending: 0,
         borrowed: 0,
     });
+
+    const fetchEquipments = useCallback(async () => {
+        try {
+            const data = await FetchProtectedData('/api/get-equipments');
+            setEquipmentData(data);
+
+            const total = data.length;
+            const available = data.filter((equipment) => equipment.BorrowStatus.currentStatus === 'available').length;
+            const pending = data.filter((equipment) => equipment.BorrowStatus.currentStatus === 'pending').length;
+            const borrowed = data.filter((equipment) => equipment.BorrowStatus.currentStatus === 'borrowed').length;
+
+            setStatusCounts({ total, available, pending, borrowed });
+        } catch (error) {
+            const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+            setAlert({ message: errorMessage, type: 'error' });
+        }
+    }, [setAlert]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -49,27 +69,8 @@ export default function Equipment() {
 
         fetchUserData();
 
-
         fetchEquipments()
-    }, []);
-
-    const fetchEquipments = async () => {
-        try {
-            const data = await FetchProtectedData('/api/get-equipments');
-            setEquipmentData(data);
-
-            const total = data.length;
-            const available = data.filter(equipment => equipment.BorrowStatus.currentStatus === 'available').length;
-            const pending = data.filter(equipment => equipment.BorrowStatus.currentStatus === 'pending').length;
-            const borrowed = data.filter(equipment => equipment.BorrowStatus.currentStatus === 'borrowed').length;
-
-            setStatusCounts({ total, available, pending, borrowed });
-
-
-        } catch (error) {
-            console.error('Error fetching equipment data:', error.message);
-        }
-    };
+    }, [fetchEquipments]);
 
     const handleBorrowRequest = async (equipmentId) => {
         try {
@@ -82,10 +83,14 @@ export default function Equipment() {
                     Authorization: token
                 }
             };
-            await axios.post('/api/borrow-request', { equipmentId }, config);
+            const response = await axios.post('/api/borrow-request', { equipmentId }, config);
+            
+            setAlert({ message: response.data.message, type: 'success'})
             fetchEquipments();
+
         } catch (error) {
-            console.error('Error borrowing equipment:', error.message);
+            const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+            setAlert({ message: errorMessage, type: 'error'})
         }
     };
 
@@ -101,9 +106,11 @@ export default function Equipment() {
                 }
             };
             await axios.put('/api/remove-equipment', { equipmentId }, config);
+            setAlert({ message: "Utstyr fjernet", type: 'success'})
             fetchEquipments();
         } catch (error) {
-            console.error('Error borrowing equipment:', error.message);
+            const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+            setAlert({ message: errorMessage, type: 'error'})
         }
     }
 
@@ -135,6 +142,16 @@ export default function Equipment() {
         setCurrentPage(page);
     };
 
+    const handleFilterChange = (e) => {
+        setFilter(e.target.value);
+        setCurrentPage(1);
+    }
+
+    const handleTextChange = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+    }
+
     return (
         <div className='equipment-container'>
 
@@ -157,7 +174,7 @@ export default function Equipment() {
                         <Select
                             label="Status Filter"
                             value={filter}
-                            onChange={(e) => setFilter(e.target.value)}
+                            onChange={handleFilterChange}
                         >
                             <MenuItem value="">Alle</MenuItem>
                             <MenuItem value="available">Tilgjengelig</MenuItem>
@@ -171,7 +188,7 @@ export default function Equipment() {
                         label="Search"
                         variant="outlined"
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={handleTextChange}
                     />
 
                 </div>

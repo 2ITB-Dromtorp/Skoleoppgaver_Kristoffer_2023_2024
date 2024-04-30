@@ -5,10 +5,13 @@ import './HomePage.css'
 import { Typography, CircularProgress } from '@mui/material'
 import { useNavigate } from "react-router-dom";
 import TeacherHomePage from "./TeacherHomePage";
+import { useAlert } from "../../utils/useAlert";
 
 export default function HomePage() {
   const [userdata, setUserData] = useState(null);
   const navigate = useNavigate();
+
+  const { setAlert} = useAlert()
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -20,14 +23,14 @@ export default function HomePage() {
           navigate("/login");
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        setAlert({ message: error, type: 'error' });
         navigate("/login");
       }
     };
 
     fetchUserData();
 
-  }, [navigate]);
+  }, [navigate, setAlert]);
 
   return (
     <div className="home-container">

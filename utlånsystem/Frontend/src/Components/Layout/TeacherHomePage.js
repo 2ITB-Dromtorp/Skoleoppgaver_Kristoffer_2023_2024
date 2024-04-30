@@ -1,17 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import axios from 'axios'
 import { FetchProtectedData } from "../../utils/FetchProtectedData";
-
+import { useAlert } from "../../utils/useAlert";
 
 export default function TeacherHomePage() {
     const [borrowedEquipments, setBorrowedEquipments] = useState()
+    const { setAlert } = useAlert();
 
-    useEffect(() => {
-        fetchEquipments()
-    }, []);
-
-    const fetchEquipments = async () => {
+    const fetchEquipments = useCallback(async () => {
         try {
             const data = await FetchProtectedData('/api/get-equipments');
             const borrowed = data.filter(
@@ -19,9 +16,14 @@ export default function TeacherHomePage() {
             );
             setBorrowedEquipments(borrowed);
         } catch (error) {
-            console.error('Error fetching equipment data:', error.message);
+            const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+            setAlert({ message: errorMessage, type: 'error'})        
         }
-    };
+    }, [setAlert]);
+
+    useEffect(() => {
+        fetchEquipments()
+    }, [fetchEquipments]);
 
     const handleRemoveBorrow = async (equipmentId) => {
         try {
@@ -35,9 +37,11 @@ export default function TeacherHomePage() {
                 }
             };
             await axios.put('/api/remove-borrowed-equipment', { equipmentId }, config);
+            setAlert({ message: "Fjernet lånt forespørsel til en bruken", type: 'success'})
             fetchEquipments()
         } catch (error) {
-            console.error('Error removing data', error.message);
+            const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+            setAlert({ message: errorMessage, type: 'error'})
         }
     }
 
@@ -62,9 +66,7 @@ export default function TeacherHomePage() {
                                 <TableCell>{equipment.Model}</TableCell>
                                 <TableCell>{equipment.Type}</TableCell>
                                 <TableCell>
-                                    {equipment.BorrowStatus.studentsborrowing.map((student) => (
-                                        <span key={student.email}>{student.firstname} {student.lastname}</span>
-                                    ))}
+                                        {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}
                                 </TableCell>
                                 <TableCell>
                                     <Button

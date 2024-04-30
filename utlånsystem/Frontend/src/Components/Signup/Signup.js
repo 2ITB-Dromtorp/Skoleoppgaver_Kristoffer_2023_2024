@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "../../utils/useAlert";
 
 import "./Signup.css"
 
@@ -15,6 +16,8 @@ export default function Signup() {
   const [adress, setAdress] = useState("");
   const [city, setCity] = useState("");
   const [schoolclass, setSchoolClass] = useState("None");
+  const { setAlert } = useAlert();
+
 
   const navigate = useNavigate();
 
@@ -37,12 +40,16 @@ export default function Signup() {
 
       const response = await axios.post("/api/signup", userData);
 
-      if (response.status === 200) {
-        navigate("/");
-      }
+      const token = response.data.token;
+
+      localStorage.setItem("token", 'Bearer ' + token);
+
+      setAlert({ message: response.data.message, type: 'info' });
+
+      navigate("/");
     } catch (error) {
-      console.log(error.response?.data)
-    }
+      const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+      setAlert({ message: errorMessage, type: 'error' });    }
   };
 
   return (
@@ -60,6 +67,7 @@ export default function Signup() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          type="email"
         />
 
         <TextField
@@ -69,6 +77,7 @@ export default function Signup() {
           fullWidth
           margin="normal"
           required
+          minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -79,6 +88,11 @@ export default function Signup() {
           fullWidth
           margin="normal"
           required
+          inputProps={{
+            minLength: 3,
+            maxLength: 20,
+            pattern: "^[a-zA-Z]+$",
+          }}
           value={firstname}
           onChange={(e) => setFirstname(e.target.value)}
         />
@@ -89,6 +103,11 @@ export default function Signup() {
           fullWidth
           margin="normal"
           required
+          inputProps={{
+            minLength: 3,
+            maxLength: 20,
+            pattern: "^[a-zA-Z]+$",
+          }}
           value={lastname}
           onChange={(e) => setLastname(e.target.value)}
         />
@@ -98,7 +117,11 @@ export default function Signup() {
           variant="outlined"
           fullWidth
           margin="normal"
-          required
+          inputProps={{
+            minLength: 7,
+            maxLength: 15,
+            pattern: "^[0-9]+$",
+          }}
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
@@ -108,6 +131,7 @@ export default function Signup() {
           variant="outlined"
           fullWidth
           margin="normal"
+          inputProps={{ maxLength: 50 }}
           required
           value={adress}
           onChange={(e) => setAdress(e.target.value)}
@@ -118,6 +142,7 @@ export default function Signup() {
           variant="outlined"
           fullWidth
           margin="normal"
+          inputProps={{ maxLength: 30 }}
           required
           value={city}
           onChange={(e) => setCity(e.target.value)}
@@ -133,6 +158,7 @@ export default function Signup() {
             <MenuItem value="None">Select Role</MenuItem>
             <MenuItem value="Teacher">Teacher</MenuItem>
             <MenuItem value="Student">Student</MenuItem>
+            <MenuItem value="Admin">Admin</MenuItem>
           </Select>
         </FormControl>
 

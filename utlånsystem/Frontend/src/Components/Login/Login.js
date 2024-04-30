@@ -3,11 +3,13 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { TextField, Button, Typography } from "@mui/material";
 import "./Login.css";
-
+import { useAlert } from "../../utils/useAlert";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { setAlert } = useAlert();
+
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -19,13 +21,16 @@ export default function Login() {
             };
 
             const response = await axios.post("/api/login", loginData);
+
             const token = response.data.token;
 
             localStorage.setItem("token", 'Bearer ' + token);
+            setAlert({ message: 'logget på vellykket', type: 'info' });
 
             navigate("/");
         } catch (error) {
-            console.log(error)
+            const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+            setAlert({ message: errorMessage, type: 'error' });
         }
     };
 

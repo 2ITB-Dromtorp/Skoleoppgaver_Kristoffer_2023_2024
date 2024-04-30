@@ -52,7 +52,7 @@ const UserSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
   class_id: Joi.string().valid("2ITB", "2ITA", "IM").required(),
-  role: Joi.string().valid("Student", "Teacher").required(),
+  role: Joi.string().valid("Student", "Teacher", "Admin").required(),
   contact_info: Joi.object({
     firstname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
     lastname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
@@ -76,7 +76,7 @@ const EquipmentSchema = Joi.object({
         lastname: Joi.string().min(3).max(20).regex(/^[a-zA-Z]+$/).required(),
       })
     )
-  }).required()
+  })
 });
 
 const BorrowRequestSchema = Joi.object({
@@ -102,6 +102,7 @@ server.listen(port, async () => {
     const UserCollection = "Users";
     const EquipmentCollection = "Equipment"
     const BorrowRequest = "BorrowRequests"
+    const TeacherRequest = "TeacherRequest"
 
     const databaseList = await mongodb.db().admin().listDatabases();
     const databaseExists = databaseList.databases.some(db => db.name === databaseName);
@@ -114,6 +115,7 @@ server.listen(port, async () => {
     const Users = database.collection(UserCollection);
     const Equipments = database.collection(EquipmentCollection)
     const Borrow = database.collection(BorrowRequest)
+    const TeacherRequestList = database.collection(TeacherRequest)
 
     app.post('/login', async (req, res) => {
       try {
@@ -121,6 +123,11 @@ server.listen(port, async () => {
 
         if (!email || !password) {
           return res.status(400).json({ error: "Email and password are required." });
+        }
+
+        const TeacherCheck = await TeacherRequestList.findOne({ email: email });
+        if (TeacherCheck) {
+          return res.status(401).json({ error: "En admin må verifisere din Lærer konto" });
         }
 
         const user = await Users.findOne({ email: email });
@@ -131,6 +138,7 @@ server.listen(port, async () => {
         if (!bcrypt.compareSync(password, user.password)) {
           return res.status(401).json({ error: "Invalid email or password." });
         }
+
 
         const tokenPayload = {
           userdata: user
@@ -168,8 +176,14 @@ server.listen(port, async () => {
 
         const validationResult = UserSchema.validate(newUserData);
         if (validationResult.error) {
-          return res.status(400).send(validationResult.error.details[0].message);
+          return res.status(400).json({error: validationResult.error.details[0].message});
         }
+
+        if (userData.role === "Teacher") {
+          await TeacherRequestList.insertOne(newUserData)
+          return res.json({ message: "En admin må verifisere din Lærer konto" });
+        }
+
         await Users.insertOne(newUserData);
 
         const user = await Users.findOne({ email: userData.email });
@@ -183,14 +197,36 @@ server.listen(port, async () => {
 
         const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '2h' });
 
-        res.json({ auth: true, token: token });
+        res.json({ message: "Elev konto har blitt laget", token: token });
       } catch (error) {
         console.error("Error adding user:", error);
         res.status(500).send(error);
       }
     })
 
-    app.post('/add-equipment', async (req, res) => {
+    app.post('/verify-teacher', authenticateToken, async (req, res) => {
+      try {
+        const TeacherID = req.body;
+        const user = req.user.userdata;
+
+        if (user.role !== 'Admin') {
+          return res.status(403).json({ error: 'Only admins can verify bruh' });
+        }
+
+        const Teacher = await TeacherRequestList.findOne({ email: TeacherID });
+
+        await Users.insertOne(Teacher)
+        await TeacherRequestList.deleteOne({ email: TeacherID })
+
+        res.json({message: "verified teacher"})
+
+      } catch (error) {
+        console.error("Error verifying teacher", error);
+        res.status(500).send(error);
+      }
+    })
+
+    app.post('/add-equipment', authenticateToken, async (req, res) => {
       try {
         const equipmentData = await req.body;
         const user = req.user.userdata;
@@ -201,10 +237,20 @@ server.listen(port, async () => {
 
         const validationResult = EquipmentSchema.validate(equipmentData);
         if (validationResult.error) {
-          return res.status(400).send(validationResult.error.details[0].message);
+          return res.status(400).json({error: validationResult.error.details[0].message});
         }
+
+        const checkEquipment = await Equipments.findOne({ _id: equipmentData._id})
+
+        console.log(checkEquipment)
+
+        if (checkEquipment) {
+          return res.status(403).json({ error: 'The equipment already exists' });
+        }
+
         await Equipments.insertOne(equipmentData);
-        res.send("sucess");
+
+        res.json({message: "Added equipment successfully"})
       } catch (error) {
         console.error("Error adding equipment:", error);
         res.status(500).send(error);
@@ -333,7 +379,7 @@ server.listen(port, async () => {
           }
         );
 
-        res.json({ success: true, message: 'Borrow request successfully created or updated.' });
+        res.json({ message: 'Borrow request successfully created or updated.' });
       } catch (error) {
         console.error("Error creating borrow request:", error);
         res.status(500).json({ error: "Internal Server Error." });
@@ -413,8 +459,6 @@ server.listen(port, async () => {
       try {
         const { equipmentId } = req.body;
         const equipment = await Equipments.findOne({ _id: equipmentId });
-
-        let currentStatus = equipment.BorrowStatus.currentStatus;
 
         if (!equipment) {
           return res.status(404).json({ error: 'Equipment not found.' });

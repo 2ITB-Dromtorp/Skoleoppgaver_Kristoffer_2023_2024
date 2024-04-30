@@ -1,15 +1,16 @@
-import { Grid, CardContent, Typography, Card, Button } from '@mui/material';
+import { Grid, Typography, Button, Accordion, AccordionDetails, AccordionSummary, AccordionActions} from '@mui/material';
 import { FetchProtectedData } from '../../utils/FetchProtectedData';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios'
+import { useAlert } from '../../utils/useAlert';
+
+import { ArrowDropDown} from '@mui/icons-material'
 
 import './UserHomePage.css'
 
 export default function UserHomePage() {
   const [userEquipmentData, setUserEquipmentData] = useState(null);
-
-  const navigate = useNavigate()
+  const { setAlert } = useAlert();
 
   const handleRemoveBorrow = async (equipmentId) => {
     try {
@@ -23,63 +24,77 @@ export default function UserHomePage() {
         }
       };
       await axios.put('/api/remove-borrowed-equipment', { equipmentId }, config);
+      setAlert({ message: "Fjernet lånt forespørsel", type: 'success'})
       fetchEquipments()
     } catch (error) {
-      console.error('Error removing data', error.message);
+      const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+      setAlert({ message: errorMessage, type: 'error'})
     }
   }
 
-  const fetchEquipments = async () => {
+  const fetchEquipments = useCallback(async () => {
     try {
       const data = await FetchProtectedData('/api/get-user-equipments');
       setUserEquipmentData(data);
     } catch (error) {
-      console.error('Error fetching equipment data:', error.message);
+      const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+      setAlert({ message: errorMessage, type: 'error'})
     }
-  };
+  }, [setAlert]);
 
 
   useEffect(() => {
     fetchEquipments();
-  }, [navigate]);
-
+  }, [fetchEquipments]);
 
   return (
     <>
       {userEquipmentData && (
-        <Grid className='grid-container' container spacing={2}>
+        <Grid className='grid-container' container spacing={3}>
+
           <div className='borrowed-equipment'>
             <Typography variant="h5">Lånt Utstyr</Typography>
             {userEquipmentData.borrowed.map((equipment) => (
-              <Grid item sm={14} key={equipment._id}>
-                <Card className="card">
-                  <CardContent className="card-content">
-                    <Typography variant="h6">{equipment.Model}</Typography>
+              <Accordion key={equipment._id}>
+              <AccordionSummary
+                expandIcon={<ArrowDropDown />}
+              >
+                <Typography>{equipment.Model}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
                     <Typography>Type: {equipment.Type}</Typography>
                     <Typography>Specs: {equipment.Specs.join(', ')}</Typography>
                     <Typography>Serial Number: {equipment._id}</Typography>
-                    <Button className="button" onClick={() => handleRemoveBorrow(equipment._id)}>Ferdig</Button>
-                  </CardContent>
-                </Card>
-              </Grid>
+                    <Typography>Requested by: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
+              </AccordionDetails>
+
+              <AccordionActions>
+                <Button className="button" onClick={() => handleRemoveBorrow(equipment._id)}>Ferdig</Button>
+              </AccordionActions>
+            </Accordion>              
             ))}
           </div>
 
           <div className='pending-equipment'>
             <Typography variant="h5">Venter på forespørsel</Typography>
             {userEquipmentData.pending.map((equipment) => (
-              <Grid item sm={14} key={equipment._id}>
-                <Card className="card">
-                  <CardContent className="card-content">
-                    <Typography variant="h6">{equipment.Model}</Typography>
-                    <Typography>Type: {equipment.Type}</Typography>
-                    <Typography>Specs: {equipment.Specs.join(', ')}</Typography>
-                    <Typography>Serial Number: {equipment._id}</Typography>
-                    <Typography>Requested by: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
-                    <Button className="button" onClick={() => handleRemoveBorrow(equipment._id)}>Avbryt</Button>
-                  </CardContent>
-                </Card>
-              </Grid>
+              <Accordion key={equipment._id}>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDown />}
+                >
+                  <Typography>{equipment.Model}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                      <Typography>Type: {equipment.Type}</Typography>
+                      <Typography>Specs: {equipment.Specs.join(', ')}</Typography>
+                      <Typography>Serial Number: {equipment._id}</Typography>
+                      <Typography>Requested by: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
+                </AccordionDetails>
+
+                <AccordionActions>
+                  <Button className="button" onClick={() => handleRemoveBorrow(equipment._id)}>Avbryt</Button>
+                </AccordionActions>
+              </Accordion>
             ))}
           </div>
         </Grid>

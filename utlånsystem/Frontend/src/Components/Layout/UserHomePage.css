@@ -9,11 +9,3 @@
   .pending-equipment > h5 {
     @apply font-semibold mb-4;
   }
-
-  .card {
-    @apply bg-white rounded-lg shadow-md p-4;
-  }
-
-  .card-content {
-  @apply flex flex-col gap-1;
-}
