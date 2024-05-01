@@ -77,6 +77,14 @@ export default function Layout() {
         default:
           navigate('/');
       }
+    } else if (userdata?.role === 'Admin') {
+      switch (newValue) {
+        case 0:
+          navigate('/');
+          break;
+        default:
+          navigate('/');
+      }
     }
 
   };
@@ -105,26 +113,24 @@ export default function Layout() {
               <Tab label="Utstyr" />
             </Tabs>
           )}
+          {userRole === 'Admin' && (
+            <Tabs value={activeTab} onChange={handleTabs}>
+              <Tab label="Hjem" />
+            </Tabs>
+          )}
+          
         </div>
 
         {userdata && (
           <div className="user-info">
             <Avatar>{userdata.contact_info.firstname[0]}{userdata.contact_info.lastname[0]}</Avatar>
             <Button
-              id="fade-button"
-              aria-controls={open ? 'fade-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
               variant="text"
               onClick={handleClick}
             >
               {userdata.contact_info.firstname}
             </Button>
             <Menu
-              id="fade-menu"
-              MenuListProps={{
-                'aria-labelledby': 'fade-button',
-              }}
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}

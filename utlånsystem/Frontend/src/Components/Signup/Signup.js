@@ -158,7 +158,6 @@ export default function Signup() {
             <MenuItem value="None">Select Role</MenuItem>
             <MenuItem value="Teacher">Teacher</MenuItem>
             <MenuItem value="Student">Student</MenuItem>
-            <MenuItem value="Admin">Admin</MenuItem>
           </Select>
         </FormControl>
 

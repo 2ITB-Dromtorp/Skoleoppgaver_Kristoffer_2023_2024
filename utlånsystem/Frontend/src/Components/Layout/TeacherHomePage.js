@@ -51,14 +51,13 @@ export default function TeacherHomePage() {
                 <Table className="equipment-table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Serial Number</TableCell>
+                            <TableCell>Serienummer</TableCell>
                             <TableCell>Model</TableCell>
                             <TableCell>Type</TableCell>
-                            <TableCell>Borrowed By</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell>Lånt av</TableCell>
+                            <TableCell>Handlinger</TableCell>
                         </TableRow>
                     </TableHead>
-
                     <TableBody>
                         {borrowedEquipments.map((equipment) => (
                             <TableRow key={equipment._id}>
@@ -74,7 +73,7 @@ export default function TeacherHomePage() {
                                         color="secondary"
                                         onClick={() => handleRemoveBorrow(equipment._id)}
                                     >
-                                        Remove
+                                        Fjern
                                     </Button>
                                 </TableCell>
                             </TableRow>

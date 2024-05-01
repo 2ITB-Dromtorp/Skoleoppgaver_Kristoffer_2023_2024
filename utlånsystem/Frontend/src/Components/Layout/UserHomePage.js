@@ -42,7 +42,6 @@ export default function UserHomePage() {
     }
   }, [setAlert]);
 
-
   useEffect(() => {
     fetchEquipments();
   }, [fetchEquipments]);
@@ -50,7 +49,7 @@ export default function UserHomePage() {
   return (
     <>
       {userEquipmentData && (
-        <Grid className='grid-container' container spacing={3}>
+        <Grid className='grid-container' spacing={3}>
 
           <div className='borrowed-equipment'>
             <Typography variant="h5">Lånt Utstyr</Typography>
@@ -64,8 +63,8 @@ export default function UserHomePage() {
               <AccordionDetails>
                     <Typography>Type: {equipment.Type}</Typography>
                     <Typography>Specs: {equipment.Specs.join(', ')}</Typography>
-                    <Typography>Serial Number: {equipment._id}</Typography>
-                    <Typography>Requested by: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
+                    <Typography>Serienummer: {equipment._id}</Typography>
+                    <Typography>Forespurt av: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
               </AccordionDetails>
 
               <AccordionActions>
@@ -87,8 +86,8 @@ export default function UserHomePage() {
                 <AccordionDetails>
                       <Typography>Type: {equipment.Type}</Typography>
                       <Typography>Specs: {equipment.Specs.join(', ')}</Typography>
-                      <Typography>Serial Number: {equipment._id}</Typography>
-                      <Typography>Requested by: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
+                      <Typography>Serienummer: {equipment._id}</Typography>
+                      <Typography>Forespurt av: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
                 </AccordionDetails>
 
                 <AccordionActions>

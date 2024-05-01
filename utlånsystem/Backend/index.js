@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const port = process.env.PORT || 8080
 const http = require("http");
 var cors = require("cors")
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const url = process.env.URL
 const server = http.createServer(app);
 const limit = require('express-rate-limit')
@@ -33,15 +33,15 @@ function authenticateToken(req, res, next) {
   const token = req.headers['authorization'];
 
   if (!token) {
-    return res.status(401).json({ error: 'No token' });
+    return res.status(401).json({ error: 'Ingen token funnet' });
   }
 
   jwt.verify(token.split(' ')[1], process.env.JWT_SECRET, (err, user) => {
     if (err) {
       if (err.name === 'TokenExpiredError') {
-        return res.status(401).json({ error: 'Token expired' });
+        return res.status(401).json({ error: 'Token er utløpt' });
       }
-      return res.status(403).json({ error: err });
+      return res.status(403).json({ error: 'Ugyldig token' });
     }
     req.user = user;
     next();
@@ -122,7 +122,7 @@ server.listen(port, async () => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-          return res.status(400).json({ error: "Email and password are required." });
+          return res.status(400).json({ error: "Email og passord er påkrevd" });
         }
 
         const TeacherCheck = await TeacherRequestList.findOne({ email: email });
@@ -132,11 +132,11 @@ server.listen(port, async () => {
 
         const user = await Users.findOne({ email: email });
         if (!user) {
-          return res.status(401).json({ error: "User dosen't exist" });
+          return res.status(401).json({ error: "Bruker finnes ikke" });
         }
 
         if (!bcrypt.compareSync(password, user.password)) {
-          return res.status(401).json({ error: "Invalid email or password." });
+          return res.status(401).json({ error: "Ugyldig passord" });
         }
 
 
@@ -155,16 +155,15 @@ server.listen(port, async () => {
 
     app.post('/signup', async (req, res) => {
       try {
-        const userData = await req.body;
-
+        const userData = req.body;
         const salt = bcrypt.genSaltSync(15);
         const hash = bcrypt.hashSync(userData.password, salt);
-
-        let newUserData = {
+    
+        const newUser = {
           email: userData.email,
           password: hash,
-          class_id: userData.class_id,
           role: userData.role,
+          class_id: userData.class_id,
           contact_info: {
             firstname: userData.contact_info.firstname,
             lastname: userData.contact_info.lastname,
@@ -172,67 +171,98 @@ server.listen(port, async () => {
             adress: userData.contact_info.adress,
             city: userData.contact_info.city,
           }
-        }
-
-        const validationResult = UserSchema.validate(newUserData);
-        if (validationResult.error) {
-          return res.status(400).json({error: validationResult.error.details[0].message});
-        }
-
-        if (userData.role === "Teacher") {
-          await TeacherRequestList.insertOne(newUserData)
-          return res.json({ message: "En admin må verifisere din Lærer konto" });
-        }
-
-        await Users.insertOne(newUserData);
-
-        const user = await Users.findOne({ email: userData.email });
-        if (!user) {
-          return res.status(401).json({ error: "User dosen't exist" });
-        }
-
-        const tokenPayload = {
-          userdata: user
         };
-
-        const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '2h' });
-
-        res.json({ message: "Elev konto har blitt laget", token: token });
+    
+        const validationResult = UserSchema.validate(newUser);
+        if (validationResult.error) {
+          return res.status(400).json({ error: validationResult.error.details[0].message });
+        }
+    
+        if (userData.role === 'Teacher') {
+          await TeacherRequestList.insertOne(newUser);
+          return res.status(200).json({ message: 'En admin må verifisere din lærer-konto' });
+        }
+    
+        await Users.insertOne(newUser);
+    
+        const token = jwt.sign({ userdata: newUser }, process.env.JWT_SECRET, { expiresIn: '2h' });
+        return res.status(200).json({ message: 'Elevkonto opprettet', token });
       } catch (error) {
-        console.error("Error adding user:", error);
-        res.status(500).send(error);
+        console.error("Feil under registrering:", error);
+        res.status(500).json({ error: 'Intern feil' });
       }
-    })
+    });
 
-    app.post('/verify-teacher', authenticateToken, async (req, res) => {
+    app.put('/verify-teacher', authenticateToken, async (req, res) => {
       try {
-        const TeacherID = req.body;
+        const teacheruser = req.body;
         const user = req.user.userdata;
 
+        const teacherdata = teacheruser.data
+    
         if (user.role !== 'Admin') {
-          return res.status(403).json({ error: 'Only admins can verify bruh' });
+          return res.status(403).json({ error: 'Du må være admin' });
+        }
+    
+        if (!teacherdata) {
+          return res.status(400).json({ error: 'Lærer ikke funnet' });
         }
 
-        const Teacher = await TeacherRequestList.findOne({ email: TeacherID });
-
-        await Users.insertOne(Teacher)
-        await TeacherRequestList.deleteOne({ email: TeacherID })
-
-        res.json({message: "verified teacher"})
-
+        let newUserData = {
+          email: teacherdata.email,
+          password: teacherdata.password,
+          class_id: teacherdata.class_id,
+          role: teacherdata.role,
+          contact_info: {
+            firstname: teacherdata.contact_info.firstname,
+            lastname: teacherdata.contact_info.lastname,
+            phone: teacherdata.contact_info.phone,
+            adress: teacherdata.contact_info.adress,
+            city: teacherdata.contact_info.city,
+          }
+        }
+    
+        await Users.insertOne(newUserData);
+        await TeacherRequestList.deleteOne({ email: newUserData.email });
+    
+        res.json({ message: "Verifisert lærer" });
       } catch (error) {
         console.error("Error verifying teacher", error);
         res.status(500).send(error);
       }
     })
 
-    app.post('/add-equipment', authenticateToken, async (req, res) => {
+    app.put('/unverify-teacher', authenticateToken, async (req, res) => {
+      try {
+        const teacheruser = req.body;
+        const user = req.user.userdata;
+
+        const teacherdata = teacheruser.data
+    
+        if (user.role !== 'Admin') {
+          return res.status(403).json({ error: 'bare admins kan verifiserers' });
+        }
+    
+        if (!teacherdata) {
+          return res.status(400).json({ error: 'jærer data finnes ikke' });
+        }
+
+        await TeacherRequestList.deleteOne({ email: teacherdata.email })
+
+        res.json({message: "uverifisert lærer"})
+      } catch (error) {
+        console.error("Error unverifying teacher", error);
+        res.status(500).send(error);
+      }
+    })
+
+    app.put('/add-equipment', authenticateToken, async (req, res) => {
       try {
         const equipmentData = await req.body;
         const user = req.user.userdata;
 
         if (user.role !== 'Teacher') {
-          return res.status(403).json({ error: 'Only teachers can add equipments.' });
+          return res.status(403).json({ error: 'bare lærere kan legge til utstyr.' });
         }
 
         const validationResult = EquipmentSchema.validate(equipmentData);
@@ -242,15 +272,13 @@ server.listen(port, async () => {
 
         const checkEquipment = await Equipments.findOne({ _id: equipmentData._id})
 
-        console.log(checkEquipment)
-
         if (checkEquipment) {
-          return res.status(403).json({ error: 'The equipment already exists' });
+          return res.status(403).json({ error: 'utstyr allerede fins' });
         }
 
         await Equipments.insertOne(equipmentData);
 
-        res.json({message: "Added equipment successfully"})
+        res.json({message: "Lagt til utstyr"})
       } catch (error) {
         console.error("Error adding equipment:", error);
         res.status(500).send(error);
@@ -322,12 +350,37 @@ server.listen(port, async () => {
 
     app.get('/get-borrow-requests', authenticateToken, async (req, res) => {
       try {
+        const user = req.user.userdata;
+
+        if (user.role !== 'Teacher') {
+          return res.status(403).json({ error: 'Lærer only' });
+        }
+
         const borrowCursor = Borrow.find();
         const borrowrequestlist = await borrowCursor.toArray();
         res.send(borrowrequestlist);
       } catch (error) {
         console.error("Error getting equipment:", error);
         res.status(500).send(error);
+      }
+    })
+
+    app.get('/get-teacher-requests', authenticateToken, async (req, res) => {
+      try {
+        const user = req.user.userdata;
+
+        if (user.role !== 'Admin') {
+          return res.status(403).json({ error: 'Lærer only' });
+        }
+
+        const teacherrequestCursor = TeacherRequestList.find();
+        const teacherrequest = await teacherrequestCursor.toArray()
+
+        console.log(teacherrequest)
+        res.send(teacherrequest)
+      } catch (error) {
+        console.error("Error getting teacher requests", error);
+        res.status(500).send({ error: "Internal Server Error."});
       }
     })
 
@@ -344,7 +397,7 @@ server.listen(port, async () => {
           );
 
           if (alreadyRequested) {
-            return res.status(400).json({ error: "You have already requested to borrow this equipment." });
+            return res.status(400).json({ error: "Du har allerede bedt om å få låne dette utstyret" });
           }
 
           await Borrow.updateOne(
@@ -379,10 +432,10 @@ server.listen(port, async () => {
           }
         );
 
-        res.json({ message: 'Borrow request successfully created or updated.' });
+        res.json({ message: 'Låneforespørsel ble opprettet' });
       } catch (error) {
         console.error("Error creating borrow request:", error);
-        res.status(500).json({ error: "Internal Server Error." });
+        res.status(500).json({ error: error });
       }
     });
 
@@ -392,13 +445,13 @@ server.listen(port, async () => {
         const user = req.user.userdata;
 
         if (user.role !== 'Teacher') {
-          return res.status(403).json({ error: 'Only teachers can accept borrow requests.' });
+          return res.status(403).json({ error: 'Bare lærere kan godta låneforespørsler' });
         }
 
         const existingRequest = await Borrow.findOne({ _id: equipmentId });
 
         if (!existingRequest) {
-          return res.status(404).json({ error: 'No borrow request found for the given equipment.' });
+          return res.status(404).json({ error: 'Fant ingen låneforespørsel for det gitte utstyret' });
         }
 
         await Borrow.deleteOne({ _id: equipmentId });
@@ -412,7 +465,7 @@ server.listen(port, async () => {
           }
         );
 
-        res.json({ success: true, message: "Borrow request denied successfully." });
+        res.json({ success: true, message: "Låneforespørsel ble avvist" });
       } catch (error) {
         console.error("Error denying borrow request:", error);
         res.status(500).json({ error: "Internal Server Error." });
@@ -425,13 +478,13 @@ server.listen(port, async () => {
         const user = req.user.userdata;
 
         if (user.role !== 'Teacher') {
-          return res.status(403).json({ error: 'Only teachers can accept borrow requests.' });
+          return res.status(403).json({ error: 'Bare lærere kan godta låneforespørsler' });
         }
 
         const existingRequest = await Borrow.findOne({ _id: equipmentId });
 
         if (!existingRequest) {
-          return res.status(404).json({ error: 'No borrow request found for the given equipment.' });
+          return res.status(404).json({ error: 'Fant ingen låneforespørsel for det gitte utstyret' });
         }
 
         await Equipments.updateOne(
@@ -448,7 +501,7 @@ server.listen(port, async () => {
 
         await Borrow.deleteOne({ _id: equipmentId });
 
-        res.json({ success: true, message: "Borrow request accepted successfully." });
+        res.json({ success: true, message: "Låneforespørsel ble godtatt" });
       } catch (error) {
         console.error("Error accepting borrow request:", error);
         res.status(500).json({ error: "Internal Server Error." });
@@ -461,7 +514,7 @@ server.listen(port, async () => {
         const equipment = await Equipments.findOne({ _id: equipmentId });
 
         if (!equipment) {
-          return res.status(404).json({ error: 'Equipment not found.' });
+          return res.status(404).json({ error: 'Finner ikke utstyr' });
         }
 
         await Equipments.updateOne(
@@ -478,7 +531,7 @@ server.listen(port, async () => {
           { _id: equipmentId }
         )
 
-        res.json({ success: true, message: 'Borrow removed successfully.' });
+        res.json({ success: true, message: 'Lånet utstyr ble fjernet.' });
 
       } catch (error) {
         console.error("Error removing borrowed equipment:", error);
@@ -493,12 +546,12 @@ server.listen(port, async () => {
         const user = req.user.userdata;
 
         if (user.role !== 'Teacher') {
-          return res.status(403).json({ error: 'Only teachers can accept borrow requests.' });
+          return res.status(403).json({ error: 'Bare lærere kan fjerne utstyr' });
         }
 
         await Equipments.deleteOne({_id: equipmentId})
 
-        res.send("deleted")
+        res.send("Slettet utstyr")
 
       } catch (error) {
         console.error("Error removing equipment:", error);

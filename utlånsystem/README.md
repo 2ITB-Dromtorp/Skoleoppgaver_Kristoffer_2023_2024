@@ -9,8 +9,12 @@
 3. [Setup](#Setup)
 4. [Database Modelling](#database)
 5. [Developing](#developing)
-    1. [Frontend](#frontend)
-    2. [Backend](#backend)
+    1. [Backend](#backend)
+      1. [Endpoints](#api)
+      2. [Rate Limiting](#rate-limiting)
+      3. [Token](#token)
+    2. [Frontend](#frontend)
+       1. [Routing](#routing)
 6. [Running on 2 computers with Ethernet](#running-on-2-computers-with-ethernet)
    1. [Prerequisites](#prerequisites)
    2. [Setup](#setup-1)
@@ -140,25 +144,33 @@ The database is modelled with JOI in the backend
 
 ## Backend 
 
-
 ### API
 
 If you want to further develop and make improvements to the Endspoints here's a table to describe each of them
 
-| Endpoint               | HTTP Method | Description                                                                                                        |
-|-----------------------|-------------|--------------------------------------------------------------------------------------------------------------------|
-| /login                 | POST        | Logs in a user by checking their email and password. Returns a JWT token upon successful login.                    |
-| /signup                | POST        | Signs up a new user with the provided email, password, role, class, and contact info. Returns a JWT token.          |
-| /add-equipment         | POST        | Adds new equipment. Requires teacher role.                                        |
-| /get-equipments        | GET         | Fetches all equipment data from the database. Requires a valid token for authentication.                           |
-| /get-user-equipments   | GET         | Fetches the borrowed and pending equipment for the authenticated user.                                             |
-| /get-borrow-requests   | GET         | Fetches all borrow requests. Requires authentication.                                                              |
-| /borrow-request        | POST        | Creates or updates a borrow request. Requires a valid token.                                                        |
-| /borrow-deny           | PUT         | Denies a borrow request. Requires teacher role and the equipment ID to be provided in the request body.            |
-| /borrow-accept         | PUT         | Accepts a borrow request. Requires teacher role.                                                                   |
-| /remove-borrowed-equipment | PUT     | Removes borrowed equipment from the borrowing list. If it's the last request, it sets status to available.          |
-| /remove-equipment       | PUT         | Deletes equipment by its ID. Requires teacher role.                                                               |
-| /protected-route       | GET         | A simple endpoint to test token-based authentication. Returns a success message upon valid token authentication.  |
+| Endpoint               | HTTP Method | Description                                                                                                          |
+|-----------------------|-------------|----------------------------------------------------------------------------------------------------------------------|
+| /login                 | POST        | Logs in a user by checking their email and password. Returns a JWT token upon successful login.                      |
+| /signup                | POST        | Signs up a new user with the provided email, password, role, class, and contact info. Returns a JWT token.            |
+| /add-equipment         | PUT         | Adds new equipment. Requires teacher role. Returns a success message upon adding.                                     |
+| /get-equipments        | GET         | Fetches all equipment data from the database. Requires a valid token for authentication.                             |
+| /get-user-equipments   | GET         | Fetches the borrowed and pending equipment for the authenticated user. Requires a valid token.                       |
+| /get-borrow-requests   | GET         | Fetches all borrow requests. Requires a valid token and teacher role.                                                 |
+| /borrow-request        | POST        | Creates or updates a borrow request. Requires a valid token. Returns a success message upon creation or update.      |
+| /borrow-deny           | PUT         | Denies a borrow request. Requires teacher role and the equipment ID in the request body. Returns a success message.  |
+| /borrow-accept         | PUT         | Accepts a borrow request. Requires teacher role and the equipment ID in the request body. Returns a success message. |
+| /remove-borrowed-equipment | PUT     | Removes borrowed equipment from the borrowing list. If it's the last request, it sets status to available.           |
+| /remove-equipment       | PUT         | Deletes equipment by its ID. Requires teacher role. Returns a success message.                                       |
+| /protected-route       | GET         | A simple endpoint to test token-based authentication. Returns a success message upon valid token authentication.     |
+| /verify-teacher         | PUT         | Verifies a teacher. Requires admin role. Returns a success message upon verification.                                |
+| /unverify-teacher       | PUT         | Unverifies a teacher. Requires admin role. Returns a success message upon unverification.                             |
+| /get-teacher-requests   | GET         | Fetches all pending teacher verification requests. Requires admin role.                                               |
+
+### Rate Limiting
+
+To protect the API from excessive use or potential denial-of-service attacks, a rate limit has been implemented. The current rate limit is set to 10 requests per 5 seconds for each IP address.
+
+If the rate limit is exceeded, the API will respond with an HTTP 429 status code and the message "Too many requests."
 
 ### Token
 

@@ -185,7 +185,7 @@ export default function Equipment() {
 
                     <TextField
                         id="outlined-basic"
-                        label="Search"
+                        label="Søk"
                         variant="outlined"
                         value={searchQuery}
                         onChange={handleTextChange}
@@ -197,12 +197,12 @@ export default function Equipment() {
                 <Table className='equipment-table'>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Serial Number</TableCell>
+                            <TableCell>Serienummer</TableCell>
                             <TableCell>Model</TableCell>
                             <TableCell>Type</TableCell>
                             <TableCell>Specs</TableCell>
                             <TableCell>Status</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell>Handlinger</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -228,7 +228,7 @@ export default function Equipment() {
                                             color="primary"
                                             onClick={() => handleBorrowRequest(equipment._id)}
                                         >
-                                            Borrow
+                                            Lån
                                         </Button>}
                                         {equipment.BorrowStatus.currentStatus === "borrowed" && <Button
                                             variant="contained"
@@ -236,14 +236,14 @@ export default function Equipment() {
                                             color="primary"
                                             onClick={() => handleBorrowRequest(equipment._id)}
                                         >
-                                            Borrow
+                                            Lån
                                         </Button>}
                                         {equipment.BorrowStatus.currentStatus === "pending" && <Button
                                             variant="contained"
                                             color="primary"
                                             onClick={() => handleBorrowRequest(equipment._id)}
                                         >
-                                            Borrow
+                                            Lån
                                         </Button>
                                         }
                                         {userdata ? (

@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Grid, CardContent, Typography, Card, Button } from '@mui/material';
 import { FetchProtectedData } from '../../utils/FetchProtectedData';
 import CheckUserRole from '../../utils/CheckUserRole';
 import { useNavigate } from 'react-router-dom';
+import { useAlert } from '../../utils/useAlert';
 
 import './BorrowRequest.css'
 
@@ -11,27 +12,30 @@ export default function BorrowRequest() {
   const [borrowRequests, setBorrowRequests] = useState([]);
   const [equipmentData, setEquipmentData] = useState([])
   const [borrowRequestNumber, setborrowRequestNumber] = useState(0);
+  const { setAlert } = useAlert()
 
   const navigate = useNavigate();
 
-  const fetchBorrowRequests = async () => {
+  const fetchBorrowRequests = useCallback(async () => {
     try {
       const data = await FetchProtectedData("/api/get-borrow-requests");
       setBorrowRequests(data);
       setborrowRequestNumber(data.length > 0 ? (data.length) : 0)
     } catch (error) {
-      console.error("Error fetching borrow requests:", error.message);
+      const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+      setAlert({ message: errorMessage, type: 'error'})
     }
-  };
+  }, [setAlert]);
 
-  const fetchEquipments = async () => {
+  const fetchEquipments = useCallback(async () => {
     try {
       const data = await FetchProtectedData('/api/get-equipments');
       setEquipmentData(data);
     } catch (error) {
-      console.error('Error fetching equipment data:', error.message);
+      const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+      setAlert({ message: errorMessage, type: 'error'})
     }
-  };
+  }, [setAlert]);
 
   const handleBorrowRequest = async (action, equipmentId) => {
     try {
@@ -45,30 +49,33 @@ export default function BorrowRequest() {
         },
       };
 
+      let response 
+
       if (action === "accept") {
-        await axios.put(
+        response = await axios.put(
           "/api/borrow-accept",
           { equipmentId },
           config
         );
       } else if (action === "deny") {
-        await axios.put(
+        response = await axios.put(
           "/api/borrow-deny",
           { equipmentId },
           config
         );
       }
-
+      setAlert({ message: response.data.message, type: 'success'})
       fetchBorrowRequests();
     } catch (error) {
-      console.error(`Error processing borrow request (${action}):`, error.message);
+      const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+      setAlert({ message: errorMessage, type: 'error'})
     }
   };
 
   useEffect(() => {
     fetchBorrowRequests();
     fetchEquipments();
-  }, []);
+  }, [fetchEquipments, fetchBorrowRequests]);
 
   CheckUserRole("Teacher", navigate)
 
@@ -99,10 +106,10 @@ export default function BorrowRequest() {
                 {request.equipment && (
                   <>
                     <Typography variant="h6">{request.equipment.Model}</Typography>
-                    <Typography>Serial Number: {request.requestId}</Typography>
+                    <Typography>Serienummer: {request.requestId}</Typography>
                     <Typography>Type: {request.equipment.Type}</Typography>
                     <Typography>Specs: {request.equipment.Specs.join(', ')}</Typography>
-                    <Typography>Requested by: {request.students.map((student) => student.firstname).join(', ')}</Typography>
+                    <Typography>Forespurt av: {request.students.map((student) => student.firstname).join(', ')}</Typography>
                   </>
                 )}
                 <div className='button-container'>
@@ -111,14 +118,14 @@ export default function BorrowRequest() {
                     color="secondary"
                     onClick={() => handleBorrowRequest("deny", request.requestId)}
                   >
-                    Deny
+                    Benekte
                   </Button>
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={() => handleBorrowRequest("accept", request.requestId)}
                   >
-                    Accept
+                    Aksepter
                   </Button>
                 </div>
 

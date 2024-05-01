@@ -1,5 +1,5 @@
 .grid-container {
-    @apply gap-[50%] p-4 flex flex-row justify-center; 
+    @apply gap-[50%] p-4 flex flex-row w-full justify-center; 
   }
   
   .borrowed-equipment > h5 {

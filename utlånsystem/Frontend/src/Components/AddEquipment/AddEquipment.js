@@ -61,7 +61,7 @@ export default function AddEquipment() {
         }
       }
 
-      const response = await axios.post('/api/add-equipment', formdata, config);
+      const response = await axios.put('/api/add-equipment', formdata, config);
 
       setAlert({ message: response.data.message || '', type: 'success'})
 
@@ -80,7 +80,7 @@ export default function AddEquipment() {
       <form className='equipform' onSubmit={handleSubmit}>
         <div>
           <TextField
-            label="Serial Number"
+            label="Serienummer"
             name="_id"
             value={Serial}
             onChange={(e) => setSerial(e.target.value)}
@@ -104,12 +104,12 @@ export default function AddEquipment() {
         </div>
         <div>
           <TextField
-            label="Add Spec"
+            label="Legg til spec"
             value={newSpec}
             onChange={handleSpecChange}
           />
           <Button variant="contained" onClick={handleAddSpec}>
-            Add Spec
+            Legg til spec
           </Button>
         </div>
         <List>
@@ -123,7 +123,7 @@ export default function AddEquipment() {
           ))}
         </List>
         <Button type="submit" variant="contained" color="primary">
-          Add Equipment
+        Legg til utstyr
         </Button>
       </form>
     </div>

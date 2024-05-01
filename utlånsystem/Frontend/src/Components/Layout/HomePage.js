@@ -6,6 +6,7 @@ import { Typography, CircularProgress } from '@mui/material'
 import { useNavigate } from "react-router-dom";
 import TeacherHomePage from "./TeacherHomePage";
 import { useAlert } from "../../utils/useAlert";
+import AdminHomePage from "./AdminHomePage";
 
 export default function HomePage() {
   const [userdata, setUserData] = useState(null);
@@ -19,11 +20,12 @@ export default function HomePage() {
         const data = await GetUserData();
         setUserData(data);
 
-        if (!data || !["Student", "Teacher"].includes(data.role)) {
+        if (!data || !["Student", "Teacher", "Admin"].includes(data.role)) {
           navigate("/login");
         }
       } catch (error) {
-        setAlert({ message: error, type: 'error' });
+        const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
+        setAlert({ message: errorMessage, type: 'error'})
         navigate("/login");
       }
     };
@@ -40,6 +42,7 @@ export default function HomePage() {
           <Typography variant="body1">Her har du oversikt over lånt utstyr</Typography>
           {userdata.role === "Student" && <UserHomePage />}
           {userdata.role === "Teacher" && <TeacherHomePage />}
+          {userdata.role === "Admin" && <AdminHomePage />}
         </>
       ) : (
         <CircularProgress />
