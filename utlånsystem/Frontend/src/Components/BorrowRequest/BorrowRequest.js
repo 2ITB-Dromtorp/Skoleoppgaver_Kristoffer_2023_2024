@@ -23,7 +23,7 @@ export default function BorrowRequest() {
       setborrowRequestNumber(data.length > 0 ? (data.length) : 0)
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-      setAlert({ message: errorMessage, type: 'error'})
+      setAlert({ message: errorMessage, type: 'error' })
     }
   }, [setAlert]);
 
@@ -33,7 +33,7 @@ export default function BorrowRequest() {
       setEquipmentData(data);
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-      setAlert({ message: errorMessage, type: 'error'})
+      setAlert({ message: errorMessage, type: 'error' })
     }
   }, [setAlert]);
 
@@ -49,7 +49,7 @@ export default function BorrowRequest() {
         },
       };
 
-      let response 
+      let response
 
       if (action === "accept") {
         response = await axios.put(
@@ -64,11 +64,11 @@ export default function BorrowRequest() {
           config
         );
       }
-      setAlert({ message: response.data.message, type: 'success'})
+      setAlert({ message: response.data.message, type: 'success' })
       fetchBorrowRequests();
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-      setAlert({ message: errorMessage, type: 'error'})
+      setAlert({ message: errorMessage, type: 'error' })
     }
   };
 

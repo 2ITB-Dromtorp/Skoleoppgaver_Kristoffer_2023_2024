@@ -17,7 +17,7 @@ export default function AddEquipment() {
 
   const [newSpec, setNewSpec] = useState('');
 
-  const {setAlert} = useAlert()
+  const { setAlert } = useAlert()
 
   const navigate = useNavigate()
 
@@ -41,13 +41,13 @@ export default function AddEquipment() {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-          throw new Error('Token not found');
+        throw new Error('Token not found');
       }
-      
+
       const config = {
-          headers: {
-              Authorization: token
-          }
+        headers: {
+          Authorization: token
+        }
       };
 
       const formdata = {
@@ -63,11 +63,12 @@ export default function AddEquipment() {
 
       const response = await axios.put('/api/add-equipment', formdata, config);
 
-      setAlert({ message: response.data.message || '', type: 'success'})
+      setAlert({ message: response.data.message || '', type: 'success' })
 
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-      setAlert({ message: errorMessage, type: 'error'})    }
+      setAlert({ message: errorMessage, type: 'error' })
+    }
   };
 
   CheckUserRole("Teacher", navigate)
@@ -123,7 +124,7 @@ export default function AddEquipment() {
           ))}
         </List>
         <Button type="submit" variant="contained" color="primary">
-        Legg til utstyr
+          Legg til utstyr
         </Button>
       </form>
     </div>

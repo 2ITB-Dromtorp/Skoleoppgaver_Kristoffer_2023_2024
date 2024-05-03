@@ -18,8 +18,9 @@
 6. [Running on 2 computers with Ethernet](#running-on-2-computers-with-ethernet)
    1. [Prerequisites](#prerequisites)
    2. [Setup](#setup-1)
-7. [Author](#author)
-8. [License](#license)
+7. [Improvements](#improvements)
+8. [Author](#author)
+9. [License](#license)
 
 
 ## Install
@@ -282,6 +283,18 @@ module.exports = function(app) {
 
 ### Final Step
 Once both the backend and frontend are running, your setup should be complete. 
+
+## improvements
+
+The user data is not fully utilizied yet
+
+What you can add is
+
+- Profile page
+- Change password
+- Notifications
+- Better UI
+- Confirm password
 
 # Author
 | Person | Link |

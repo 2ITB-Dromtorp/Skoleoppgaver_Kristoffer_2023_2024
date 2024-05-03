@@ -49,7 +49,8 @@ export default function Signup() {
       navigate("/");
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-      setAlert({ message: errorMessage, type: 'error' });    }
+      setAlert({ message: errorMessage, type: 'error' });
+    }
   };
 
   return (

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect, useCallback  } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FetchProtectedData } from '../../utils/FetchProtectedData';
 import {
     Table,
@@ -84,13 +84,13 @@ export default function Equipment() {
                 }
             };
             const response = await axios.post('/api/borrow-request', { equipmentId }, config);
-            
-            setAlert({ message: response.data.message, type: 'success'})
+
+            setAlert({ message: response.data.message, type: 'success' })
             fetchEquipments();
 
         } catch (error) {
             const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-            setAlert({ message: errorMessage, type: 'error'})
+            setAlert({ message: errorMessage, type: 'error' })
         }
     };
 
@@ -106,11 +106,11 @@ export default function Equipment() {
                 }
             };
             await axios.put('/api/remove-equipment', { equipmentId }, config);
-            setAlert({ message: "Utstyr fjernet", type: 'success'})
+            setAlert({ message: "Utstyr fjernet", type: 'success' })
             fetchEquipments();
         } catch (error) {
             const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-            setAlert({ message: errorMessage, type: 'error'})
+            setAlert({ message: errorMessage, type: 'error' })
         }
     }
 

@@ -12,7 +12,7 @@ export default function HomePage() {
   const [userdata, setUserData] = useState(null);
   const navigate = useNavigate();
 
-  const { setAlert} = useAlert()
+  const { setAlert } = useAlert()
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -25,7 +25,7 @@ export default function HomePage() {
         }
       } catch (error) {
         const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-        setAlert({ message: errorMessage, type: 'error'})
+        setAlert({ message: errorMessage, type: 'error' })
         navigate("/login");
       }
     };

@@ -53,11 +53,12 @@ export default function Login() {
                 />
 
                 <TextField
-                    label="Password"
+                    label="Passord"
                     type="password"
                     fullWidth
                     variant="outlined"
                     required
+                    autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />

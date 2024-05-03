@@ -63,7 +63,7 @@ const UserSchema = Joi.object({
 });
 
 const EquipmentSchema = Joi.object({
-  _id: Joi.string().alphanum().min(5).max(20).required(), 
+  _id: Joi.string().alphanum().min(5).max(20).required(),
   Type: Joi.string().max(20).required(),
   Model: Joi.string().max(20).required(),
   Specs: Joi.array().items(Joi.string().max(50)),
@@ -158,7 +158,7 @@ server.listen(port, async () => {
         const userData = req.body;
         const salt = bcrypt.genSaltSync(15);
         const hash = bcrypt.hashSync(userData.password, salt);
-    
+
         const newUser = {
           email: userData.email,
           password: hash,
@@ -172,19 +172,19 @@ server.listen(port, async () => {
             city: userData.contact_info.city,
           }
         };
-    
+
         const validationResult = UserSchema.validate(newUser);
         if (validationResult.error) {
           return res.status(400).json({ error: validationResult.error.details[0].message });
         }
-    
+
         if (userData.role === 'Teacher') {
           await TeacherRequestList.insertOne(newUser);
           return res.status(200).json({ message: 'En admin må verifisere din lærer-konto' });
         }
-    
+
         await Users.insertOne(newUser);
-    
+
         const token = jwt.sign({ userdata: newUser }, process.env.JWT_SECRET, { expiresIn: '2h' });
         return res.status(200).json({ message: 'Elevkonto opprettet', token });
       } catch (error) {
@@ -199,11 +199,11 @@ server.listen(port, async () => {
         const user = req.user.userdata;
 
         const teacherdata = teacheruser.data
-    
+
         if (user.role !== 'Admin') {
           return res.status(403).json({ error: 'Du må være admin' });
         }
-    
+
         if (!teacherdata) {
           return res.status(400).json({ error: 'Lærer ikke funnet' });
         }
@@ -221,10 +221,10 @@ server.listen(port, async () => {
             city: teacherdata.contact_info.city,
           }
         }
-    
+
         await Users.insertOne(newUserData);
         await TeacherRequestList.deleteOne({ email: newUserData.email });
-    
+
         res.json({ message: "Verifisert lærer" });
       } catch (error) {
         console.error("Error verifying teacher", error);
@@ -238,18 +238,18 @@ server.listen(port, async () => {
         const user = req.user.userdata;
 
         const teacherdata = teacheruser.data
-    
+
         if (user.role !== 'Admin') {
           return res.status(403).json({ error: 'bare admins kan verifiserers' });
         }
-    
+
         if (!teacherdata) {
           return res.status(400).json({ error: 'jærer data finnes ikke' });
         }
 
         await TeacherRequestList.deleteOne({ email: teacherdata.email })
 
-        res.json({message: "uverifisert lærer"})
+        res.json({ message: "uverifisert lærer" })
       } catch (error) {
         console.error("Error unverifying teacher", error);
         res.status(500).send(error);
@@ -267,10 +267,10 @@ server.listen(port, async () => {
 
         const validationResult = EquipmentSchema.validate(equipmentData);
         if (validationResult.error) {
-          return res.status(400).json({error: validationResult.error.details[0].message});
+          return res.status(400).json({ error: validationResult.error.details[0].message });
         }
 
-        const checkEquipment = await Equipments.findOne({ _id: equipmentData._id})
+        const checkEquipment = await Equipments.findOne({ _id: equipmentData._id })
 
         if (checkEquipment) {
           return res.status(403).json({ error: 'utstyr allerede fins' });
@@ -278,7 +278,7 @@ server.listen(port, async () => {
 
         await Equipments.insertOne(equipmentData);
 
-        res.json({message: "Lagt til utstyr"})
+        res.json({ message: "Lagt til utstyr" })
       } catch (error) {
         console.error("Error adding equipment:", error);
         res.status(500).send(error);
@@ -380,7 +380,7 @@ server.listen(port, async () => {
         res.send(teacherrequest)
       } catch (error) {
         console.error("Error getting teacher requests", error);
-        res.status(500).send({ error: "Internal Server Error."});
+        res.status(500).send({ error: "Internal Server Error." });
       }
     })
 
@@ -539,7 +539,7 @@ server.listen(port, async () => {
       }
     });
 
-    app.put('/remove-equipment', authenticateToken,async (req, res) => {
+    app.put('/remove-equipment', authenticateToken, async (req, res) => {
       try {
         const { equipmentId } = req.body;
 
@@ -549,7 +549,7 @@ server.listen(port, async () => {
           return res.status(403).json({ error: 'Bare lærere kan fjerne utstyr' });
         }
 
-        await Equipments.deleteOne({_id: equipmentId})
+        await Equipments.deleteOne({ _id: equipmentId })
 
         res.send("Slettet utstyr")
 

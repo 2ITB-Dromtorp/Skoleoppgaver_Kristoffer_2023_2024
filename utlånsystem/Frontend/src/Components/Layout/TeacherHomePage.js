@@ -17,7 +17,7 @@ export default function TeacherHomePage() {
             setBorrowedEquipments(borrowed);
         } catch (error) {
             const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-            setAlert({ message: errorMessage, type: 'error'})        
+            setAlert({ message: errorMessage, type: 'error' })
         }
     }, [setAlert]);
 
@@ -37,11 +37,11 @@ export default function TeacherHomePage() {
                 }
             };
             await axios.put('/api/remove-borrowed-equipment', { equipmentId }, config);
-            setAlert({ message: "Fjernet lånt forespørsel til en bruken", type: 'success'})
+            setAlert({ message: "Fjernet lånt forespørsel til en bruken", type: 'success' })
             fetchEquipments()
         } catch (error) {
             const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-            setAlert({ message: errorMessage, type: 'error'})
+            setAlert({ message: errorMessage, type: 'error' })
         }
     }
 
@@ -65,7 +65,7 @@ export default function TeacherHomePage() {
                                 <TableCell>{equipment.Model}</TableCell>
                                 <TableCell>{equipment.Type}</TableCell>
                                 <TableCell>
-                                        {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}
+                                    {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}
                                 </TableCell>
                                 <TableCell>
                                     <Button

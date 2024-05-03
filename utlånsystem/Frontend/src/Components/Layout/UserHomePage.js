@@ -1,10 +1,10 @@
-import { Grid, Typography, Button, Accordion, AccordionDetails, AccordionSummary, AccordionActions} from '@mui/material';
+import { Grid, Typography, Button, Accordion, AccordionDetails, AccordionSummary, AccordionActions } from '@mui/material';
 import { FetchProtectedData } from '../../utils/FetchProtectedData';
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios'
 import { useAlert } from '../../utils/useAlert';
 
-import { ArrowDropDown} from '@mui/icons-material'
+import { ArrowDropDown } from '@mui/icons-material'
 
 import './UserHomePage.css'
 
@@ -24,11 +24,11 @@ export default function UserHomePage() {
         }
       };
       await axios.put('/api/remove-borrowed-equipment', { equipmentId }, config);
-      setAlert({ message: "Fjernet lånt forespørsel", type: 'success'})
+      setAlert({ message: "Fjernet lånt forespørsel", type: 'success' })
       fetchEquipments()
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-      setAlert({ message: errorMessage, type: 'error'})
+      setAlert({ message: errorMessage, type: 'error' })
     }
   }
 
@@ -38,7 +38,7 @@ export default function UserHomePage() {
       setUserEquipmentData(data);
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'En uventet feil oppstod.';
-      setAlert({ message: errorMessage, type: 'error'})
+      setAlert({ message: errorMessage, type: 'error' })
     }
   }, [setAlert]);
 
@@ -49,28 +49,28 @@ export default function UserHomePage() {
   return (
     <>
       {userEquipmentData && (
-        <Grid className='grid-container' spacing={3}>
+        <Grid className='grid-container'>
 
           <div className='borrowed-equipment'>
             <Typography variant="h5">Lånt Utstyr</Typography>
             {userEquipmentData.borrowed.map((equipment) => (
               <Accordion key={equipment._id}>
-              <AccordionSummary
-                expandIcon={<ArrowDropDown />}
-              >
-                <Typography>{equipment.Model}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                    <Typography>Type: {equipment.Type}</Typography>
-                    <Typography>Specs: {equipment.Specs.join(', ')}</Typography>
-                    <Typography>Serienummer: {equipment._id}</Typography>
-                    <Typography>Forespurt av: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
-              </AccordionDetails>
+                <AccordionSummary
+                  expandIcon={<ArrowDropDown />}
+                >
+                  <Typography>{equipment.Model}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>Type: {equipment.Type}</Typography>
+                  <Typography>Specs: {equipment.Specs.join(', ')}</Typography>
+                  <Typography>Serienummer: {equipment._id}</Typography>
+                  <Typography>Forespurt av: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
+                </AccordionDetails>
 
-              <AccordionActions>
-                <Button className="button" onClick={() => handleRemoveBorrow(equipment._id)}>Ferdig</Button>
-              </AccordionActions>
-            </Accordion>              
+                <AccordionActions>
+                  <Button className="button" onClick={() => handleRemoveBorrow(equipment._id)}>Ferdig</Button>
+                </AccordionActions>
+              </Accordion>
             ))}
           </div>
 
@@ -84,10 +84,10 @@ export default function UserHomePage() {
                   <Typography>{equipment.Model}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                      <Typography>Type: {equipment.Type}</Typography>
-                      <Typography>Specs: {equipment.Specs.join(', ')}</Typography>
-                      <Typography>Serienummer: {equipment._id}</Typography>
-                      <Typography>Forespurt av: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
+                  <Typography>Type: {equipment.Type}</Typography>
+                  <Typography>Specs: {equipment.Specs.join(', ')}</Typography>
+                  <Typography>Serienummer: {equipment._id}</Typography>
+                  <Typography>Forespurt av: {equipment.BorrowStatus.studentsborrowing.map((student) => student.firstname).join(', ')}</Typography>
                 </AccordionDetails>
 
                 <AccordionActions>
