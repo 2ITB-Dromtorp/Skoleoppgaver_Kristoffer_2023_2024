@@ -1,28 +1,39 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import Button from '@mui/material/Button';
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Product } from '../utils/types';
+
+
 
 export default function HomePage() {
+    const [products, setProducts] = useState<Product[]>([]);
 
-    const [age] = useState(10);
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get<Product[]>('/api/get-products');
+
+            setProducts(response.data);
+
+            console.log(response.data)
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
+    useEffect(() => {
+        fetchProducts()
+    });
     
     return (
         <>
             <p className="">Home page</p>
-            <Button variant="contained">Hello world</Button>
-            <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={age}
-                label="Age"
-            >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-            </FormControl>
+
+            <ul>
+                {products && products.map(product => (
+                <li key={product._id.$oid}>
+                    {product.Name} - {product.Category}
+                </li>
+                ))}
+            </ul>
         </>
     );
 }

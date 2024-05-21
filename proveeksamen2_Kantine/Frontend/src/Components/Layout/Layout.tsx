@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
-import Footer from './Footer';
 import { CircularProgress } from '@mui/material';
+import './Layout.css'
 
 export default function Layout() {
 
@@ -15,7 +15,7 @@ export default function Layout() {
         <Outlet />
       </div>
 
-      <Footer />
+      mekk
     </div>
   );
 }
