@@ -1,0 +1,16 @@
+/* ProductBox.css */
+.product-card {
+    @apply grid grid-flow-row h-full w-56;
+}
+
+.product-image {
+    @apply w-full h-32 object-cover;
+}
+
+.content {
+    @apply p-4;
+}
+
+.actions {
+    @apply flex items-center p-4;
+}

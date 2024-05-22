@@ -13,12 +13,13 @@
                     "GUID": "f2718fbd-4acf-400f-81f8-82c40e1d00bb",
                     "primaryKey": true,
                     "relationshipType": "Foreign Key",
-                    "foreignCollection": "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
+                    "foreignCollection": "051981e2-7628-4c76-bc35-8f17db250877",
+                    "parentRelationship": "9a7eaab2-bded-4a53-a057-c2c824b098ca",
                     "foreignField": [
-                        "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
-                        "b4d980ea-536b-4890-997e-01a84912c6f5"
+                        "051981e2-7628-4c76-bc35-8f17db250877",
+                        "6ce38506-8026-412e-a5d3-023c02a528c5",
+                        "288dafb2-423e-4874-be24-91c6fa8848f6"
                     ],
-                    "parentRelationship": "4f39bc47-48d4-4a9b-8ee4-50e44a10dece",
                     "error": {}
                 },
                 {
@@ -61,8 +62,8 @@
                         }
                     ],
                     "additionalItems": true,
-                    "error": {},
-                    "GUID": "65b1222c-08a8-4106-bd52-9b2626aad572"
+                    "GUID": "65b1222c-08a8-4106-bd52-9b2626aad572",
+                    "error": {}
                 },
                 {
                     "name": "Price",
@@ -121,10 +122,15 @@
                     "type": "objectId",
                     "GUID": "b4d980ea-536b-4890-997e-01a84912c6f5",
                     "primaryKey": true,
-                    "error": {},
-                    "childRelationships": [
-                        "4f39bc47-48d4-4a9b-8ee4-50e44a10dece"
-                    ]
+                    "relationshipType": "Foreign Key",
+                    "foreignCollection": "051981e2-7628-4c76-bc35-8f17db250877",
+                    "foreignField": [
+                        "051981e2-7628-4c76-bc35-8f17db250877",
+                        "88e85b9c-34d6-4d5e-a5f6-68f1ecc14f92",
+                        "a5266cdf-62e6-4c5a-9dc8-2438d6b22ff2"
+                    ],
+                    "parentRelationship": "92b9c49b-fbd3-4f79-97ca-1de093a0fd6c",
+                    "error": {}
                 },
                 {
                     "hackoladeMeta": {},
@@ -140,6 +146,36 @@
                     "isActivated": true,
                     "type": "string",
                     "GUID": "ba2bbcdb-88d0-42e6-8c6a-4127149675c3",
+                    "error": {}
+                },
+                {
+                    "name": "Products",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "type": "array",
+                    "properties": [
+                        {
+                            "hackoladeMeta": {},
+                            "isActivated": true,
+                            "type": "objectId",
+                            "error": {},
+                            "GUID": "71f3af27-ae7a-4152-a35b-ecf5c7ef453b",
+                            "arrayItem": true,
+                            "childRelationships": [
+                                "5414da10-84e4-418e-bd96-8a80f0daec9b"
+                            ]
+                        }
+                    ],
+                    "additionalItems": true,
+                    "GUID": "a9780d0c-fb9e-4c28-960a-342035ed7e31",
+                    "error": {}
+                },
+                {
+                    "name": "OrderingDate",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "type": "string",
+                    "GUID": "c7183840-d6d1-4fd5-8885-e4653e52f8c0",
                     "error": {}
                 }
             ],
@@ -162,6 +198,117 @@
             },
             "GUID": "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
             "bucketId": "6f7a3d22-0906-4740-ba38-7bcc811de594"
+        },
+        {
+            "collectionName": "Users",
+            "type": "object",
+            "properties": [
+                {
+                    "name": "id",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "type": "string",
+                    "GUID": "be9e5c3c-0cfe-4a63-b8c9-36c7a76b7bbf",
+                    "primaryKey": true,
+                    "error": {}
+                },
+                {
+                    "name": "Email",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "type": "string",
+                    "GUID": "57b52300-dc54-43d8-b91b-28899d1d8b95",
+                    "error": {}
+                },
+                {
+                    "name": "FirstName",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "type": "string",
+                    "GUID": "0aa7d530-16d2-4a61-8e97-570e037c1baa",
+                    "error": {}
+                },
+                {
+                    "name": "LastName",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "type": "string",
+                    "GUID": "bfc0a808-edf1-4c19-b4cf-2d72c057bf01",
+                    "error": {}
+                },
+                {
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "type": "string",
+                    "GUID": "5f72581b-b1f9-4266-ac32-908ebc9dd717",
+                    "name": "Password",
+                    "error": {}
+                },
+                {
+                    "name": "Orders",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "type": "array",
+                    "properties": [
+                        {
+                            "hackoladeMeta": {},
+                            "isActivated": true,
+                            "type": "objectId",
+                            "error": {},
+                            "GUID": "a5266cdf-62e6-4c5a-9dc8-2438d6b22ff2",
+                            "arrayItem": true,
+                            "childRelationships": [
+                                "92b9c49b-fbd3-4f79-97ca-1de093a0fd6c"
+                            ]
+                        }
+                    ],
+                    "additionalItems": true,
+                    "GUID": "88e85b9c-34d6-4d5e-a5f6-68f1ecc14f92",
+                    "foreignCollection": "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
+                    "error": {}
+                },
+                {
+                    "name": "shopping cart",
+                    "hackoladeMeta": {},
+                    "isActivated": true,
+                    "type": "array",
+                    "properties": [
+                        {
+                            "hackoladeMeta": {},
+                            "isActivated": true,
+                            "type": "objectId",
+                            "error": {},
+                            "GUID": "288dafb2-423e-4874-be24-91c6fa8848f6",
+                            "arrayItem": true,
+                            "childRelationships": [
+                                "9a7eaab2-bded-4a53-a057-c2c824b098ca"
+                            ]
+                        }
+                    ],
+                    "additionalItems": true,
+                    "error": {},
+                    "GUID": "6ce38506-8026-412e-a5d3-023c02a528c5"
+                }
+            ],
+            "definitions": {
+                "type": "definitions",
+                "properties": [],
+                "GUID": "c030c7e4-f756-4015-832d-621c1eac7821"
+            },
+            "isActivated": true,
+            "additionalProperties": false,
+            "validationLevel": "Off",
+            "validationAction": "Warn",
+            "storageEngineName": "WiredTiger",
+            "collectionUsers": [],
+            "indexes": [],
+            "collation": {},
+            "sharding": {
+                "unique": true,
+                "collation": "null"
+            },
+            "GUID": "051981e2-7628-4c76-bc35-8f17db250877",
+            "bucketId": "6f7a3d22-0906-4740-ba38-7bcc811de594"
         }
     ],
     "buckets": [
@@ -170,7 +317,8 @@
             "type": "bucket",
             "collectionIds": [
                 "c006f0fe-851d-4249-a4c2-4654f2945d30",
-                "e8c9eccb-88b3-4374-97b9-dc9223d3a866"
+                "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
+                "051981e2-7628-4c76-bc35-8f17db250877"
             ],
             "backgroundColor": {
                 "r": 216,
@@ -186,12 +334,13 @@
     "views": [],
     "relationships": [
         {
-            "name": "Mekk",
+            "name": "Bestilling",
             "relationshipType": "Foreign Key",
             "parentField": [
                 [
                     "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
-                    "b4d980ea-536b-4890-997e-01a84912c6f5"
+                    "a9780d0c-fb9e-4c28-960a-342035ed7e31",
+                    "71f3af27-ae7a-4152-a35b-ecf5c7ef453b"
                 ]
             ],
             "parentCardinality": "1",
@@ -203,24 +352,138 @@
             ],
             "isActivated": true,
             "childCardinality": "1",
-            "GUID": "4f39bc47-48d4-4a9b-8ee4-50e44a10dece",
+            "GUID": "5414da10-84e4-418e-bd96-8a80f0daec9b",
             "parentCollection": "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
             "childCollection": "c006f0fe-851d-4249-a4c2-4654f2945d30",
             "hackoladeStyles": {
-                "GUID": "3a3384a3-71b6-4cf6-aef2-6a764b92bccb",
-                "autoPositioning": false,
+                "GUID": "2bdb169a-39c9-4807-89fb-2817adbb2db7",
+                "autoPositioning": true,
                 "type": "Orthogonal",
                 "thickness": 2,
                 "color": "#79c4ff",
                 "dataType": "",
                 "shape": [
                     {
-                        "x": 1279,
-                        "y": 1128.5
+                        "x": 1275.9225328580978,
+                        "y": 1146.449404098909
                     },
                     {
-                        "x": 1449,
-                        "y": 1128.5
+                        "x": 1360.9225328580978,
+                        "y": 1146.449404098909
+                    },
+                    {
+                        "x": 1360.9225328580978,
+                        "y": 1154.949404098909
+                    },
+                    {
+                        "x": 1445.9225328580978,
+                        "y": 1154.949404098909
+                    }
+                ],
+                "sides": [
+                    "right",
+                    "left"
+                ]
+            }
+        },
+        {
+            "name": "Bruker bestillinger",
+            "relationshipType": "Foreign Key",
+            "parentField": [
+                [
+                    "051981e2-7628-4c76-bc35-8f17db250877",
+                    "88e85b9c-34d6-4d5e-a5f6-68f1ecc14f92",
+                    "a5266cdf-62e6-4c5a-9dc8-2438d6b22ff2"
+                ]
+            ],
+            "parentCardinality": "1",
+            "childField": [
+                [
+                    "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
+                    "b4d980ea-536b-4890-997e-01a84912c6f5"
+                ]
+            ],
+            "isActivated": true,
+            "childCardinality": "1",
+            "GUID": "92b9c49b-fbd3-4f79-97ca-1de093a0fd6c",
+            "parentCollection": "051981e2-7628-4c76-bc35-8f17db250877",
+            "childCollection": "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
+            "hackoladeStyles": {
+                "GUID": "e460f410-415d-42ca-ab54-3e12dd1de3a4",
+                "autoPositioning": true,
+                "type": "Orthogonal",
+                "thickness": 2,
+                "color": "#79c4ff",
+                "dataType": "",
+                "shape": [
+                    {
+                        "x": 1552.9225328580978,
+                        "y": 1225.449404098909
+                    },
+                    {
+                        "x": 1552.9225328580978,
+                        "y": 1268.5010230662856
+                    },
+                    {
+                        "x": 1553.0631688373562,
+                        "y": 1268.5010230662856
+                    },
+                    {
+                        "x": 1553.0631688373562,
+                        "y": 1311.5526420336623
+                    }
+                ],
+                "sides": [
+                    "bottom",
+                    "top"
+                ]
+            }
+        },
+        {
+            "name": "Valgte produkter",
+            "relationshipType": "Foreign Key",
+            "parentField": [
+                [
+                    "051981e2-7628-4c76-bc35-8f17db250877",
+                    "6ce38506-8026-412e-a5d3-023c02a528c5",
+                    "288dafb2-423e-4874-be24-91c6fa8848f6"
+                ]
+            ],
+            "parentCardinality": "1",
+            "childField": [
+                [
+                    "c006f0fe-851d-4249-a4c2-4654f2945d30",
+                    "f2718fbd-4acf-400f-81f8-82c40e1d00bb"
+                ]
+            ],
+            "isActivated": true,
+            "childCardinality": "1",
+            "GUID": "9a7eaab2-bded-4a53-a057-c2c824b098ca",
+            "parentCollection": "051981e2-7628-4c76-bc35-8f17db250877",
+            "childCollection": "c006f0fe-851d-4249-a4c2-4654f2945d30",
+            "hackoladeStyles": {
+                "GUID": "99d761b2-ce64-46f5-83ae-7b77d9bff135",
+                "autoPositioning": true,
+                "type": "Orthogonal",
+                "thickness": 2,
+                "color": "#79c4ff",
+                "dataType": "",
+                "shape": [
+                    {
+                        "x": 1275.9225328580978,
+                        "y": 1211.449404098909
+                    },
+                    {
+                        "x": 1365.242850847727,
+                        "y": 1211.449404098909
+                    },
+                    {
+                        "x": 1365.242850847727,
+                        "y": 1409.0526420336623
+                    },
+                    {
+                        "x": 1454.5631688373562,
+                        "y": 1409.0526420336623
                     }
                 ],
                 "sides": [
@@ -259,7 +522,19 @@
         "66284936-9567-41e7-acc0-92364691bab8": "PersonName",
         "ba2bbcdb-88d0-42e6-8c6a-4127149675c3": "OrderingMethod",
         "e0733e88-78c6-4baf-964d-cff395bc6048": "New Diagram View",
-        "4f39bc47-48d4-4a9b-8ee4-50e44a10dece": "Mekk"
+        "051981e2-7628-4c76-bc35-8f17db250877": "Users",
+        "be9e5c3c-0cfe-4a63-b8c9-36c7a76b7bbf": "id",
+        "57b52300-dc54-43d8-b91b-28899d1d8b95": "Email",
+        "0aa7d530-16d2-4a61-8e97-570e037c1baa": "FirstName",
+        "bfc0a808-edf1-4c19-b4cf-2d72c057bf01": "LastName",
+        "5f72581b-b1f9-4266-ac32-908ebc9dd717": "Password",
+        "88e85b9c-34d6-4d5e-a5f6-68f1ecc14f92": "Orders",
+        "6ce38506-8026-412e-a5d3-023c02a528c5": "shopping cart",
+        "a9780d0c-fb9e-4c28-960a-342035ed7e31": "Products",
+        "5414da10-84e4-418e-bd96-8a80f0daec9b": "Bestilling",
+        "92b9c49b-fbd3-4f79-97ca-1de093a0fd6c": "Bruker bestillinger",
+        "9a7eaab2-bded-4a53-a057-c2c824b098ca": "Valgte produkter",
+        "c7183840-d6d1-4fd5-8885-e4653e52f8c0": "OrderingDate"
     },
     "definitions": {
         "type": "definitions",
@@ -282,9 +557,9 @@
     "dbVendor": "MongoDB",
     "appTarget": "MONGODB",
     "creationTS": "2024-05-21T18:14:59.727Z",
-    "GUID": "4e50de8c-26ad-4b54-8fb8-3e09743f7c35",
+    "GUID": "e490ec1a-87a8-4ad0-a237-b6a034f90997",
     "isLineageEnabled": false,
-    "lastModifTS": "2024-05-21T18:35:03.141Z",
+    "lastModifTS": "2024-05-22T12:37:26.522Z",
     "persistenceSchemaVersion": "7",
     "isCreatedByPlugin": true,
     "pluginInformation": {
@@ -293,24 +568,33 @@
     "applicationInformation": {
         "version": "7.4.3"
     },
+    "hackoladeMeta": {},
     "settings": {
         "centralPane": {
             "dbLevel": {
                 "erd": [
                     {
                         "GUID": "c006f0fe-851d-4249-a4c2-4654f2945d30",
-                        "x": 1077,
-                        "y": 1093,
+                        "x": 1073.9225328580978,
+                        "y": 1081.449404098909,
                         "width": 202,
                         "height": 195,
                         "color": {}
                     },
                     {
                         "GUID": "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
-                        "x": 1449,
-                        "y": 1096,
-                        "width": 231,
-                        "height": 87,
+                        "x": 1445.9225328580978,
+                        "y": 1084.449404098909,
+                        "width": 214,
+                        "height": 141,
+                        "color": {}
+                    },
+                    {
+                        "GUID": "051981e2-7628-4c76-bc35-8f17db250877",
+                        "x": 1454.5631688373562,
+                        "y": 1311.5526420336623,
+                        "width": 197,
+                        "height": 195,
                         "color": {}
                     }
                 ],
@@ -322,8 +606,8 @@
                 },
                 "buckets": [
                     {
-                        "x": 1037,
-                        "y": 1053,
+                        "x": 1033.9225328580978,
+                        "y": 1041.449404098909,
                         "GUID": "6f7a3d22-0906-4740-ba38-7bcc811de594"
                     }
                 ],
@@ -350,8 +634,8 @@
                                 "GUID": "e8c9eccb-88b3-4374-97b9-dc9223d3a866",
                                 "x": 1050,
                                 "y": 1050,
-                                "width": 232,
-                                "height": 87,
+                                "width": 215,
+                                "height": 141,
                                 "color": {}
                             }
                         ],

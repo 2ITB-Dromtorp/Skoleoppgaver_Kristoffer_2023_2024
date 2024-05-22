@@ -1,15 +1,15 @@
 .layout {
-  @apply h-screen flex flex-col 
+  @apply h-screen flex flex-col
 }
 
 .navbar-container {
-  @apply bg-slate-400 h-12 py-2 px-3
+  @apply bg-slate-400
 }
 
 .footer {
-    @apply h-12 bg-slate-400
+  @apply h-12 bg-slate-400
 }
 
 .content-container {
-    @apply w-max 
+  @apply w-max
 }

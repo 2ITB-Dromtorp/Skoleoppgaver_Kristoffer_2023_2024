@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
-import { CircularProgress } from '@mui/material';
 import './Layout.css'
+import NavBar from './Navbar';
 
 export default function Layout() {
 
@@ -8,14 +8,13 @@ export default function Layout() {
     <div className='layout'>
 
       <div className='navbar-container'>
-        <CircularProgress />
+        <NavBar />
       </div>
 
       <div className='content-container'>
         <Outlet />
       </div>
 
-      mekk
     </div>
   );
 }
