@@ -4,7 +4,7 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 8080
 const http = require("http");
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const url = process.env.URL
 const server = http.createServer(app);
 const cors = require("cors")
@@ -18,7 +18,7 @@ const productSchema = Joi.object({
   Quantity: Joi.number().required(),
   Ingredients: Joi.array().items(Joi.string()).required(),
   Price: Joi.number().required(),
-  Rating: Joi.number().required(),
+  Rating: Joi.number(),
   Available: Joi.boolean().required()
 });
 
@@ -31,7 +31,7 @@ const orderSchema = Joi.object({
     Joi.object({
       ProductID: Joi.string().required(),
       Quantity: Joi.number().required(),
-      Price: Joi.number().required()
+      Price: Joi.number().required(),
     })
   ).required()
 });
@@ -64,12 +64,12 @@ function authenticateToken(req, res, next) {
     return res.status(401).json({ error: 'Ingen token funnet' });
   }
 
-  jwt.verify(token.split(' ')[1], 'testtoken', (err, user) => {
+  jwt.verify(token.split(' ')[1], 'token', (err, user) => {
     if (err) {
       if (err.name === 'TokenExpiredError') {
         return res.status(401).json({ error: 'Token er utløpt' });
       }
-      return res.status(403).json({ error: 'Ugyldig token' });
+      return res.status(403).json({ error: err });
     }
     req.user = user;
     next();
@@ -111,7 +111,7 @@ server.listen(port, async () => {
           userdata: user
         };
 
-        const token = jwt.sign(tokenPayload, "testToken", { expiresIn: '2h' });
+        const token = jwt.sign(tokenPayload, "token", { expiresIn: '2h' });
 
         res.json({ token: token });
       } catch (error) {
@@ -126,35 +126,58 @@ server.listen(port, async () => {
         const products = await productCursor.toArray();
         res.send(products);
       } catch (error) {
-        console.error("Error getting equipment:", error);
+        console.error("Error getting products:", error);
         res.status(500).send(error);
       }
     })
 
-    app.get('/get-orders', async (req, res) => {
+
+    app.get('/get-user-data', authenticateToken, async (req, res) => {
       try {
-        const orderCursor = Orders.find();
-        const order = await orderCursor.toArray();
-        res.send(order);
+         const userID = req.user.userdata._id
+
+         const userdata = await Users.findOne({_id:new ObjectId(userID)})
+
+         if (!userdata) {
+          return res.status(404).json({ error: 'User not found' });
+         }
+
+        res.send(userdata);
       } catch (error) {
-        console.error("Error getting equipment:", error);
+        console.error("Error getting user data:", error);
         res.status(500).send(error);
       }
     })
+
+    app.get('/get-user-orders', authenticateToken, async (req, res) => {
+      try {
+        const userID = req.user.userdata._id;
+    
+        const user = await Users.findOne({ _id: new ObjectId(userID) });
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+    
+        const orderIDs = user.Orders || [];
+        const orders = await Orders.find({ OrderID: { $in: orderIDs } }).toArray();
+
+        res.send(orders);
+      } catch (error) {
+        console.error("Error getting user orders:", error);
+        res.status(500).send(error);
+      }
+    });
+    
 
     app.post('/add-to-shoppingcart', authenticateToken, async (req, res) => {
       try {
-        const { productID, quantity } = req.body;
-        console.log("test")
+        const { id, quantity } = req.body;
 
-        console.log(req.user.userdata)
-
-
-        if (!ObjectId.isValid(productID)) {
+        if (!ObjectId.isValid(id)) {
           return res.status(400).json({ error: 'Invalid product ID' });
         }
 
-        const product = await Products.findOne({ _id: new ObjectId(productID) });
+        const product = await Products.findOne({ _id: new ObjectId(id) });
 
         if (!product) {
           return res.status(404).json({ error: 'Product not found' });
@@ -167,9 +190,9 @@ server.listen(port, async () => {
         }
 
         const shoppingCartItem = {
-          ProductID: productID,
+          ProductID: id,
           Quantity: quantity,
-          Price: product.Price
+          Price: product.Price,
         };
 
         await Users.updateOne(
@@ -184,7 +207,108 @@ server.listen(port, async () => {
       }
     })
 
-    app.put('/add-order', async (req, res) => {
+    app.post('/remove-from-cart', authenticateToken, async (req, res) => {
+      try {
+        const { id } = req.body;
+
+        if (!ObjectId.isValid(id)) {
+          return res.status(400).json({ error: 'Invalid product ID' });
+        }
+
+        const product = await Products.findOne({ _id: new ObjectId(id) });
+
+        if (!product) {
+          return res.status(404).json({ error: 'Product not found' });
+        }
+
+        const user = await Users.findOne({ _id: new ObjectId(req.user.userdata._id) });
+
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        await Users.updateOne(
+          { _id: new ObjectId(user._id) },
+          { $pull: { ShoppingCart: { ProductID: id } } }
+        );
+
+        res.json({ message: 'Product removed from shopping cart' });
+      } catch (error) {
+        console.error("Error removing to shopping cart:", error);
+        res.status(500).send(error);
+      }
+    })
+
+    app.post('/remove-order', authenticateToken, async (req,res) => {
+      try {
+        const {id, products} = req.body;
+
+        Orders.deleteOne({_id: new ObjectId(id)})
+
+        for (const product of products) {
+          await Products.updateOne(
+            { _id: new ObjectId(product.ProductID) },
+            { $inc: { Quantity: product.Quantity } }
+          );
+        }
+
+        res.send({ message: 'removed order' });
+      } catch (error) {
+        console.error("Error removing to shopping cart:", error);
+        res.status(500).send(error);
+      }
+    })
+
+    app.post('/add-order', authenticateToken, async (req, res) => {
+      try {
+        const {Cartproducts, DeliveryDate , OrderMethod} = req.body
+
+        const userID = req.user.userdata._id;
+        const user = await Users.findOne({ _id: new ObjectId(userID) });
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+    
+        const order = {
+          OrderID: Date.now(),
+          OrderMethod,
+          PersonName: `${user.FirstName} ${user.LastName}`,
+          DeliveryDate,
+          Products: Cartproducts,
+        };
+  
+        const { error } = orderSchema.validate(order);
+        if (error) {
+          return res.status(400).json({ error: error.details[0].message });
+        }
+  
+        await Users.updateOne(
+          { _id: new ObjectId(userID) },
+          { $push: { Orders: order.OrderID }, $set: { ShoppingCart: [] } }, 
+        );
+
+        await Orders.insertOne(order);
+  
+        for (const product of Cartproducts) {
+          await Products.updateOne(
+            { _id: new ObjectId(product.ProductID) },
+            { $inc: { Quantity: -product.Quantity } }
+          );
+           
+          const updatedProduct = await Products.findOne({ _id: new ObjectId(product.ProductID) });
+          if (updatedProduct && updatedProduct.Quantity <= 0) {
+            await Products.updateOne(
+              { _id: new ObjectId(product.ProductID) },
+              { $set: {Available: false}}
+            );
+          }
+        }
+    
+        res.json({ message: 'Order placed successfully' });
+  
+      } catch (error) {
+        console.error(error);
+        res.status(500).send(error);
+      }
 
     })
 

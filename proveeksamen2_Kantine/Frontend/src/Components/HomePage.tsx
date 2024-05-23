@@ -35,7 +35,7 @@ export default function HomePage() {
                     <CircularProgress />
                 ) : (
                     products
-                        .filter(product => product.Category === "Mat")
+                        .filter(product => product.Category === "Mat" && product.Available !== false)
                         .map(product => (
                             <ProductBox
                                 key={product.Name}
@@ -61,7 +61,7 @@ export default function HomePage() {
                     <CircularProgress />
                 ) : (
                     products
-                        .filter(product => product.Category === "Drikke")
+                        .filter(product => product.Category === "Drikke" && product.Available !== false)
                         .map(product => (
                             <ProductBox
                                 key={product.Name}

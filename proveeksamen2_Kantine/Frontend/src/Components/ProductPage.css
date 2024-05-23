@@ -1,0 +1,33 @@
+.product-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.product-content {
+    max-width: max-content;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: max-content;
+}
+
+.quantity-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.quantity-container .MuiTextField-root {
+    width: 60px;
+    margin: 0 10px;
+}
+
+.ingridients {
+    @apply flex flex-row gap-1
+}
+

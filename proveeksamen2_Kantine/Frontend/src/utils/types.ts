@@ -19,7 +19,7 @@ export interface User {
   ShoppingCart: ShoppingCartItem[];
 }
 
-interface ShoppingCartItem {
+export interface ShoppingCartItem {
   ProductID: string;
   Quantity: number;
   Price: number;
@@ -28,4 +28,19 @@ interface ShoppingCartItem {
 export interface DecodedToken {
   userdata: User;
   exp: number;
+}
+
+export interface OrderProduct {
+  ProductID: string;
+  Quantity: number;
+  Price: number;
+}
+
+export interface Order {
+  _id: string;
+  OrderID: number;
+  OrderMethod: string;
+  PersonName: string;
+  DeliveryDate: string;
+  Products: OrderProduct[];
 }

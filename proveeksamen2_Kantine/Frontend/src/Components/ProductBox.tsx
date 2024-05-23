@@ -5,13 +5,12 @@ import { getImage } from '../utils/getImage';
 
 import './ProductBox.css';
 
-export default function ProductBox({ _id, Name, Quantity, Price, Rating, Available }: Product) {
+export default function ProductBox({ _id, Name, Quantity, Price, Rating }: Product) {
     const imageUrl = getImage(Name);
 
-    const navigate = useNavigate(); // Get the navigate function from the hook
+    const navigate = useNavigate();
 
     const handleClick = () => {
-        // Navigate to the desired page when clicked
         navigate(`/product/${_id}`);
     };
 
@@ -20,7 +19,7 @@ export default function ProductBox({ _id, Name, Quantity, Price, Rating, Availab
             <Card onClick={handleClick} className="product-card">
                 <CardMedia
                     component="img"
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: 'cover'}}
                     className='product-image'
                     image={imageUrl}
                     alt={Name}
@@ -34,12 +33,10 @@ export default function ProductBox({ _id, Name, Quantity, Price, Rating, Availab
                     <Typography variant="body2" color="text.secondary">
                         {Quantity} stk
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        Tilgjenlig: {Available ? 'Yes' : 'No'}
-                    </Typography>
+
                 </CardContent>
                 <CardActions className="actions">
-                    <Typography variant="body1" color="text.secondary">
+                    <Typography variant="body1" color="text.primary">
                         {Price} Kr
                     </Typography>
                 </CardActions>

@@ -1,9 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
 import { Product } from "../utils/types";
-import { useParams } from "react-router-dom";
-import { Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button, CircularProgress, Grid, Typography, IconButton, TextField } from "@mui/material";
 import { getImage } from '../utils/getImage';
+import { Add, Remove } from  '@mui/icons-material';
+
+import './ProductPage.css'
+import { getDescription } from "../utils/getDescription";
 
 export default function ProductPage() {
     const { id } = useParams<{ id: string }>();
@@ -11,6 +15,8 @@ export default function ProductPage() {
     const [image, setImage] = useState<string | undefined>();
     const [quantity, setQuantity] = useState(1);
     const [currentProduct, setCurrentProduct] = useState<Product>();
+
+    const navigate = useNavigate();
 
     const fetchProducts = async () => {
         try {
@@ -34,14 +40,28 @@ export default function ProductPage() {
                 }
             };
 
-            const product = {
-                id: currentProduct?._id,
-                quanity: quantity
-            }
+            await axios.post('/api/add-to-shoppingcart', { id: currentProduct?._id, quantity: quantity }, config)
 
-            await axios.post('/api/add-to-shoppingcart', product, config)
+            navigate('/cart');
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    const incrementQuantity = () => {
+        setQuantity(quantity + 1);
+    };
+
+    const decrementQuantity = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1);
+        }
+    };
+    
+    const handleChangeQuantity = (event: ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(event.target.value, 10);
+        if (!isNaN(value)) {
+            setQuantity(value);
         }
     }
 
@@ -63,18 +83,47 @@ export default function ProductPage() {
 
 
     return (
-        <div>
+        <div className="product-container">
             {currentProduct ? (
-                <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
-                        <img src={image} alt={currentProduct.Name} style={{ maxWidth: "100%" }} />
+                <Grid container spacing={7} className="product-content">
+                    <Grid item className="image-container">
+                        <img src={image} alt={currentProduct.Name} className="product-image" />
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Typography variant="h4">{currentProduct.Name}</Typography>
-                        <Typography variant="body1">Quantity: {currentProduct.Quantity}</Typography>
-                        <Typography variant="body1">Price: {currentProduct.Price} Kr</Typography>
-                        {/* Add more details as needed */}
-                        <Button variant="contained" color="primary" onClick={addToShoppingCart}>
+                    <Grid item className="details-container">
+                        <div>
+                            <Typography variant="h4">{currentProduct.Name}</Typography>
+
+                            <Typography variant="h6">{getDescription(currentProduct.Name)}</Typography>
+                        </div>
+
+                        <div className="ingridients">
+                            {currentProduct.Ingridients && currentProduct.Ingridients.length > 0 ? (
+                                currentProduct.Ingridients.map((ingredient, index) => (
+                                    <p key={index}>{ingredient}</p>
+                                ))
+                            ) : (
+                                <p></p>
+                            )}
+                        </div>
+
+                        <Typography variant="body1">{currentProduct.Quantity} stk</Typography>
+                        <Typography variant="h6">{currentProduct.Price * quantity} Kr</Typography>
+
+                        <div className="quantity-container">
+                            <IconButton onClick={decrementQuantity} disabled={quantity === 1}>
+                                <Remove />
+                            </IconButton>
+                            <TextField
+                                type="number"
+                                value={quantity}
+                                onChange={handleChangeQuantity}
+                                size="small"
+                            />
+                            <IconButton onClick={incrementQuantity} disabled={quantity >= currentProduct.Quantity}>
+                                <Add />
+                            </IconButton>
+                        </div>
+                        <Button variant="contained" color="primary" onClick={addToShoppingCart} style={{ marginTop: '20px' }}>
                             Legg til Handlevogn
                         </Button>
                     </Grid>
