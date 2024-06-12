@@ -1,0 +1,108 @@
+[
+    {
+        "Name": "Oreo Kake",
+        "Quantity": {
+            "$numberInt": "30"
+        },
+        "Category": "Mat",
+        "Ingridients": [
+            "Oreo",
+            "Melk"
+        ],
+        "Rating": {
+            "$numberDouble": "5"
+        },
+        "Available": true,
+        "Price": {
+            "$numberInt": "30"
+        }
+    },
+    {
+        "Name": "Nudler",
+        "Quantity": {
+            "$numberInt": "15"
+        },
+        "Category": "Mat",
+        "Ingridients": [
+            "Hvetemel",
+            "Vann",
+            "Salt"
+        ],
+        "Rating": {
+            "$numberDouble": "2.7"
+        },
+        "Available": true,
+        "Price": {
+            "$numberInt": "20"
+        }
+    },
+    {
+        "Name": "Kjeks",
+        "Quantity": {
+            "$numberInt": "60"
+        },
+        "Category": "Mat",
+        "Ingridients": [
+            "Sjokolade"
+        ],
+        "Rating": {
+            "$numberDouble": "3.6"
+        },
+        "Available": true,
+        "Price": {
+            "$numberInt": "15"
+        }
+    },
+    {
+        "Name": "Iste",
+        "Quantity": {
+            "$numberInt": "25"
+        },
+        "Category": "Drikke",
+        "Ingridients": [
+            "Is",
+            "Te"
+        ],
+        "Rating": {
+            "$numberDouble": "5"
+        },
+        "Available": true,
+        "Price": {
+            "$numberInt": "28"
+        }
+    },
+    {
+        "Name": "Kylling Vinger",
+        "Quantity": {
+            "$numberInt": "30"
+        },
+        "Category": "Mat",
+        "Ingridients": [
+            "Kylling"
+        ],
+        "Rating": {
+            "$numberDouble": "5"
+        },
+        "Available": true,
+        "Price": {
+            "$numberInt": "10"
+        }
+    },
+    {
+        "Name": "Monster",
+        "Quantity": {
+            "$numberInt": "20"
+        },
+        "Category": "Drikke",
+        "Ingridients": [
+            "Energi"
+        ],
+        "Rating": {
+            "$numberDouble": "4.2"
+        },
+        "Available": true,
+        "Price": {
+            "$numberInt": "35"
+        }
+    }
+]

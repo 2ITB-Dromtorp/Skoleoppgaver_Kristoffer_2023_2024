@@ -1,10 +1,10 @@
 import axios from "axios";
-import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Product } from "../utils/types";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, CircularProgress, Grid, Typography, IconButton, TextField } from "@mui/material";
 import { getImage } from '../utils/getImage';
-import { Add, Remove } from  '@mui/icons-material';
+import { Add, Remove } from '@mui/icons-material';
 
 import './ProductPage.css'
 import { getDescription } from "../utils/getDescription";
@@ -33,6 +33,7 @@ export default function ProductPage() {
             const token = localStorage.getItem('token');
             if (!token) {
                 throw new Error('Token not found');
+                return;
             }
             const config = {
                 headers: {
@@ -57,7 +58,7 @@ export default function ProductPage() {
             setQuantity(quantity - 1);
         }
     };
-    
+
     const handleChangeQuantity = (event: ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(event.target.value, 10);
         if (!isNaN(value)) {

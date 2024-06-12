@@ -13,11 +13,10 @@ const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 
 const productSchema = Joi.object({
-  _id: Joi.string().required(),
   Name: Joi.string().required(),
   Quantity: Joi.number().required(),
-  Ingredients: Joi.array().items(Joi.string()).required(),
   Price: Joi.number().required(),
+  Category: Joi.string().required(),
   Rating: Joi.number(),
   Available: Joi.boolean().required()
 });
@@ -120,6 +119,38 @@ server.listen(port, async () => {
       }
     })
 
+    app.post('/upload-json-database', async (req, res) => {
+      try {
+        const { JSONstring } = req.body
+
+        console.log(JSONstring)
+
+        const ProductJSON = JSON.parse(JSONstring)
+        for (const products of ProductJSON) {
+
+          const newProduct = {
+            Name: products.Name,
+            Quantity: products.Quantity.$numberInt,
+            Category: products.Category,
+            Price: products.Price.$numberInt,
+            Rating: products.Rating.$numberDouble,
+            Available: products.Available,
+          }
+
+          const { error } = productSchema.validate(newProduct);
+          if (error) {
+            return res.status(400).json({ error: error.details[0].message });
+          }
+
+          await Products.insertOne(newProduct);
+        }
+
+      } catch (error) {
+        console.error("Upload failed", error);
+        res.status(500).json({ error: error });
+      }
+    })
+
     app.get('/get-products', async (req, res) => {
       try {
         const productCursor = Products.find();
@@ -134,13 +165,13 @@ server.listen(port, async () => {
 
     app.get('/get-user-data', authenticateToken, async (req, res) => {
       try {
-         const userID = req.user.userdata._id
+        const userID = req.user.userdata._id
 
-         const userdata = await Users.findOne({_id:new ObjectId(userID)})
+        const userdata = await Users.findOne({ _id: new ObjectId(userID) })
 
-         if (!userdata) {
+        if (!userdata) {
           return res.status(404).json({ error: 'User not found' });
-         }
+        }
 
         res.send(userdata);
       } catch (error) {
@@ -152,12 +183,12 @@ server.listen(port, async () => {
     app.get('/get-user-orders', authenticateToken, async (req, res) => {
       try {
         const userID = req.user.userdata._id;
-    
+
         const user = await Users.findOne({ _id: new ObjectId(userID) });
         if (!user) {
           return res.status(404).json({ error: 'User not found' });
         }
-    
+
         const orderIDs = user.Orders || [];
         const orders = await Orders.find({ OrderID: { $in: orderIDs } }).toArray();
 
@@ -167,7 +198,7 @@ server.listen(port, async () => {
         res.status(500).send(error);
       }
     });
-    
+
 
     app.post('/add-to-shoppingcart', authenticateToken, async (req, res) => {
       try {
@@ -238,11 +269,12 @@ server.listen(port, async () => {
       }
     })
 
-    app.post('/remove-order', authenticateToken, async (req,res) => {
+    app.post('/remove-order', authenticateToken, async (req, res) => {
       try {
-        const {id, products} = req.body;
+        const { id, products } = req.body;
 
-        Orders.deleteOne({_id: new ObjectId(id)})
+
+        Orders.deleteOne({ _id: new ObjectId(id) })
 
         for (const product of products) {
           await Products.updateOne(
@@ -250,6 +282,17 @@ server.listen(port, async () => {
             { $inc: { Quantity: product.Quantity } }
           );
         }
+
+        const user = await Users.findOne({ _id: new ObjectId(req.user.userdata._id) });
+
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        await Users.updateOne(
+          { _id: new ObjectId(user._id) },
+          { $set: { Orders: [] } }
+        );
+
 
         res.send({ message: 'removed order' });
       } catch (error) {
@@ -260,14 +303,14 @@ server.listen(port, async () => {
 
     app.post('/add-order', authenticateToken, async (req, res) => {
       try {
-        const {Cartproducts, DeliveryDate , OrderMethod} = req.body
+        const { Cartproducts, DeliveryDate, OrderMethod } = req.body
 
         const userID = req.user.userdata._id;
         const user = await Users.findOne({ _id: new ObjectId(userID) });
         if (!user) {
           return res.status(404).json({ error: 'User not found' });
         }
-    
+
         const order = {
           OrderID: Date.now(),
           OrderMethod,
@@ -275,36 +318,36 @@ server.listen(port, async () => {
           DeliveryDate,
           Products: Cartproducts,
         };
-  
+
         const { error } = orderSchema.validate(order);
         if (error) {
           return res.status(400).json({ error: error.details[0].message });
         }
-  
+
         await Users.updateOne(
           { _id: new ObjectId(userID) },
-          { $push: { Orders: order.OrderID }, $set: { ShoppingCart: [] } }, 
+          { $push: { Orders: order.OrderID }, $set: { ShoppingCart: [] } },
         );
 
         await Orders.insertOne(order);
-  
+
         for (const product of Cartproducts) {
           await Products.updateOne(
             { _id: new ObjectId(product.ProductID) },
             { $inc: { Quantity: -product.Quantity } }
           );
-           
+
           const updatedProduct = await Products.findOne({ _id: new ObjectId(product.ProductID) });
           if (updatedProduct && updatedProduct.Quantity <= 0) {
             await Products.updateOne(
               { _id: new ObjectId(product.ProductID) },
-              { $set: {Available: false}}
+              { $set: { Available: false } }
             );
           }
         }
-    
+
         res.json({ message: 'Order placed successfully' });
-  
+
       } catch (error) {
         console.error(error);
         res.status(500).send(error);

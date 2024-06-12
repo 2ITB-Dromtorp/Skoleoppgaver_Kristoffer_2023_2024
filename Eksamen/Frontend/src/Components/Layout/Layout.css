@@ -1,0 +1,31 @@
+.footer {
+  @apply h-12 bg-slate-400
+}
+
+.content-container {
+  @apply w-full h-full p-5
+}
+
+.navbar-content {
+  @apply flex justify-between items-center p-4 bg-[#4896C2];
+}
+
+.navbar-links {
+  @apply flex gap-4;
+}
+
+.user-info {
+  @apply flex items-center gap-2;
+}
+
+.layout-container {
+  @apply font-sans;
+}
+
+.layout-outlet {
+  @apply p-4;
+}
+
+.icon {
+  @apply flex flex-row
+}

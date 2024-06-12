@@ -9,7 +9,13 @@ export function getDescription(Name: string) {
         'Pepsi': 'En populær kullsyreholdig drikk med en unik smak.',
         'Sprite': 'En klar og sprudlende sitron-lime drikk.',
         'Fanta': 'En fruktig og sprudlende appelsindrikk.',
-        'Appelsinjuice': 'Ferskpresset appelsinjuice, rik på vitaminer og smak.'
+        'Appelsinjuice': 'Ferskpresset appelsinjuice, rik på vitaminer og smak.',
+        'Nudler': 'Digg nudler',
+        'Iste': 'Forfriskene iste',
+        'Kjeks': 'Deilig kjeks',
+        'Kylling Vinger': 'vinger laget av kylling',
+        'Monster': 'Monster Energy Drink',
+        'Oreo Kake': 'Oreo og kake er en bra mix',
     };
     return descriptions[Name] || 'Ingen beskrivelse tilgjengelig for dette produktet.';
 }

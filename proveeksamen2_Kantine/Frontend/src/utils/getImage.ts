@@ -9,7 +9,13 @@ export function getImage(Name: string) {
         'Pepsi': '/pepsi.jpg',
         'Sprite': '/sprite.jpg',
         'Fanta': '/fanta.jpg',
-        'Appelsinjuice': '/appelsinjus.jpg'
+        'Appelsinjuice': '/appelsinjus.jpg',
+        'Nudler': '/nudler.jpg',
+        'Iste': '/iste.jpg',
+        'Kjeks': '/kjeks.jpg',
+        'Kylling Vinger': '/kyllingving.jpg',
+        'Monster': '/monster.jpg',
+        'Oreo Kake': '/oreakake.jpg',
     };
     return images[Name] || '/images/default.png';
 }

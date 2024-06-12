@@ -12,6 +12,7 @@ import { User } from './utils/types';
 import { GetUserData } from './utils/getUserData';
 import Cart from './Components/Cart';
 import OrderPage from './Components/Orders';
+import AdminPage from './Components/Admin';
 
 
 const theme = createTheme({
@@ -41,6 +42,7 @@ function App() {
             <Route path='/cart/' element={<Cart />} />
             <Route path='/orders' element={<OrderPage />} />
             <Route path='/viewmore/:category'></Route>
+            <Route path='/admin' element={<AdminPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
