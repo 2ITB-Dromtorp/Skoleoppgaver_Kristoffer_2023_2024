@@ -7,7 +7,7 @@
 }
 
 .navbar-content {
-  @apply flex justify-between items-center p-4 bg-[#4896C2];
+  @apply flex justify-between items-center p-2 bg-gradient-to-r from-cyan-500 to-blue-500;
 }
 
 .navbar-links {

@@ -1,11 +1,11 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { Avatar, Button, Fade, Menu, MenuItem, Typography, Tabs, Tab } from "@mui/material";
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import HomeIcon from '@mui/icons-material/Home';
 import { User } from "../../utils/types";
 import './Layout.css';
+import ScoreboardIcon from '@mui/icons-material/Scoreboard';
 
 interface LayoutProps {
   userdata: User | null;
@@ -47,11 +47,11 @@ export default function Layout({ userdata, setUserData }: LayoutProps) {
         </div>
 
         <Tabs value={selectedTab} onChange={handleTabChange} aria-label="nav tabs">
-          <Tab label="Hjem" value="/" icon={<HomeIcon />} component={Link} to="/" />
+          <Tab label="Hjem" value="/" icon={<HomeIcon />} iconPosition="start" component={Link} to="/" />
           <Tab
             label="Turneringer"
             value="/tournaments"
-            icon={<ShoppingCartIcon />}
+            icon={<ScoreboardIcon />}
             iconPosition="start"
             component={Link}
             to="/tournaments"
@@ -89,6 +89,8 @@ export default function Layout({ userdata, setUserData }: LayoutProps) {
       <div className='content-container'>
         <Outlet />
       </div>
+
+      
     </div>
   );
 }

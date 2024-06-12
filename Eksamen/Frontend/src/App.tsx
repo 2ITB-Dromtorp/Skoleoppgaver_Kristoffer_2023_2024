@@ -23,9 +23,10 @@ function App() {
       <Routes>
         <Route path='/' element={<Layout userdata={userdata} setUserData={setUserData} />}>
           <Route index element={<HomePage />} />
-          <Route path="login" element={<Login setUserData={setUserData} />} />¨
-          <Route path='tournaments' element={<TournamentPage />} />
+          <Route path="login" element={<Login setUserData={setUserData} />} />
+          <Route path='tournaments' element={<TournamentPage userdata={userdata} />} />
           <Route path='registered' element={<RegisteredTournamentPage />} />
+          <Route path='user/:userID' /> 
           {/*<Route path="signup" element={<Signup />} />*/}
         </Route>
       </Routes>

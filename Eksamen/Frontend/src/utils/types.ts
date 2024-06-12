@@ -1,4 +1,5 @@
 export interface User {
+    _id: string;
     Email: string;
     FirstName: string;
     LastName: string;
@@ -8,7 +9,8 @@ export interface User {
     Tournament_History: string[];
 }
 
-export interface Tournaement {
+export interface Tournaments {
+    _id: string;
     Tournament_Name: string;
     Sport: string;
     Description: string;
