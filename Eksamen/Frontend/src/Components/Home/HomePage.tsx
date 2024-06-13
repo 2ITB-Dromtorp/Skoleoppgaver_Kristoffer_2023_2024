@@ -4,6 +4,7 @@ import "./HomePage.css"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Sport, User } from "../../utils/types";
+import { useAlert } from "../../utils/AlertContext";
 
 interface HomepageProps {
     userdata: User | null;
@@ -12,6 +13,7 @@ export default function HomePage({ userdata }: HomepageProps) {
 
     const [sports, setSports] = useState<Sport[]>([]);
     const [updateduser, setupdatedUser] = useState<User>();
+    const { showAlert } = useAlert();
 
     const fetchSports = async () => {
         try {
@@ -45,6 +47,7 @@ export default function HomePage({ userdata }: HomepageProps) {
 
             const response = await axios.get('/api/user-info', config);
             setupdatedUser(response.data);
+            
         } catch (error) {
             console.error('Error fetching sports:', error);
         }
@@ -68,11 +71,12 @@ export default function HomePage({ userdata }: HomepageProps) {
                 }
             };
 
-            await axios.post('/api/register-sport', { sportname: sport }, config);
+            const response = await axios.post('/api/register-sport', { sportname: sport }, config);
             fetchSports();
             fetchUser();
+            showAlert(response.data.message, 'success')
         } catch (error) {
-            console.error('Error registering sport:', error);
+            console.error(error)
         }
     }
 
@@ -89,9 +93,10 @@ export default function HomePage({ userdata }: HomepageProps) {
                 }
             };
 
-            await axios.post('/api/unregister-sport', { sportname: sport }, config);
+            const response = await axios.post('/api/unregister-sport', { sportname: sport }, config);
             fetchSports();
             fetchUser();
+            showAlert(response.data.message, 'success')
         } catch (error) {
             console.error('Error registering sport:', error);
         }

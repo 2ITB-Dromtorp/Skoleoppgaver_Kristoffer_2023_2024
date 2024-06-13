@@ -9,14 +9,13 @@ interface TournamentPageProps {
 
 export default function TournamentPage({ userdata }: TournamentPageProps) {
     const [tournaments, setTournaments] = useState<Tournaments[]>([]);
-    const [sortOption, setSortOption] = useState<'alphabetical' | 'registered' | 'sport'>('alphabetical');
+    const [sortOption, setSortOption] = useState<'alphabetical' | 'registered' | 'sport' | 'most registered'>('alphabetical');
 
     const fetchTournaments = async () => {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
                 throw new Error('Token not found');
-                return;
             }
             const config = {
                 headers: {
@@ -45,6 +44,9 @@ export default function TournamentPage({ userdata }: TournamentPageProps) {
             case 'registered':
                 sortedList.sort((a, b) => a.Registered_Users.length - b.Registered_Users.length);
                 break;
+            case 'most registered':
+                sortedList.sort((a, b) => a.Registered_Users.length + b.Registered_Users.length);
+                break;
             case 'sport':
                 sortedList.sort((a, b) => a.Sport.localeCompare(b.Sport));
                 break;
@@ -65,10 +67,11 @@ export default function TournamentPage({ userdata }: TournamentPageProps) {
                             labelId="sorter"
                             value={sortOption}
                             label="Sorter"
-                            onChange={(event: { target: { value: string; }; }) => setSortOption(event.target.value as 'alphabetical' | 'registered' | 'sport')}
+                            onChange={(event: { target: { value: string; }; }) => setSortOption(event.target.value as 'alphabetical' | 'registered' | 'sport' | 'most registered')}
                         >
                             <MenuItem value={'alphabetical'}>Alfabetisk Rekkefølge</MenuItem>
-                            <MenuItem value={'registered'}>Påmeldte</MenuItem>
+                            <MenuItem value={'most registered'}>Høyest påmeldelser</MenuItem>
+                            <MenuItem value={'registered'}>Minst påmeldelser</MenuItem>
                             <MenuItem value={'sport'}>Sport</MenuItem>
                         </Select>
                     </div>

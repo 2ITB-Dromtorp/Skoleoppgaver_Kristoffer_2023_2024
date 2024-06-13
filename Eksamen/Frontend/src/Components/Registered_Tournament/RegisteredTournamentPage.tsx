@@ -5,7 +5,9 @@ import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Button
 import { ArrowDropDown } from "@mui/icons-material";
 
 import './RegisteredTournamentPage.css'
+import { useAlert } from "../../utils/AlertContext";
 export default function RegisteredTournamentPage() {
+    const { showAlert } = useAlert();
 
     const [registeredTournaments, setRegisteredTournaments] = useState<Tournaments[]>([])
 
@@ -23,7 +25,6 @@ export default function RegisteredTournamentPage() {
 
             const response = await axios.get<Tournaments[]>(`/api/get-registered-tournaments`, config);
             setRegisteredTournaments(response.data);
-
         } catch (error) {
             console.log(error)
         }
@@ -44,16 +45,17 @@ export default function RegisteredTournamentPage() {
                     Authorization: token
                 }
             };
-            await axios.post('/api/unregister-tournament', { tournamentID: _id }, config);
+            const response = await axios.post('/api/unregister-tournament', { tournamentID: _id }, config);
             fetchRegisteredTournament();
 
+            showAlert(response.data.message, 'info')
         } catch (error) {
             console.log(error);
         }
     }
 
     return (
-        <div className="registertournament-container">
+        <div className="registertournament-container ">
 
             <div className="mb-3">
                 <Typography variant="h4">Påmeldte turneringer</Typography>

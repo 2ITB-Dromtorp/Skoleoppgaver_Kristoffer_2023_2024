@@ -7,6 +7,7 @@ const port = process.env.PORT || 8080
 var cors = require("cors");
 const http = require("http");
 const url = process.env.URL
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const server = http.createServer(app);
 
@@ -55,26 +56,66 @@ server.listen(port, async () => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-          return res.status(400).json({ error: "Email og passord er påkrevd" });
+          return res.status(400).json({ message: "Email og passord er påkrevd" });
         }
 
         const user = await Users.findOne({ Email: email });
         if (!user) {
-          return res.status(401).json({ error: "Bruker finnes ikke" });
+          return res.status(401).json({ message: "Bruker finnes ikke" });
+        }
+
+        if (!bcrypt.compareSync(password, user.Password)) {
+          return res.status(401).json({ message: "Ugyldig passord" });
         }
 
         const tokenPayload = {
           userdata: user
         };
 
-        const token = jwt.sign(tokenPayload, "token", { expiresIn: '2h' });
+        const token = jwt.sign(tokenPayload, "token", { expiresIn: '5h' });
 
-        res.json({ token: token });
+        res.json({ message: "successfuly logged in", token: token });
       } catch (error) {
         console.error("Login failed:", error);
         res.status(500).json({ error: error });
       }
     })
+
+    
+    app.post('/signup', async (req, res) => {
+      try {
+        const userData = req.body;
+        const salt = bcrypt.genSaltSync(15);
+        const hash = bcrypt.hashSync(userData.Password, salt);
+
+        newUser = {
+          Email: userData.Email,
+          Password: hash,
+          FirstName: userData.FirstName,
+          LastName: userData.LastName,
+          Registered_Tournaments: [],
+          Tournament_History: [],
+          Sport: []
+        }
+
+        await Users.insertOne(newUser);
+
+        const user = await Users.findOne({ Email: userData.Email });
+        if (!user) {
+          return res.status(401).json({ message: "Bruker finnes ikke" });
+        }
+
+        const tokenPayload = {
+          userdata: user
+        };
+
+        const token = jwt.sign(tokenPayload, "token", { expiresIn: '5h' });
+        return res.status(200).json({ message: 'konto opprettet', token: token });
+      } catch (error) {
+        console.error("Feil under registrering:", error);
+        res.status(500).json({ error: 'Intern feil' });
+      }
+    });
 
     app.get('/get-tournaments', authenticateToken, async (req, res) => {
       try {
