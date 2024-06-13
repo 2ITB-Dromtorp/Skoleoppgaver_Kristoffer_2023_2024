@@ -1,0 +1,15 @@
+.home-container {
+    @apply flex flex-col justify-center items-center text-center gap-10
+}
+
+.image {
+    @apply w-full h-32 object-cover;
+}
+
+.card {
+    @apply grid grid-flow-row;
+}
+
+.grid-container {
+    @apply flex flex-row space-x-48
+}

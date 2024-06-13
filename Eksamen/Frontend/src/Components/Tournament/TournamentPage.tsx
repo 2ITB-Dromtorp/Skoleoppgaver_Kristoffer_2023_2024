@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Tournaments, User } from "../../utils/types";
 import axios from "axios";
-import { Grid, Typography, CircularProgress } from "@mui/material";
+import { Grid, Typography, CircularProgress, Select, MenuItem } from "@mui/material";
 import TournamentBox from "../TournamentBox/TournamentBox";
 interface TournamentPageProps {
     userdata: User | null;
-  }
-  
+}
+
 export default function TournamentPage({ userdata }: TournamentPageProps) {
     const [tournaments, setTournaments] = useState<Tournaments[]>([]);
+    const [sortOption, setSortOption] = useState<'alphabetical' | 'registered' | 'sport'>('alphabetical');
 
     const fetchTournaments = async () => {
         try {
@@ -23,7 +24,7 @@ export default function TournamentPage({ userdata }: TournamentPageProps) {
                 }
             };
 
-            const response = await axios.get<Tournaments[]>(`/api/get-tournaments/${userdata?.Sport}`, config);
+            const response = await axios.get<Tournaments[]>(`/api/get-tournaments`, config);
             setTournaments(response.data);
 
         } catch (error) {
@@ -35,26 +36,59 @@ export default function TournamentPage({ userdata }: TournamentPageProps) {
         fetchTournaments();
     }, [])
 
-    console.log(tournaments)
+    const sortedTournaments = useMemo(() => {
+        const sortedList = [...tournaments];
+        switch (sortOption) {
+            case 'alphabetical':
+                sortedList.sort((a, b) => a.Tournament_Name.localeCompare(b.Tournament_Name));
+                break;
+            case 'registered':
+                sortedList.sort((a, b) => a.Registered_Users.length - b.Registered_Users.length);
+                break;
+            case 'sport':
+                sortedList.sort((a, b) => a.Sport.localeCompare(b.Sport));
+                break;
+            default:
+                break;
+        }
+        return sortedList;
+    }, [tournaments, sortOption]);
 
     return (
         <div className="tournamentpage-container">
 
-            <div>
-                <Typography variant="h4">Innkommende Turneringer</Typography>
-            </div>
+            {userdata &&
+                <div>
+                    <div className="mb-3 flex flex-row justify-between">
+                        <Typography variant="h4">Innkommende Turneringer</Typography>
+                        <Select
+                            labelId="sorter"
+                            value={sortOption}
+                            label="Sorter"
+                            onChange={(event: { target: { value: string; }; }) => setSortOption(event.target.value as 'alphabetical' | 'registered' | 'sport')}
+                        >
+                            <MenuItem value={'alphabetical'}>Alfabetisk Rekkefølge</MenuItem>
+                            <MenuItem value={'registered'}>Påmeldte</MenuItem>
+                            <MenuItem value={'sport'}>Sport</MenuItem>
+                        </Select>
+                    </div>
 
-            <Grid container spacing={3}>
-                {tournaments ? 
+                    <Grid container spacing={3}>
+                        {sortedTournaments ?
+                            sortedTournaments.map((tournament) => {
+                                const isRegistered = tournament.Registered_Users.includes(userdata._id.toString());
 
-                    tournaments.map((tournament) => {
-                        return <TournamentBox key={tournament._id} _id={tournament._id} Tournament_Name={tournament.Tournament_Name} Sport={tournament.Sport} Description={tournament.Description} Status={tournament.Status} Start_Date={tournament.Start_Date} End_Date={tournament.End_Date} Attendance_Time={tournament.Attendance_Time} Format={tournament.Format} Registered_Users={tournament.Registered_Users} Attendance_Place={tournament.Attendance_Place} />
-                    })
-                
-                :               
-                <CircularProgress />
-                }
-            </Grid>
+                                return <TournamentBox key={tournament._id} tournamentdata={tournament} isregistered={isRegistered} />
+                            })
+
+                            :
+                            <CircularProgress />
+                        }
+                    </Grid>
+                </div>
+            }
+
+
         </div>
     );
 }

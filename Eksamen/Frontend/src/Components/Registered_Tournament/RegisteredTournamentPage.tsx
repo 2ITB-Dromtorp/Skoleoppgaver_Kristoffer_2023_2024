@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, Button, CircularProgress, Typography } from "@mui/material";
 import { ArrowDropDown } from "@mui/icons-material";
 
+import './RegisteredTournamentPage.css'
 export default function RegisteredTournamentPage() {
 
     const [registeredTournaments, setRegisteredTournaments] = useState<Tournaments[]>([])
@@ -52,9 +53,9 @@ export default function RegisteredTournamentPage() {
     }
 
     return (
-        <div className="tournamentpage-container">
+        <div className="registertournament-container">
 
-            <div>
+            <div className="mb-3">
                 <Typography variant="h4">Påmeldte turneringer</Typography>
             </div>
 
@@ -62,28 +63,29 @@ export default function RegisteredTournamentPage() {
                 {registeredTournaments ? (
                     registeredTournaments.map((tournament) => {
                         return <Accordion key={tournament._id}>
-                        <AccordionSummary
-                            expandIcon={<ArrowDropDown />}
-                        >
-                            <Typography variant="h5">{tournament.Tournament_Name}</Typography>
+                            <AccordionSummary
+                                expandIcon={<ArrowDropDown />}
+                            >
+                                <Typography variant="h5">{tournament.Tournament_Name}</Typography>
 
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Typography>Oppmøte tid: {tournament.Attendance_Time}</Typography>
-                            <Typography>Dato: {tournament.Start_Date}-{tournament.End_Date}</Typography>
-                        </AccordionDetails>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Typography>Oppmøte tid: {tournament.Attendance_Time}</Typography>
+                                <Typography>Dato: {tournament.Start_Date} - {tournament.End_Date}</Typography>
+                                <Typography>Sted: {tournament.Attendance_Place}</Typography>
+                            </AccordionDetails>
 
-                        <AccordionActions>
-                            <Button variant="contained" className="button" onClick={() => handleRemoveBorrow(tournament._id)}>Avmeld</Button>
-                        </AccordionActions>
+                            <AccordionActions>
+                                <Button variant="contained" className="button" onClick={() => handleRemoveBorrow(tournament._id)}>Avmeld</Button>
+                            </AccordionActions>
                         </Accordion>
                     })
                 )
 
-                :               
-                <CircularProgress />
+                    :
+                    <CircularProgress />
                 }
-                
+
             </div>
 
         </div>

@@ -45,8 +45,7 @@ export default function Layout({ userdata, setUserData }: LayoutProps) {
             Ball IL
           </Typography>
         </div>
-
-        <Tabs value={selectedTab} onChange={handleTabChange} aria-label="nav tabs">
+        {userdata && <Tabs value={selectedTab} onChange={handleTabChange} aria-label="nav tabs">
           <Tab label="Hjem" value="/" icon={<HomeIcon />} iconPosition="start" component={Link} to="/" />
           <Tab
             label="Turneringer"
@@ -64,7 +63,8 @@ export default function Layout({ userdata, setUserData }: LayoutProps) {
             component={Link}
             to="/registered"
           />
-        </Tabs>
+        </Tabs>}
+
 
         {userdata ? (
           <div className="user-info">
@@ -86,11 +86,10 @@ export default function Layout({ userdata, setUserData }: LayoutProps) {
           <Button onClick={() => navigate('/login')}>Login</Button>
         )}
       </div>
+
       <div className='content-container'>
         <Outlet />
       </div>
-
-      
     </div>
   );
 }

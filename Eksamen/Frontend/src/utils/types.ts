@@ -4,12 +4,13 @@ export interface User {
     FirstName: string;
     LastName: string;
     Password: string;
-    Sport: string;
+    Sport: string[];
     Registered_Tournaments: string[];
     Tournament_History: string[];
 }
 
 export interface Tournaments {
+    tournamentdata: string | undefined;
     _id: string;
     Tournament_Name: string;
     Sport: string;
@@ -21,4 +22,11 @@ export interface Tournaments {
     Format: string;
     Registered_Users: string[];
     Attendance_Place: string;
+}
+
+export interface Sport {
+    _id: string;
+    Name: string;
+    Incoming_Tournaments: number;
+    Attented_Users: string[];
 }

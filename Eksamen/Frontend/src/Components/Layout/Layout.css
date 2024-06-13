@@ -7,7 +7,7 @@
 }
 
 .navbar-content {
-  @apply flex justify-between items-center p-2 bg-gradient-to-r from-cyan-500 to-blue-500;
+  @apply flex justify-between h-20 items-center bg-gradient-to-r from-cyan-500 to-blue-500;
 }
 
 .navbar-links {
@@ -19,7 +19,7 @@
 }
 
 .layout-container {
-  @apply font-sans;
+  @apply font-sans h-full;
 }
 
 .layout-outlet {

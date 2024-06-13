@@ -42,12 +42,12 @@ server.listen(port, async () => {
 
     const databaseName = "Eksamen";
     const TournamentsString = "Tournaments";
-    const AdminsString = "Admins"
+    const SportsString = "Sports"
     const UsersString = "Users"
 
     const database = mongodb.db(databaseName);
     const Tournaments = database.collection(TournamentsString);
-    const Admins = database.collection(AdminsString);
+    const Sports = database.collection(SportsString);
     const Users = database.collection(UsersString);
 
     app.post('/login', async (req, res) => {
@@ -76,25 +76,95 @@ server.listen(port, async () => {
       }
     })
 
-    app.get('/get-tournaments/:sport', authenticateToken, async (req, res) => {
+    app.get('/get-tournaments', authenticateToken, async (req, res) => {
       try {
         const userID = req.user.userdata._id;
+        const user = await Users.findOne({ _id: new ObjectId(userID) });
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+
+        const tournaments = await Tournaments.find({
+          Sport: { $in: user.Sport }
+        }).toArray();
+
+
+        if (!tournaments || tournaments.length === 0) {
+          return res.status(404).json({ error: 'Tournaments not found' });
+        }
+        res.send(tournaments);
+      } catch (error) {
+        console.error("Tournaments failed:", error);
+        res.status(500).json({ error: error });
+      }
+    })
+
+    app.get('/get-sports', authenticateToken, async (req, res) => {
+      try {
+        const sportsCursor = Sports.find();
+        const sports = await sportsCursor.toArray();
+        res.send(sports);
+      } catch (error) {
+        console.log(error);
+      }
+    })
+
+    app.get('/user-info', authenticateToken, async (req, res) => {
+      try {
+        const userID = req.user.userdata._id;
+        const user = await Users.findOne({ _id: new ObjectId(userID) });
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.send(user);
+      } catch (error) {
+        console.log(error);
+      }
+    })
+
+    app.post('/unregister-sport', authenticateToken, async (req, res) => {
+      try {
+        const userID = req.user.userdata._id;
+        const { sportname } = req.body
 
         const user = await Users.findOne({ _id: new ObjectId(userID) });
         if (!user) {
           return res.status(404).json({ error: 'User not found' });
         }
 
-        const tournaments = await Tournaments.find({ Sport: user.Sport }).toArray();
-        if (!tournaments) {
-          return res.status(404).json({ error: 'tournaments not found' });
+        const response = await Users.updateOne({ _id: new ObjectId(userID) }, { $pull: { Sport: sportname } })
+        if (!response.modifiedCount) {
+          return res.status(404).json({ error: 'could not remove sport' });
         }
 
-        res.send(tournaments);
+        res.status(200).json({ message: 'Successfully unregistered the sport' });
       } catch (error) {
-        console.error("Tournaments failed:", error);
-        res.status(500).json({ error: error });
+        console.log(error);
       }
+
+    })
+
+    app.post('/register-sport', authenticateToken, async (req, res) => {
+      try {
+        const userID = req.user.userdata._id;
+        const { sportname } = req.body
+
+        const user = await Users.findOne({ _id: new ObjectId(userID) });
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+
+        const response = await Users.updateOne({ _id: new ObjectId(userID) }, { $push: { Sport: sportname } })
+        if (!response.modifiedCount) {
+          return res.status(404).json({ error: 'could not remove sport' });
+        }
+
+        res.status(200).json({ message: 'Successfully registered the sport' });
+      } catch (error) {
+        console.log(error);
+      }
+
     })
 
     app.post('/register-tournament', authenticateToken, async (req, res) => {
@@ -111,22 +181,22 @@ server.listen(port, async () => {
         if (!tournament) {
           return res.status(404).json({ error: 'Tournament not found' });
         }
-    
-        const result = await Tournaments.updateOne({ _id: new ObjectId(tournamentID) }, { $push: {Registered_Users: new ObjectId(userID)} });
-        
+
+        const result = await Tournaments.updateOne({ _id: new ObjectId(tournamentID) }, { $push: { Registered_Users: new ObjectId(userID) } });
+
         if (result.matchedCount === 0) {
           return res.status(404).json({ error: 'Tournament not found' });
         }
-    
+
         const userUpdateResult = await Users.updateOne(
           { _id: new ObjectId(userID) },
           { $push: { Registered_Tournaments: new ObjectId(tournamentID) } }
         );
-    
+
         if (!userUpdateResult.modifiedCount) {
           return res.status(404).json({ error: 'User not found' });
         }
-    
+
         res.status(200).json({ message: 'Successfully registered for the tournament' });
       } catch (error) {
         console.error("registered failed tournaments:", error);
@@ -164,38 +234,38 @@ server.listen(port, async () => {
       try {
         const { tournamentID } = req.body;
         const userID = req.user.userdata._id;
-    
+
         const user = await Users.findOne({ _id: new ObjectId(userID) });
         if (!user) {
           return res.status(404).json({ error: 'User not found' });
         }
-  
+
         const tournament = await Tournaments.findOne({ _id: new ObjectId(tournamentID) });
         if (!tournament) {
           return res.status(404).json({ error: 'Tournament does not exist' });
         }
-    
+
         const result = await Tournaments.updateOne(
-          { _id: new ObjectId(tournamentID) }, 
-          { $pull: { Registered_Users: new ObjectId(userID)} }
-      );
+          { _id: new ObjectId(tournamentID) },
+          { $pull: { Registered_Users: new ObjectId(userID) } }
+        );
 
         if (!result.modifiedCount) {
           return res.status(404).json({ error: 'could not remove userID in tournament data' });
         }
-    
+
         const userUpdateResult = await Users.updateOne(
           { _id: new ObjectId(userID) },
           { $pull: { Registered_Tournaments: new ObjectId(tournamentID) } }
         );
 
-    
+
         if (!userUpdateResult.modifiedCount) {
           return res.status(404).json({ error: 'Tournament not found' });
         }
-    
+
         res.status(200).json({ message: 'Successfully unregistered from the tournament' });
-      } catch(error) {
+      } catch (error) {
         console.error(error);
       }
 

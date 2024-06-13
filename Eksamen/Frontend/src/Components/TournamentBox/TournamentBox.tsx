@@ -7,7 +7,12 @@ import { getImage } from '../../utils/getImage';
 import RegisterModal from '../../RegisterModal/RegisterModal';
 import { useState } from 'react';
 
-export default function TournamentBox({ _id, Tournament_Name, Sport, Description, Status, Start_Date, End_Date, Attendance_Time, Format, Registered_Users, Attendance_Place}: Tournaments) {
+interface TournamentBoxProps {
+    tournamentdata: Tournaments;
+    isregistered: boolean;
+}
+
+export default function TournamentBox({ tournamentdata, isregistered }: TournamentBoxProps) {
 
     //const navigate = useNavigate();
 
@@ -24,21 +29,21 @@ export default function TournamentBox({ _id, Tournament_Name, Sport, Description
     return (
         <>
             <Grid item onClick={handleOpen}>
-                <Card className="tournament-card">
+                <Card className={`tournament-card ${isregistered ? 'border-green-500 border-2' : ''}`}>
                     <CardMedia
                         component="img"
-                        style={{ objectFit: 'cover'}}
+                        style={{ objectFit: 'cover' }}
                         className='tournament-image'
-                        alt={Tournament_Name}
-                        image={getImage(Sport)}
+                        alt={tournamentdata.Tournament_Name}
+                        image={getImage(tournamentdata.Sport)}
                     />
 
                     <CardContent className="content">
-                        <Typography variant="h5" >{Tournament_Name}</Typography>
-                        <Typography variant="h6">{Format}</Typography>
-                        <Typography >{Start_Date}-{End_Date}</Typography>
-                        <Typography>{Attendance_Place}</Typography>
-                        <Typography>Status: {Status}</Typography>
+                        <Typography variant="h5" >{tournamentdata.Tournament_Name}</Typography>
+                        <Typography variant="h6">{tournamentdata.Format}</Typography>
+                        <Typography >{tournamentdata.Start_Date} - {tournamentdata.End_Date}</Typography>
+                        <Typography>{tournamentdata.Attendance_Place}</Typography>
+                        <Typography>Status: {tournamentdata.Status}</Typography>
                     </CardContent>
 
                 </Card>
@@ -46,19 +51,8 @@ export default function TournamentBox({ _id, Tournament_Name, Sport, Description
             <RegisterModal
                 open={open}
                 handleClose={handleClose}
-                tournamentData={{
-                    _id,
-                    Tournament_Name,
-                    Sport,
-                    Description,
-                    Status,
-                    Start_Date,
-                    End_Date,
-                    Attendance_Time,
-                    Format,
-                    Registered_Users,
-                    Attendance_Place
-                }}
+                tournamentData={tournamentdata}
+                isregistered={isregistered}
             />
         </>
 
